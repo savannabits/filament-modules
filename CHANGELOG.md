@@ -2,6 +2,14 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v1.0.2 - 2023-01-03
+
+### What's Changed
+
+- Bug Fix: ContextService Provider was missing Imports by @coolsam726 in https://github.com/savannabits/filament-modules/pull/5
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.0.1...v1.0.2
+
 ## v1.0.1 - 2023-01-03
 
 ### What's Changed
