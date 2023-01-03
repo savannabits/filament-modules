@@ -1,0 +1,26 @@
+<?php
+
+namespace {{ namespace }};
+
+use Savannabits\FilamentModules\ContextServiceProvider;
+
+class {{ class }} extends ContextServiceProvider
+{
+    public static string $name = '{{ module }}-{{ name }}';
+    public static string $module = '{{ Module }}';
+
+    public function packageRegistered(): void
+    {
+        $this->app->booting(function () {
+            $this->registerConfigs();
+        });
+        parent::packageRegistered();
+    }
+
+    public function registerConfigs() {
+        $this->mergeConfigFrom(
+            app('modules')->findOrFail(static::$module)->getExtraPath( 'Config/'.static::$name.'.php'),
+            static::$name
+        );
+    }
+}

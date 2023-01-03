@@ -1,25 +1,28 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "savannabits/filament-modules",
+    "description": "Use Filamentphp with nwiDart/laravel-modules",
     "keywords": [
-        ":vendor_name",
+        "savannabits",
         "laravel",
-        ":package_slug"
+        "filament-modules"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/savannabits/filament-modules",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Sam Maosa",
+            "email": "smaosa@savannabits.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.0",
         "filament/filament": "^2.0",
-        "spatie/laravel-package-tools": "^1.13.5",
-        "illuminate/contracts": "^9.0"
+        "illuminate/contracts": "^9.0",
+        "livewire/livewire": "^2.10",
+        "mhmiton/laravel-modules-livewire": "^1.5",
+        "nwidart/laravel-modules": "^9.0",
+        "spatie/laravel-package-tools": "^1.13.5"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
@@ -38,13 +41,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Savannabits\\FilamentModules\\": "src",
+            "Savannabits\\FilamentModules\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Savannabits\\FilamentModules\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -67,10 +70,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Savannabits\\FilamentModules\\FilamentModulesServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "FilamentModules": "Savannabits\\FilamentModules\\Facades\\FilamentModules"
             }
         }
     },
