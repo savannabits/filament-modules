@@ -108,7 +108,7 @@ return [
 
     'livewire' => [
         'namespace' => $moduleNs.'\\Http\\Livewire',
-        'path' => module_path($moduleName, $contextPath),
+        'path' => module_path($moduleName, '/Http/Livewire'),
     ],
 
     /*
