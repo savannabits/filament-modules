@@ -58,6 +58,42 @@ If you would like to change the path, you can change it under the corresponding 
 
 ### The Context's Service Provider
 This package automatically adds each of the generated context's service provider in providers' list in `app.php config`. Be sure to remove this Service Provider in case you delete the context.
+
+## Adding Pages/Resources to Module Context
+
+You may now add filament resources in your FilamentTeams directories. Generate Filament pages/resources/widgets as you normally would. Move them into the context-folder
+and update the namespace. TODO: We will write a command to automatically generate the resources and pages easily.
+
+### ContextualPage & ContextualResource traits
+
+Pages:
+
+```php
+namespace YourNamespace\Resources;
+
+use Savannabits\FilamentModules\Concerns\ContextualPage;
+use Filament\Pages\Page;
+
+class Dashboard extends Page
+{
+    use ContextualPage;
+}
+```
+
+Resources:
+
+```php
+namespace YourNamespace\Resources;
+
+use Savannabits\FilamentModules\Concerns\ContextualResource;
+use Filament\Resources\Resource;
+
+class UserResource extends Resource
+{
+    use ContextualResource;
+}
+```
+
 ## Testing
 
 ```bash
