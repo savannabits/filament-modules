@@ -2,6 +2,15 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v1.0.4 - 2023-01-03
+
+### What's Changed
+
+- Minor Updates: Badges and Caption Image by @coolsam726 in https://github.com/savannabits/filament-modules/pull/7
+- Fixed: Github Action Badges by @coolsam726 in https://github.com/savannabits/filament-modules/pull/8
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.0.3...v1.0.4
+
 ## v1.0.3 - 2023-01-03
 
 ### What's Changed
