@@ -2,6 +2,14 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v1.0.1 - 2023-01-03
+
+### What's Changed
+
+- Bug fix: Config Path by @coolsam726 in https://github.com/savannabits/filament-modules/pull/4
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.0.0...v1.0.1
+
 ## v1.0.0 - 2023-01-03
 
 ### What's Changed
