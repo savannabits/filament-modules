@@ -22,9 +22,8 @@ class ContextManager extends FilamentManager
      */
     public static function getAuth(): ?Guard
     {
-        return static::$config ? auth()->guard(config(static::$config . '.auth.guard')) : null;
+        return static::$config ? auth()->guard(config(static::$config.'.auth.guard')) : null;
     }
-
 
     /**
      * @return Guard

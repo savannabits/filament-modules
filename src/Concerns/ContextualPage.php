@@ -10,6 +10,6 @@ trait ContextualPage
     {
         $slug = static::getSlug();
 
-        return Filament::currentContext() . ".pages.{$slug}";
+        return Filament::currentContext().".pages.{$slug}";
     }
 }

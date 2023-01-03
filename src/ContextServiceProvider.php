@@ -15,19 +15,20 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use Savannabits\FilamentModules\Http\Middleware\ApplyContext;
 use Livewire\Component;
 use ReflectionClass;
 use ReflectionException;
+use Savannabits\FilamentModules\Http\Middleware\ApplyContext;
 use Symfony\Component\Finder\SplFileInfo;
 
 abstract class ContextServiceProvider extends PluginServiceProvider
 {
     public static string $module = '';
+
     public function packageRegistered(): void
     {
-        if (!static::$module) {
-            abort(500,'Your Service Provider MUST set the static::$module variable!');
+        if (! static::$module) {
+            abort(500, 'Your Service Provider MUST set the static::$module variable!');
         }
         $this->app->booting(function () {
             $this->registerComponents();
@@ -53,14 +54,14 @@ abstract class ContextServiceProvider extends PluginServiceProvider
 
     protected function bootRoutes()
     {
-        if (!($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
+        if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
             $middleware = array_merge(
-                [ApplyContext::class . ':' . static::$name],
+                [ApplyContext::class.':'.static::$name],
                 $this->contextConfig('middleware.base') ?? []
             );
             Route::domain($this->contextConfig('domain'))
                 ->middleware($middleware)
-                ->name(static::$name . '.')
+                ->name(static::$name.'.')
                 ->prefix(Str::of(static::$module)->kebab())
                 ->group(function () {
                     Route::prefix($this->contextConfig('path'))->group(function () {
@@ -74,7 +75,7 @@ abstract class ContextServiceProvider extends PluginServiceProvider
                                 $request->session()->invalidate();
                                 $request->session()->regenerateToken();
 
-                                return redirect()->route(static::$name . '.auth.login');
+                                return redirect()->route(static::$name.'.auth.login');
                             })->name('logout');
                         }
                         Route::middleware($this->contextConfig('middleware.auth'))
@@ -143,7 +144,7 @@ abstract class ContextServiceProvider extends PluginServiceProvider
 
         $filesystem = app(Filesystem::class);
 
-        if (!$filesystem->isDirectory($directory)) {
+        if (! $filesystem->isDirectory($directory)) {
             return;
         }
         foreach ($filesystem->allFiles($directory) as $file) {
@@ -155,7 +156,7 @@ abstract class ContextServiceProvider extends PluginServiceProvider
                 continue;
             }
 
-            $filePath = Str::of($directory . '/' . $file->getRelativePathname());
+            $filePath = Str::of($directory.'/'.$file->getRelativePathname());
 
             if ($filePath->startsWith($this->contextConfig('resources.path')) && is_subclass_of($fileClass, Resource::class)) {
                 $this->resources[] = $fileClass;
@@ -179,14 +180,14 @@ abstract class ContextServiceProvider extends PluginServiceProvider
                 continue;
             }
 
-            if (!is_subclass_of($fileClass, Component::class)) {
+            if (! is_subclass_of($fileClass, Component::class)) {
                 continue;
             }
 
             $livewireAlias = Str::of($fileClass)
-                ->after($namespace . '\\')
+                ->after($namespace.'\\')
                 ->replace(['/', '\\'], '.')
-                ->prepend(static::$name . '.')
+                ->prepend(static::$name.'.')
                 ->explode('.')
                 ->map([Str::class, 'kebab'])
                 ->implode('.');
@@ -207,7 +208,7 @@ abstract class ContextServiceProvider extends PluginServiceProvider
 
         $filesystem = app(Filesystem::class);
 
-        if (!$filesystem->exists($directory)) {
+        if (! $filesystem->exists($directory)) {
             return;
         }
 
@@ -219,7 +220,7 @@ abstract class ContextServiceProvider extends PluginServiceProvider
                         ->append('\\', $file->getRelativePathname())
                         ->replace(['/', '.php'], ['\\', '']);
                 })
-                ->filter(fn (string $class): bool => is_subclass_of($class, $baseClass) && (!(new ReflectionClass($class))->isAbstract()))
+                ->filter(fn (string $class): bool => is_subclass_of($class, $baseClass) && (! (new ReflectionClass($class))->isAbstract()))
                 ->all(),
         );
     }

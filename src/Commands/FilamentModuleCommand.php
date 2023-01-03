@@ -6,9 +6,8 @@ use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Filament\Support\Commands\Concerns\CanValidateInput;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Artisan;
-use Nwidart\Modules\Exceptions\ModuleNotFoundException;
+use Illuminate\Support\Str;
 use Nwidart\Modules\Module;
 use Nwidart\Modules\Traits\ModuleCommandTrait;
 use Symfony\Component\Console\Input\InputArgument;
@@ -36,8 +35,8 @@ class FilamentModuleCommand extends Command
         try {
             $this->module = app('modules')->findOrFail($this->getModuleName());
         } catch (\Throwable $exception) {
-            \Log::info($exception->getMessage()." Creating It ...");
-            Artisan::call('module:make',['name' => [$this->argument('module')]]);
+            \Log::info($exception->getMessage().' Creating It ...');
+            Artisan::call('module:make', ['name' => [$this->argument('module')]]);
             $this->module = app('modules')->findOrFail($this->getModuleName());
         } finally {
         }
@@ -52,8 +51,8 @@ class FilamentModuleCommand extends Command
         if ($this->option('guard')) {
             Artisan::call(
                 'make:filament-guard',
-                $this->option('force') ?  [
-                    'name' => $context, '--force'
+                $this->option('force') ? [
+                    'name' => $context, '--force',
                 ] : ['name' => $context]
             );
         }
@@ -96,7 +95,8 @@ class FilamentModuleCommand extends Command
         ];
     }
 
-    public function getModuleNamespace() {
+    public function getModuleNamespace()
+    {
         return $this->laravel['modules']->config('namespace').'\\'.$this->getModuleName();
     }
 
@@ -108,28 +108,28 @@ class FilamentModuleCommand extends Command
 
         $serviceProviderPath = $serviceProviderClass
             ->prepend('/')
-            ->prepend(module_path($this->getModuleName(),'Providers'))
+            ->prepend(module_path($this->getModuleName(), 'Providers'))
             ->append('.php');
 
         $configPath = $contextName
             ->prepend($this->module->getLowerName().'-')
             ->prepend('/')
-            ->prepend(module_path($this->getModuleName(),'Config'))
+            ->prepend(module_path($this->getModuleName(), 'Config'))
             ->append('.php');
         $moduleNs = Str::of($this->getModuleNamespace());
 
         $contextNamespace = $context
             ->replace('\\', '\\\\')
             ->prepend('\\\\')
-            ->prepend($moduleNs->replace('\\','\\\\')->toString());
+            ->prepend($moduleNs->replace('\\', '\\\\')->toString());
 
-        if (!$this->option('force') && $this->checkForCollision([
+        if (! $this->option('force') && $this->checkForCollision([
             $serviceProviderPath,
         ])) {
             return static::INVALID;
         }
 
-        if (!$this->option('force') && $this->checkForCollision([
+        if (! $this->option('force') && $this->checkForCollision([
             $configPath,
         ])) {
             return static::INVALID;
@@ -152,10 +152,10 @@ class FilamentModuleCommand extends Command
         $middlewareClass = $context->afterLast('\\')->append('Middleware');
 
         $middlewarePath = $middlewareClass
-            ->prepend(module_path($this->getModuleName(),'Http/Middleware/'))
+            ->prepend(module_path($this->getModuleName(), 'Http/Middleware/'))
             ->append('.php');
 
-        if (!$this->option('force') && $this->checkForCollision([$middlewarePath])) {
+        if (! $this->option('force') && $this->checkForCollision([$middlewarePath])) {
             return static::INVALID;
         }
 
@@ -172,10 +172,10 @@ class FilamentModuleCommand extends Command
         $loginClass = $context->afterLast('\\')->append('Login');
 
         $loginPath = $loginClass
-            ->prepend(module_path($this->getModuleName(),'Http/Livewire/Auth/'))
+            ->prepend(module_path($this->getModuleName(), 'Http/Livewire/Auth/'))
             ->append('.php');
 
-        if (!$this->option('force') && $this->checkForCollision([$loginPath])) {
+        if (! $this->option('force') && $this->checkForCollision([$loginPath])) {
             return static::INVALID;
         }
 
@@ -190,7 +190,7 @@ class FilamentModuleCommand extends Command
         // CONFIG
         $this->copyStubToApp('config', $configPath, [
             'namespace' => (string) $contextNamespace,
-            'moduleNamespace' => $moduleNs->replace('\\\\','\\')->toString(),
+            'moduleNamespace' => $moduleNs->replace('\\\\', '\\')->toString(),
             'path' => (string) $context->replace('\\', '/'),
             'loginClass' => $loginNs->append('\\')->append($loginClass)->append('::class')->replace('\\\\', '\\')->toString(),
             'authMiddleware' => $middlewareNs->append('\\')->append($middlewareClass)->append('::class')->replace('\\\\', '\\')->toString(),
@@ -203,17 +203,17 @@ class FilamentModuleCommand extends Command
         $directoryPath = module_path($this->getModuleName(), (string) $context->replace('\\', '/'));
 
         app(Filesystem::class)->makeDirectory($directoryPath, force: $this->option('force'));
-        app(Filesystem::class)->makeDirectory($directoryPath . '/Pages', force: $this->option('force'));
-        app(Filesystem::class)->makeDirectory($directoryPath . '/Resources', force: $this->option('force'));
-        app(Filesystem::class)->makeDirectory($directoryPath . '/Widgets', force: $this->option('force'));
+        app(Filesystem::class)->makeDirectory($directoryPath.'/Pages', force: $this->option('force'));
+        app(Filesystem::class)->makeDirectory($directoryPath.'/Resources', force: $this->option('force'));
+        app(Filesystem::class)->makeDirectory($directoryPath.'/Widgets', force: $this->option('force'));
     }
 
     protected function copyStubToApp(string $stub, string $targetPath, array $replacements = []): void
     {
         $filesystem = app(Filesystem::class);
 
-        if (!$this->fileExists($stubPath = base_path("stubs/filament/{$stub}.stub"))) {
-            $stubPath = __DIR__ . "/../../stubs/{$stub}.stub";
+        if (! $this->fileExists($stubPath = base_path("stubs/filament/{$stub}.stub"))) {
+            $stubPath = __DIR__."/../../stubs/{$stub}.stub";
         }
 
         $stub = Str::of($filesystem->get($stubPath));
@@ -230,11 +230,11 @@ class FilamentModuleCommand extends Command
     /**
      * Install the service provider in the application configuration file.
      *
-     * @param string $after
-     * @param string $providerClass | Fully namespaced service class
+     * @param  string  $after
+     * @param  string  $providerClass | Fully namespaced service class
      * @return void
      */
-    protected function installServiceProvider(string $providerClass, string $after='RouteServiceProvider'): void
+    protected function installServiceProvider(string $providerClass, string $after = 'RouteServiceProvider'): void
     {
         if (! Str::contains($appConfig = file_get_contents(config_path('app.php')), $providerClass)) {
             file_put_contents(config_path('app.php'), str_replace(

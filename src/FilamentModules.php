@@ -8,7 +8,6 @@ use Illuminate\Support\Traits\ForwardsCalls;
 
 class FilamentModules
 {
-
     use ForwardsCalls;
 
     protected array $contexts = [];
@@ -16,7 +15,7 @@ class FilamentModules
     protected ?string $currentContext = null;
 
     /**
-     * @param FilamentManager $filament
+     * @param  FilamentManager  $filament
      */
     public function __construct(FilamentManager $filament)
     {
@@ -24,7 +23,7 @@ class FilamentModules
     }
 
     /**
-     * @param string|null $context
+     * @param  string|null  $context
      * @return $this
      */
     public function setContext(string $context = null)
@@ -59,18 +58,19 @@ class FilamentModules
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      * @return $this
      */
     public function addContext(string $name)
     {
         $this->contexts[$name] = new ContextManager($name);
+
         return $this;
     }
 
     /**
-     * @param string $context
-     * @param callable $callback
+     * @param  string  $context
+     * @param  callable  $callback
      * @return $this
      */
     public function forContext(string $context, callable $callback)
@@ -86,9 +86,8 @@ class FilamentModules
         return $this;
     }
 
-
     /**
-     * @param callable $callback
+     * @param  callable  $callback
      * @return $this
      */
     public function forAllContexts(callable $callback)
@@ -109,8 +108,8 @@ class FilamentModules
     /**
      * Dynamically handle calls into the filament instance.
      *
-     * @param string $method
-     * @param array $parameters
+     * @param  string  $method
+     * @param  array  $parameters
      * @return mixed
      */
     public function __call(string $method, array $parameters)
@@ -123,6 +122,4 @@ class FilamentModules
 
         return $response;
     }
-
-
 }

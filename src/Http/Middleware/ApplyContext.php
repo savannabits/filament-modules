@@ -11,8 +11,8 @@ class ApplyContext
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
+     * @param  Request  $request
+     * @param  Closure  $next
      * @param $context
      * @return mixed
      */

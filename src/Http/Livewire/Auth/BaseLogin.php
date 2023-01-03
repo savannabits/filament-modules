@@ -22,6 +22,7 @@ use Nwidart\Modules\Laravel\Module;
 class BaseLogin extends Component implements HasForms
 {
     public static string $module; // TODO: Implement this.
+
     public static string $context; // TODO: Implement this
 
     use InteractsWithForms;
@@ -33,18 +34,21 @@ class BaseLogin extends Component implements HasForms
 
     public ?bool $remember = false;
 
-    private function getModule(): Module {
+    private function getModule(): Module
+    {
         return app('modules')->findOrFail(static::$module);
     }
 
     /**
      * @throws \Exception
      */
-    private function getContextName(): string {
+    private function getContextName(): string
+    {
         $module = $this->getModule();
-        if (!static::$context) {
-            throw new \Exception("Context has to be defined in your class");
+        if (! static::$context) {
+            throw new \Exception('Context has to be defined in your class');
         }
+
         return \Str::of($module->getLowerName())->append('-')->append(\Str::slug(static::$context))->kebab()->toString();
     }
 
@@ -81,7 +85,7 @@ class BaseLogin extends Component implements HasForms
 
         $guardName = config("$name.auth.guard");
 
-        if (!Auth::guard($guardName)->attempt([
+        if (! Auth::guard($guardName)->attempt([
             'email' => $data['email'],
             'password' => $data['password'],
         ], $data['remember'])) {
@@ -91,6 +95,7 @@ class BaseLogin extends Component implements HasForms
         }
 
         $request->session()->regenerate();
+
         return redirect()->route("$name.pages.dashboard");
     }
 
@@ -115,6 +120,7 @@ class BaseLogin extends Component implements HasForms
     {
         $module = $this->getModule();
         $name = $module->getStudlyName();
+
         return view('filament::login')
             ->layout('filament::components.layouts.card', [
                 'title' => __("$name Login"),

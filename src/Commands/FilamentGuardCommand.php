@@ -2,9 +2,9 @@
 
 namespace Savannabits\FilamentModules\Commands;
 
-use Illuminate\Console\Command;
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Filament\Support\Commands\Concerns\CanValidateInput;
+use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
@@ -48,10 +48,10 @@ class FilamentGuardCommand extends Command
         $middlewareClass = $context->afterLast('\\')->append('Middleware');
 
         $middlewarePath = $middlewareClass
-            ->prepend($directoryPath . '/MiddleWare/')
+            ->prepend($directoryPath.'/MiddleWare/')
             ->append('.php');
 
-        if (!$this->option('force') && $this->checkForCollision([$middlewarePath])) {
+        if (! $this->option('force') && $this->checkForCollision([$middlewarePath])) {
             return static::INVALID;
         }
 
@@ -67,7 +67,7 @@ class FilamentGuardCommand extends Command
             ->prepend(app_path('Http/Livewire/'))
             ->append('.php');
 
-        if (!$this->option('force') && $this->checkForCollision([$loginPath])) {
+        if (! $this->option('force') && $this->checkForCollision([$loginPath])) {
             return static::INVALID;
         }
 
@@ -90,8 +90,8 @@ class FilamentGuardCommand extends Command
     {
         $filesystem = app(Filesystem::class);
 
-        if (!$this->fileExists($stubPath = base_path("stubs/filament/{$stub}.stub"))) {
-            $stubPath = __DIR__ . "/../../stubs/{$stub}.stub";
+        if (! $this->fileExists($stubPath = base_path("stubs/filament/{$stub}.stub"))) {
+            $stubPath = __DIR__."/../../stubs/{$stub}.stub";
         }
 
         $stub = Str::of($filesystem->get($stubPath));

@@ -43,7 +43,7 @@ class FilamentModulesServiceProvider extends PluginServiceProvider
             ->hasConfigFile()
             ->hasCommands([
                 FilamentModuleCommand::class,
-                FilamentGuardCommand::class
+                FilamentGuardCommand::class,
             ]);
     }
 
@@ -53,7 +53,6 @@ class FilamentModulesServiceProvider extends PluginServiceProvider
             return new FilamentModules($service);
         });
     }
-
 
     /**
      * @return void

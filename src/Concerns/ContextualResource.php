@@ -10,6 +10,6 @@ trait ContextualResource
     {
         $slug = static::getSlug();
 
-        return Filament::currentContext() . ".resources.{$slug}";
+        return Filament::currentContext().".resources.{$slug}";
     }
 }
