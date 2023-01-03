@@ -2,6 +2,8 @@
 
 namespace {{ namespace }};
 
+use Filament\Facades\Filament;
+use Filament\Navigation\NavigationItem;
 use Savannabits\FilamentModules\ContextServiceProvider;
 
 class {{ class }} extends ContextServiceProvider
