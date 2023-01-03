@@ -1,0 +1,11 @@
+<?php
+
+namespace {{ namespace }};
+
+use Savannabits\FilamentModules\Http\Livewire\Auth\BaseLogin;
+
+class {{ class }} extends BaseLogin
+{
+    public static string $context = '{{ context }}';
+    public static string $module = '{{ module }}';
+}
