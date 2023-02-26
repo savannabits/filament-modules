@@ -71,8 +71,6 @@ class FilamentModuleCommand extends Command
 
     /**
      * Get the console command arguments.
-     *
-     * @return array
      */
     protected function getArguments(): array
     {
@@ -84,8 +82,6 @@ class FilamentModuleCommand extends Command
 
     /**
      * Get the console command options.
-     *
-     * @return array
      */
     protected function getOptions(): array
     {
@@ -230,9 +226,7 @@ class FilamentModuleCommand extends Command
     /**
      * Install the service provider in the application configuration file.
      *
-     * @param  string  $after
      * @param  string  $providerClass | Fully namespaced service class
-     * @return void
      */
     protected function installServiceProvider(string $providerClass, string $after = 'RouteServiceProvider'): void
     {

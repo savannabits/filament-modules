@@ -54,9 +54,6 @@ class FilamentModulesServiceProvider extends PluginServiceProvider
         });
     }
 
-    /**
-     * @return void
-     */
     public function packageBooted(): void
     {
         Livewire::addPersistentMiddleware([

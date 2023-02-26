@@ -11,9 +11,6 @@ class ApplyContext
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
-     * @param $context
      * @return mixed
      */
     public function handle(Request $request, Closure $next, $context)
