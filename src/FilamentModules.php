@@ -14,16 +14,12 @@ class FilamentModules
 
     protected ?string $currentContext = null;
 
-    /**
-     * @param  FilamentManager  $filament
-     */
     public function __construct(FilamentManager $filament)
     {
         $this->contexts['filament'] = $filament;
     }
 
     /**
-     * @param  string|null  $context
      * @return $this
      */
     public function setContext(string $context = null)
@@ -33,9 +29,6 @@ class FilamentModules
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function currentContext(): string
     {
         return $this->currentContext ?? 'filament';
@@ -49,16 +42,12 @@ class FilamentModules
         return $this->contexts[$this->currentContext ?? 'filament'];
     }
 
-    /**
-     * @return array
-     */
     public function getContexts(): array
     {
         return $this->contexts;
     }
 
     /**
-     * @param  string  $name
      * @return $this
      */
     public function addContext(string $name)
@@ -69,8 +58,6 @@ class FilamentModules
     }
 
     /**
-     * @param  string  $context
-     * @param  callable  $callback
      * @return $this
      */
     public function forContext(string $context, callable $callback)
@@ -87,7 +74,6 @@ class FilamentModules
     }
 
     /**
-     * @param  callable  $callback
      * @return $this
      */
     public function forAllContexts(callable $callback)
@@ -108,8 +94,6 @@ class FilamentModules
     /**
      * Dynamically handle calls into the filament instance.
      *
-     * @param  string  $method
-     * @param  array  $parameters
      * @return mixed
      */
     public function __call(string $method, array $parameters)
