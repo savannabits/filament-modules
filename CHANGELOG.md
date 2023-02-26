@@ -2,6 +2,16 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v1.1.0 - 2023-02-26
+
+### What's Changed
+
+- Update FUNDING.yml by @coolsam726 in https://github.com/savannabits/filament-modules/pull/9
+- Bump dependabot/fetch-metadata from 1.3.5 to 1.3.6 by @dependabot in https://github.com/savannabits/filament-modules/pull/10
+- Support for Laravel 10 by @coolsam726 in https://github.com/savannabits/filament-modules/pull/15
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.0.4...v1.1.0
+
 ## v1.0.4 - 2023-01-03
 
 ### What's Changed
