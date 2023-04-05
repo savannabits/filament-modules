@@ -11,7 +11,6 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
 {
     use ModuleCommandTrait;
 
-
     protected $description = 'Creates a Filament resource class and default page classes.';
 
     protected $signature = 'module:make-filament-resource {module?} {name?} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--F|force}';
@@ -23,7 +22,7 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
         $module = (string) Str::of($this->argument('module') ?? $this->askRequired('Module Name (e.g. `sales`)', 'module'));
         $this->module = app('modules')->findOrFail($this->getModuleName());
 
-        $path = module_path($module, 'Filament/Resources/') ;
+        $path = module_path($module, 'Filament/Resources/');
         $namespace = $this->getModuleNamespace().'\\Filament\\Resources';
 
         $model = (string) Str::of($this->argument('name') ?? $this->askRequired('Model (e.g. `BlogPost`)', 'name'))
@@ -82,16 +81,16 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
         }
 
         $pages = '';
-        $pages .= '\'index\' => Pages\\' . ($this->option('simple') ? $manageResourcePageClass : $listResourcePageClass) . '::route(\'/\'),';
+        $pages .= '\'index\' => Pages\\'.($this->option('simple') ? $manageResourcePageClass : $listResourcePageClass).'::route(\'/\'),';
 
         if (! $this->option('simple')) {
-            $pages .= PHP_EOL . "'create' => Pages\\{$createResourcePageClass}::route('/create'),";
+            $pages .= PHP_EOL."'create' => Pages\\{$createResourcePageClass}::route('/create'),";
 
             if ($this->option('view')) {
-                $pages .= PHP_EOL . "'view' => Pages\\{$viewResourcePageClass}::route('/{record}'),";
+                $pages .= PHP_EOL."'view' => Pages\\{$viewResourcePageClass}::route('/{record}'),";
             }
 
-            $pages .= PHP_EOL . "'edit' => Pages\\{$editResourcePageClass}::route('/{record}/edit'),";
+            $pages .= PHP_EOL."'edit' => Pages\\{$editResourcePageClass}::route('/{record}/edit'),";
         }
 
         $tableActions = [];
@@ -112,12 +111,12 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
                 $tableActions[] = 'Tables\Actions\RestoreAction::make(),';
             }
         } else {
-            $relations .= PHP_EOL . 'public static function getRelations(): array';
-            $relations .= PHP_EOL . '{';
-            $relations .= PHP_EOL . '    return [';
-            $relations .= PHP_EOL . '        //';
-            $relations .= PHP_EOL . '    ];';
-            $relations .= PHP_EOL . '}' . PHP_EOL;
+            $relations .= PHP_EOL.'public static function getRelations(): array';
+            $relations .= PHP_EOL.'{';
+            $relations .= PHP_EOL.'    return [';
+            $relations .= PHP_EOL.'        //';
+            $relations .= PHP_EOL.'    ];';
+            $relations .= PHP_EOL.'}'.PHP_EOL;
         }
 
         $tableActions = implode(PHP_EOL, $tableActions);
@@ -132,13 +131,13 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
             $tableBulkActions[] = 'Tables\Actions\ForceDeleteBulkAction::make(),';
             $tableBulkActions[] = 'Tables\Actions\RestoreBulkAction::make(),';
 
-            $eloquentQuery .= PHP_EOL . PHP_EOL . 'public static function getEloquentQuery(): Builder';
-            $eloquentQuery .= PHP_EOL . '{';
-            $eloquentQuery .= PHP_EOL . '    return parent::getEloquentQuery()';
-            $eloquentQuery .= PHP_EOL . '        ->withoutGlobalScopes([';
-            $eloquentQuery .= PHP_EOL . '            SoftDeletingScope::class,';
-            $eloquentQuery .= PHP_EOL . '        ]);';
-            $eloquentQuery .= PHP_EOL . '}';
+            $eloquentQuery .= PHP_EOL.PHP_EOL.'public static function getEloquentQuery(): Builder';
+            $eloquentQuery .= PHP_EOL.'{';
+            $eloquentQuery .= PHP_EOL.'    return parent::getEloquentQuery()';
+            $eloquentQuery .= PHP_EOL.'        ->withoutGlobalScopes([';
+            $eloquentQuery .= PHP_EOL.'            SoftDeletingScope::class,';
+            $eloquentQuery .= PHP_EOL.'        ]);';
+            $eloquentQuery .= PHP_EOL.'}';
         }
 
         $tableBulkActions = implode(PHP_EOL, $tableBulkActions);
@@ -146,7 +145,7 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
         $this->copyStubToApp('Resource', $resourcePath, [
             'eloquentQuery' => $this->indentString($eloquentQuery, 1),
             'formSchema' => $this->indentString($this->option('generate') ? $this->getResourceFormSchema(
-                'App\\Models' . ($modelNamespace !== '' ? "\\{$modelNamespace}" : '') . '\\' . $modelClass,
+                'App\\Models'.($modelNamespace !== '' ? "\\{$modelNamespace}" : '').'\\'.$modelClass,
             ) : '//', 4),
             'model' => $model === 'Resource' ? 'Resource as ResourceModel' : $model,
             'modelClass' => $model === 'Resource' ? 'ResourceModel' : $modelClass,
@@ -158,7 +157,7 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
             'tableActions' => $this->indentString($tableActions, 4),
             'tableBulkActions' => $this->indentString($tableBulkActions, 4),
             'tableColumns' => $this->indentString($this->option('generate') ? $this->getResourceTableColumns(
-                'App\Models' . ($modelNamespace !== '' ? "\\{$modelNamespace}" : '') . '\\' . $modelClass,
+                'App\Models'.($modelNamespace !== '' ? "\\{$modelNamespace}" : '').'\\'.$modelClass,
             ) : '//', 4),
             'tableFilters' => $this->indentString(
                 $this->option('soft-deletes') ? 'Tables\Filters\TrashedFilter::make(),' : '//',

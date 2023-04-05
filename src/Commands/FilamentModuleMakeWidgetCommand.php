@@ -11,7 +11,6 @@ class FilamentModuleMakeWidgetCommand extends MakeWidgetCommand
 {
     use ModuleCommandTrait;
 
-
     protected $description = 'Creates a Filament widget class.';
 
     protected $signature = 'module:make-filament-widget {module?} {name?} {--R|resource=} {--C|chart} {--T|table} {--S|stats-overview} {--F|force}';
@@ -22,8 +21,8 @@ class FilamentModuleMakeWidgetCommand extends MakeWidgetCommand
     {
         $module = (string) Str::of($this->argument('module') ?? $this->askRequired('Module Name (e.g. `sales`)', 'module'));
         $this->module = app('modules')->findOrFail($this->getModuleName());
-        $path = module_path($module, 'Filament/Widgets/') ;
-        $resourcePath = module_path($module,'Filament/Resources/');
+        $path = module_path($module, 'Filament/Widgets/');
+        $resourcePath = module_path($module, 'Filament/Resources/');
         $namespace = $this->getModuleNamespace().'\\Filament\\Widgets';
         $resourceNamespace = $this->getModuleNamespace().'\\Filament\\Resources';
 
@@ -63,7 +62,7 @@ class FilamentModuleMakeWidgetCommand extends MakeWidgetCommand
             ->replace($this->getModuleNamespace(), '')
         )
             ->replace('\\', '/')
-            ->replaceFirst('/','')
+            ->replaceFirst('/', '')
             ->explode('/')
             ->map(fn ($segment) => Str::lower(Str::kebab($segment)))
             ->implode('.');
@@ -75,7 +74,7 @@ class FilamentModuleMakeWidgetCommand extends MakeWidgetCommand
             ->replace('//', '/')
             ->append('.php');
 
-            $viewPath = module_path($module, 'Resources/'. (string) Str::of($view)
+            $viewPath = module_path($module, 'Resources/'.(string) Str::of($view)
             ->replace('.', '/')
             ->prepend('views/')
             ->append('.blade.php'));
@@ -104,24 +103,24 @@ class FilamentModuleMakeWidgetCommand extends MakeWidgetCommand
 
             $this->copyStubToApp('ChartWidget', $path, [
                 'class' => $widgetClass,
-                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets" . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
+                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets".($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace.($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
                 'chart' => Str::studly($chart),
             ]);
         } elseif ($this->option('table')) {
             $this->copyStubToApp('TableWidget', $path, [
                 'class' => $widgetClass,
-                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets" . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
+                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets".($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace.($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
             ]);
         } elseif ($this->option('stats-overview')) {
             $this->copyStubToApp('StatsOverviewWidget', $path, [
                 'class' => $widgetClass,
-                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets" . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
+                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets".($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace.($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
             ]);
         } else {
             $this->copyStubToApp('Widget', $path, [
                 'class' => $widgetClass,
-                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets" . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
-                'view' =>  $this->module->getLowerName().'::'.$view,
+                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets".($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace.($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
+                'view' => $this->module->getLowerName().'::'.$view,
             ]);
 
             $this->copyStubToApp('WidgetView', $viewPath);

@@ -11,7 +11,6 @@ class FilamentModuleMakeRelationManagerCommand extends MakeRelationManagerComman
 {
     use ModuleCommandTrait;
 
-
     protected $description = 'Creates a Filament relation manager class for a resource.';
 
     protected $signature = 'module:make-filament-relation-manager {module?} {resource?} {relationship?} {recordTitleAttribute?} {--attach} {--associate} {--soft-deletes} {--view} {--F|force}';
@@ -23,7 +22,7 @@ class FilamentModuleMakeRelationManagerCommand extends MakeRelationManagerComman
         $module = (string) Str::of($this->argument('module') ?? $this->askRequired('Module Name (e.g. `sales`)', 'module'));
         $this->module = app('modules')->findOrFail($this->getModuleName());
 
-        $resourcePath = module_path($module,'Filament/Resources/');
+        $resourcePath = module_path($module, 'Filament/Resources/');
         $resourceNamespace = $this->getModuleNamespace().'\\Filament\\Resources';
 
         $resource = (string) Str::of($this->argument('resource') ?? $this->askRequired('Resource (e.g. `DepartmentResource`)', 'resource'))
@@ -114,13 +113,13 @@ class FilamentModuleMakeRelationManagerCommand extends MakeRelationManagerComman
             $tableBulkActions[] = 'Tables\Actions\RestoreBulkAction::make(),';
             $tableBulkActions[] = 'Tables\Actions\ForceDeleteBulkAction::make(),';
 
-            $eloquentQuery .= PHP_EOL . PHP_EOL . 'protected function getTableQuery(): Builder';
-            $eloquentQuery .= PHP_EOL . '{';
-            $eloquentQuery .= PHP_EOL . '    return parent::getTableQuery()';
-            $eloquentQuery .= PHP_EOL . '        ->withoutGlobalScopes([';
-            $eloquentQuery .= PHP_EOL . '            SoftDeletingScope::class,';
-            $eloquentQuery .= PHP_EOL . '        ]);';
-            $eloquentQuery .= PHP_EOL . '}';
+            $eloquentQuery .= PHP_EOL.PHP_EOL.'protected function getTableQuery(): Builder';
+            $eloquentQuery .= PHP_EOL.'{';
+            $eloquentQuery .= PHP_EOL.'    return parent::getTableQuery()';
+            $eloquentQuery .= PHP_EOL.'        ->withoutGlobalScopes([';
+            $eloquentQuery .= PHP_EOL.'            SoftDeletingScope::class,';
+            $eloquentQuery .= PHP_EOL.'        ]);';
+            $eloquentQuery .= PHP_EOL.'}';
         }
 
         $tableBulkActions = implode(PHP_EOL, $tableBulkActions);

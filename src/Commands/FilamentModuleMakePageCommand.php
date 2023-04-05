@@ -3,16 +3,12 @@
 namespace Savannabits\FilamentModules\Commands;
 
 use Filament\Commands\MakePageCommand;
-use Filament\Support\Commands\Concerns\CanManipulateFiles;
-use Filament\Support\Commands\Concerns\CanValidateInput;
-use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use Nwidart\Modules\Traits\ModuleCommandTrait;
 use Nwidart\Modules\Module;
+use Nwidart\Modules\Traits\ModuleCommandTrait;
 
 class FilamentModuleMakePageCommand extends MakePageCommand
 {
-
     use ModuleCommandTrait;
 
     protected $description = 'Creates a Filament page class and view.';
@@ -25,8 +21,8 @@ class FilamentModuleMakePageCommand extends MakePageCommand
     {
         $module = (string) Str::of($this->argument('module') ?? $this->askRequired('Module Name (e.g. `sales`)', 'module'));
         $this->module = app('modules')->findOrFail($this->getModuleName());
-        $path = module_path($module, 'Filament/Pages/') ;
-        $resourcePath = module_path($module,'Filament/Resources/');
+        $path = module_path($module, 'Filament/Pages/');
+        $resourcePath = module_path($module, 'Filament/Resources/');
         $namespace = $this->getModuleNamespace().'\\Filament\\Pages';
         $resourceNamespace = $this->getModuleNamespace().'\\Filament\\Resources';
 
@@ -81,7 +77,7 @@ class FilamentModuleMakePageCommand extends MakePageCommand
                     ->replace($this->getModuleNamespace(), '')
             )
             ->replace('\\', '/')
-            ->replaceFirst('/','')
+            ->replaceFirst('/', '')
             ->explode('/')
             ->map(fn ($segment) => Str::lower(Str::kebab($segment)))
             ->implode('.');
@@ -93,7 +89,7 @@ class FilamentModuleMakePageCommand extends MakePageCommand
             ->replace('//', '/')
             ->append('.php');
 
-        $viewPath = module_path($module, 'Resources/'. (string) Str::of($view)
+        $viewPath = module_path($module, 'Resources/'.(string) Str::of($view)
         ->replace('.', '/')
         ->prepend('views/')
         ->append('.blade.php'));
@@ -110,14 +106,14 @@ class FilamentModuleMakePageCommand extends MakePageCommand
         if ($resource === null) {
             $this->copyStubToApp('Page', $path, [
                 'class' => $pageClass,
-                'namespace' => $namespace . ($pageNamespace !== '' ? "\\{$pageNamespace}" : ''),
-                'view' =>  $this->module->getLowerName().'::'.$view,
+                'namespace' => $namespace.($pageNamespace !== '' ? "\\{$pageNamespace}" : ''),
+                'view' => $this->module->getLowerName().'::'.$view,
             ]);
         } else {
             $this->copyStubToApp($resourcePage === 'custom' ? 'CustomResourcePage' : 'ResourcePage', $path, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\' . ($resourcePage === 'custom' ? 'Page' : $resourcePage),
+                'baseResourcePage' => 'Filament\\Resources\\Pages\\'.($resourcePage === 'custom' ? 'Page' : $resourcePage),
                 'baseResourcePageClass' => $resourcePage === 'custom' ? 'Page' : $resourcePage,
-                'namespace' => "{$resourceNamespace}\\{$resource}\\Pages" . ($pageNamespace !== '' ? "\\{$pageNamespace}" : ''),
+                'namespace' => "{$resourceNamespace}\\{$resource}\\Pages".($pageNamespace !== '' ? "\\{$pageNamespace}" : ''),
                 'resource' => "{$resourceNamespace}\\{$resource}",
                 'resourceClass' => $resourceClass,
                 'resourcePageClass' => $pageClass,
@@ -142,7 +138,4 @@ class FilamentModuleMakePageCommand extends MakePageCommand
     {
         return $this->laravel['modules']->config('namespace').'\\'.$this->getModuleName();
     }
-
-
-
 }
