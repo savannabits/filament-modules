@@ -60,10 +60,22 @@ If you would like to change the path, you can change it under the corresponding 
 ### The Context's Service Provider
 This package automatically adds each of the generated context's service provider in providers' list in `app.php config`. Be sure to remove this Service Provider in case you delete the context.
 
-## Adding Pages/Resources to Module Context
+## Adding Pages/Resources/Widgets/RelationManagers to Module Context
 
-You may now add filament resources in your FilamentTeams directories. Generate Filament pages/resources/widgets as you normally would. Move them into the context-folder
-and update the namespace. TODO: We will write a command to automatically generate the resources and pages easily.
+You may now add filament resources in your FilamentTeams directories. 
+```bash
+#Page: Pass the Module name as an argument and the name of page.
+php artisan module:make-filament-page {module?} {name?} {--R|resource=} {--T|type=} {--F|force}
+
+#Resources: Pass the Module name as an argument and the name of resources.
+php artisan module:make-filament-resource {module?} {name?} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--F|force}
+
+#Widgets: Pass the Module name as an argument and the name of widget.
+php artisan module:make-filament-widget {module?} {name?} {--R|resource=} {--C|chart} {--T|table} {--S|stats-overview} {--F|force}
+
+#RelationManagers: Pass the Module name as an argument and the name of RelationManager.
+php artisan module:make-filament-relation-manager {module?} {resource?} {relationship?} {recordTitleAttribute?} {--attach} {--associate} {--soft-deletes} {--view} {--F|force}
+```
 
 ### ContextualPage & ContextualResource traits
 
