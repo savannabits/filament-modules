@@ -6,6 +6,10 @@ use Filament\PluginServiceProvider;
 use Livewire\Livewire;
 use Savannabits\FilamentModules\Commands\FilamentGuardCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleCommand;
+use Savannabits\FilamentModules\Commands\FilamentModuleMakePageCommand;
+use Savannabits\FilamentModules\Commands\FilamentModuleMakeRelationManagerCommand;
+use Savannabits\FilamentModules\Commands\FilamentModuleMakeResourceCommand;
+use Savannabits\FilamentModules\Commands\FilamentModuleMakeWidgetCommand;
 use Savannabits\FilamentModules\Http\Middleware\ApplyContext;
 use Spatie\LaravelPackageTools\Package;
 
@@ -44,6 +48,10 @@ class FilamentModulesServiceProvider extends PluginServiceProvider
             ->hasCommands([
                 FilamentModuleCommand::class,
                 FilamentGuardCommand::class,
+                FilamentModuleMakePageCommand::class,
+                FilamentModuleMakeRelationManagerCommand::class,
+                FilamentModuleMakeResourceCommand::class,
+                FilamentModuleMakeWidgetCommand::class,
             ]);
     }
 

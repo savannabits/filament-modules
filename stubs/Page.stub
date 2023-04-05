@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ namespace }};
+
+use Filament\Pages\Page;
+use Savannabits\FilamentModules\Concerns\ContextualPage;
+
+class {{ class }} extends Page
+{
+    use ContextualPage;
+
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
+    protected static string $view = '{{ view }}';
+}
