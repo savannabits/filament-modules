@@ -148,6 +148,9 @@ abstract class ContextServiceProvider extends PluginServiceProvider
             return;
         }
         foreach ($filesystem->allFiles($directory) as $file) {
+            if($file->getExtension()!='php'){
+                continue;
+            }
             $fileClass = (string) Str::of($namespace)
                 ->append('\\', $file->getRelativePathname())
                 ->replace(['/', '.php'], ['\\', '']);
