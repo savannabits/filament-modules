@@ -38,7 +38,6 @@ class FilamentModuleCommand extends Command
             \Log::info($exception->getMessage().' Creating It ...');
             Artisan::call('module:make', ['name' => [$this->argument('module')]]);
             $this->module = app('modules')->findOrFail($this->getModuleName());
-        } finally {
         }
 
         $context = Str::of($this->argument('context') ?? 'Filament')->studly();

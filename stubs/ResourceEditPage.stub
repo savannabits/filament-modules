@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 
-use {{ resource }};
+use {{ resourceNamespace }};
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
