@@ -2,6 +2,16 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v1.3.0 - 2023-07-17
+
+### What's Changed
+
+- Bug Fixes and Refactoring: Generation of additional Contexts in the same module is now working! by @coolsam726 in https://github.com/savannabits/filament-modules/pull/27
+- Updated Documentation, Changed `make-filament-context` command to `make-filament` by @coolsam726 in https://github.com/savannabits/filament-modules/pull/28
+- Updated Screenshots for documentation, and minor refactoring of code. by @coolsam726 in https://github.com/savannabits/filament-modules/pull/29
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.2.0...v1.3.0
+
 ## v1.2.0 - 2023-07-17
 
 ### What's Changed
