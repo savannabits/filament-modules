@@ -59,7 +59,7 @@ class FilamentModuleMakeWidgetCommand extends MakeWidgetCommand
 
         $view = Str::of($widget)->prepend(
             (string) Str::of($resource === null ? "{$namespace}\\" : "{$resourceNamespace}\\{$resource}\\widgets\\")
-            ->replace($this->getModuleNamespace(), '')
+                ->replace($this->getModuleNamespace(), '')
         )
             ->replace('\\', '/')
             ->replaceFirst('/', '')
@@ -74,7 +74,7 @@ class FilamentModuleMakeWidgetCommand extends MakeWidgetCommand
             ->replace('//', '/')
             ->append('.php');
 
-            $viewPath = module_path($module, 'Resources/'.(string) Str::of($view)
+        $viewPath = module_path($module, 'Resources/'.(string) Str::of($view)
             ->replace('.', '/')
             ->prepend('views/')
             ->append('.blade.php'));

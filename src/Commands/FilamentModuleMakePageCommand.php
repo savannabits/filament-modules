@@ -90,9 +90,9 @@ class FilamentModuleMakePageCommand extends MakePageCommand
             ->append('.php');
 
         $viewPath = module_path($module, 'Resources/'.(string) Str::of($view)
-        ->replace('.', '/')
-        ->prepend('views/')
-        ->append('.blade.php'));
+            ->replace('.', '/')
+            ->prepend('views/')
+            ->append('.blade.php'));
 
         $files = array_merge(
             [$path],
