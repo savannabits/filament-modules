@@ -20,12 +20,12 @@ class FilamentModuleMakeRelationManagerCommand extends MakeRelationManagerComman
     public function handle(): int
     {
         $module = $this->argument('module') ?: app('modules')->getUsedNow();
-        if (!$module) {
+        if (! $module) {
             $module = (string) Str::of($this->askRequired('Module Name (e.g. `Sales`)', 'module'));
         }
         $this->module = app('modules')->findOrFail($this->getModuleName());
 
-        $contextInput = $this->argument('context') ?? $this->askRequired("Context Name",'context','Filament');
+        $contextInput = $this->argument('context') ?? $this->askRequired('Context Name', 'context', 'Filament');
         $context = Str::of($contextInput)->studly()->toString();
 
         $resourcePath = module_path($module, "$context/Resources/");

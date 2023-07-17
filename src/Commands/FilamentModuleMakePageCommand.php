@@ -21,7 +21,7 @@ class FilamentModuleMakePageCommand extends MakePageCommand
     {
         $context = Str::of($this->argument('context') ?? 'Filament')->studly()->toString();
         $module = $this->argument('module') ?: app('modules')->getUsedNow();
-        if (!$module) {
+        if (! $module) {
             $module = (string) Str::of($this->askRequired('Module Name (e.g. `Sales`)', 'module'));
         }
         $this->module = app('modules')->findOrFail($this->getModuleName());
