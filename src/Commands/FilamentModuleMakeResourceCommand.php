@@ -3,6 +3,7 @@
 namespace Savannabits\FilamentModules\Commands;
 
 use Filament\Commands\MakeResourceCommand;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Nwidart\Modules\Module;
 use Nwidart\Modules\Traits\ModuleCommandTrait;
@@ -25,14 +26,14 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
         $path = module_path($module, 'Filament/Resources/');
         $namespace = $this->getModuleNamespace().'\\Filament\\Resources';
 
-        $model = (string) Str::of($this->argument('name') ?? $this->askRequired('Model (e.g. `BlogPost`)', 'name'))
+        $model = Str::of($this->argument('name') ?? $this->askRequired('Model (e.g. `BlogPost`)', 'name'))
             ->studly()
             ->beforeLast('Resource')
             ->trim('/')
             ->trim('\\')
             ->trim(' ')
             ->studly()
-            ->replace('/', '\\');
+            ->replace('/', '\\')->toString();
 
         if (blank($model)) {
             $model = 'Resource';
@@ -41,13 +42,12 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
         $modelClass = (string) Str::of($model)->afterLast('\\');
         $modelNamespace = Str::of($model)->contains('\\') ?
             (string) Str::of($model)->beforeLast('\\') :
-            '';
+            $this->getModuleNamespace().'\\Entities';
         $pluralModelClass = (string) Str::of($modelClass)->pluralStudly();
 
-        $resource = "{$model}Resource";
+        $resource = "{$modelClass}Resource";
         $resourceClass = "{$modelClass}Resource";
-        $resourceNamespace = $modelNamespace;
-        $namespace .= $resourceNamespace !== '' ? "\\{$resourceNamespace}" : '';
+        $resourceNamespace = $namespace.($resourceClass !== '' ? "\\{$resourceClass}" : '');
         $listResourcePageClass = "List{$pluralModelClass}";
         $manageResourcePageClass = "Manage{$pluralModelClass}";
         $createResourcePageClass = "Create{$modelClass}";
@@ -145,8 +145,10 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
         $this->copyStubToApp('Resource', $resourcePath, [
             'eloquentQuery' => $this->indentString($eloquentQuery, 1),
             'formSchema' => $this->indentString($this->option('generate') ? $this->getResourceFormSchema(
-                'App\\Models'.($modelNamespace !== '' ? "\\{$modelNamespace}" : '').'\\'.$modelClass,
+                "$modelNamespace\\$model",
             ) : '//', 4),
+            'modelNamespace' => $modelNamespace,
+            'resourceSlug' => Str::slug($pluralModelClass),
             'model' => $model === 'Resource' ? 'Resource as ResourceModel' : $model,
             'modelClass' => $model === 'Resource' ? 'ResourceModel' : $modelClass,
             'namespace' => $namespace,
@@ -154,10 +156,11 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
             'relations' => $this->indentString($relations, 1),
             'resource' => "{$namespace}\\{$resourceClass}",
             'resourceClass' => $resourceClass,
+            'resourceNamespace' => $resourceNamespace,
             'tableActions' => $this->indentString($tableActions, 4),
             'tableBulkActions' => $this->indentString($tableBulkActions, 4),
             'tableColumns' => $this->indentString($this->option('generate') ? $this->getResourceTableColumns(
-                'App\Models'.($modelNamespace !== '' ? "\\{$modelNamespace}" : '').'\\'.$modelClass,
+                "$modelNamespace\\$model",
             ) : '//', 4),
             'tableFilters' => $this->indentString(
                 $this->option('soft-deletes') ? 'Tables\Filters\TrashedFilter::make(),' : '//',
@@ -174,8 +177,9 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
             ]);
         } else {
             $this->copyStubToApp('ResourceListPage', $listResourcePagePath, [
-                'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                'resource' => "{$namespace}\\{$resourceClass}",
+                'namespace' => "{$resourceNamespace}\\Pages",
+                'resource' => $resource,
+                'resourceNamespace' => $resourceNamespace,
                 'resourceClass' => $resourceClass,
                 'resourcePageClass' => $listResourcePageClass,
             ]);
@@ -183,8 +187,9 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
             $this->copyStubToApp('ResourcePage', $createResourcePagePath, [
                 'baseResourcePage' => 'Filament\\Resources\\Pages\\CreateRecord',
                 'baseResourcePageClass' => 'CreateRecord',
-                'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                'resource' => "{$namespace}\\{$resourceClass}",
+                'namespace' => "{$resourceNamespace}\\Pages",
+                'resource' => $resource,
+                'resourceNamespace' => $resourceNamespace,
                 'resourceClass' => $resourceClass,
                 'resourcePageClass' => $createResourcePageClass,
             ]);
@@ -193,8 +198,9 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
 
             if ($this->option('view')) {
                 $this->copyStubToApp('ResourceViewPage', $viewResourcePagePath, [
-                    'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                    'resource' => "{$namespace}\\{$resourceClass}",
+                    'namespace' => "{$resourceNamespace}\\Pages",
+                    'resource' => $resource,
+                    'resourceNamespace' => $resourceNamespace,
                     'resourceClass' => $resourceClass,
                     'resourcePageClass' => $viewResourcePageClass,
                 ]);
@@ -213,12 +219,15 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
 
             $this->copyStubToApp('ResourceEditPage', $editResourcePagePath, [
                 'actions' => $this->indentString($editPageActions, 3),
-                'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                'resource' => "{$namespace}\\{$resourceClass}",
+                'namespace' => "{$resourceNamespace}\\Pages",
+                'resource' => $resource,
+                'resourceNamespace' => $resourceNamespace,
                 'resourceClass' => $resourceClass,
                 'resourcePageClass' => $editResourcePageClass,
             ]);
         }
+        $resourceManagersDir = Str::of($resourceNamespace)->replace('\\', '/')->rtrim('/')->append('/RelationManagers');
+        $this->ensureSubdirectoryExists($resourceManagersDir);
 
         $this->info("Successfully created {$resource}!");
 
@@ -228,5 +237,14 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
     public function getModuleNamespace()
     {
         return $this->laravel['modules']->config('namespace').'\\'.$this->getModuleName();
+    }
+
+    private function ensureSubdirectoryExists(string $path): void
+    {
+        $filesystem = app(Filesystem::class);
+        $filesystem->ensureDirectoryExists(
+            Str::of($path)->rtrim('/')->toString(),
+        );
+
     }
 }

@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
-use {{ resource }}\Pages;
-use {{ resource }}\RelationManagers;
-use App\Models\{{ model }};
+use {{ resourceNamespace }}\Pages;
+use {{ resourceNamespace }}\RelationManagers;
+use {{ modelNamespace }}\{{ model }};
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -19,6 +19,7 @@ class {{ resourceClass }} extends Resource
     use ContextualResource;
 
     protected static ?string $model = {{ modelClass }}::class;
+    protected static ?string $slug = '{{ resourceSlug }}';
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
