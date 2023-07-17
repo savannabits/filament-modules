@@ -14,17 +14,21 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
 
     protected $description = 'Creates a Filament resource class and default page classes.';
 
-    protected $signature = 'module:make-filament-resource {module?} {name?} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--F|force}';
+    protected $signature = 'module:make-filament-resource {name?} {context?} {module?} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--F|force}';
 
     protected ?Module $module;
 
     public function handle(): int
     {
-        $module = (string) Str::of($this->argument('module') ?? $this->askRequired('Module Name (e.g. `sales`)', 'module'));
+        $context = Str::of($this->argument('context') ?? 'Filament')->studly()->toString();
+        $module = $this->argument('module') ?: app('modules')->getUsedNow();
+        if (!$module) {
+            $module = (string) Str::of($this->askRequired('Module Name (e.g. `Sales`)', 'module'));
+        }
         $this->module = app('modules')->findOrFail($this->getModuleName());
 
-        $path = module_path($module, 'Filament/Resources/');
-        $namespace = $this->getModuleNamespace().'\\Filament\\Resources';
+        $path = module_path($module, "$context/Resources/");
+        $namespace = $this->getModuleNamespace()."\\$context\\Resources";
 
         $model = Str::of($this->argument('name') ?? $this->askRequired('Model (e.g. `BlogPost`)', 'name'))
             ->studly()
@@ -173,6 +177,7 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
                 'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
                 'resource' => "{$namespace}\\{$resourceClass}",
                 'resourceClass' => $resourceClass,
+                'resourceNamespace' => $resourceNamespace,
                 'resourcePageClass' => $manageResourcePageClass,
             ]);
         } else {
@@ -245,6 +250,5 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
         $filesystem->ensureDirectoryExists(
             Str::of($path)->rtrim('/')->toString(),
         );
-
     }
 }

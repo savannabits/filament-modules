@@ -17,6 +17,7 @@ $moduleName = '{{ module }}';
 $moduleNs = '{{ moduleNamespace }}';
 $contextNs = '{{ namespace }}';
 $contextPath = '{{ path }}';
+$path = Str::of($contextPath)->slug()->replace('filament','admin-panel');
 return [
 
     /*
@@ -29,7 +30,7 @@ return [
     |
     */
 
-    'path' => env('FILAMENT_PATH', 'admin'),
+    'path' => $path,
 
     /*
     |--------------------------------------------------------------------------
@@ -56,9 +57,7 @@ return [
     'pages' => [
         'namespace' => $contextNs.'\\Pages',
         'path' => module_path($moduleName, "$contextPath/Pages"),
-        'register' => [
-            Pages\Dashboard::class,
-        ],
+        'register' => [],
     ],
 
     /*
