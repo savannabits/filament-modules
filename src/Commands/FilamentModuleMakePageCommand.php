@@ -13,18 +13,22 @@ class FilamentModuleMakePageCommand extends MakePageCommand
 
     protected $description = 'Creates a Filament page class and view.';
 
-    protected $signature = 'module:make-filament-page {module?} {name?} {--R|resource=} {--T|type=} {--F|force}';
+    protected $signature = 'module:make-filament-page {name} {context?}  {module?} {--R|resource=} {--T|type=} {--F|force}';
 
     protected ?Module $module;
 
     public function handle(): int
     {
-        $module = (string) Str::of($this->argument('module') ?? $this->askRequired('Module Name (e.g. `sales`)', 'module'));
+        $context = Str::of($this->argument('context') ?? 'Filament')->studly()->toString();
+        $module = $this->argument('module') ?: app('modules')->getUsedNow();
+        if (!$module) {
+            $module = (string) Str::of($this->askRequired('Module Name (e.g. `Sales`)', 'module'));
+        }
         $this->module = app('modules')->findOrFail($this->getModuleName());
-        $path = module_path($module, 'Filament/Pages/');
-        $resourcePath = module_path($module, 'Filament/Resources/');
-        $namespace = $this->getModuleNamespace().'\\Filament\\Pages';
-        $resourceNamespace = $this->getModuleNamespace().'\\Filament\\Resources';
+        $path = module_path($module, "$context/Pages/");
+        $resourcePath = module_path($module, "$context/Resources/");
+        $namespace = $this->getModuleNamespace()."\\$context\\Pages";
+        $resourceNamespace = $this->getModuleNamespace()."\\$context\\Resources";
 
         $page = (string) Str::of($this->argument('name') ?? $this->askRequired('Name (e.g. `Settings`)', 'name'))
             ->trim('/')
@@ -111,7 +115,7 @@ class FilamentModuleMakePageCommand extends MakePageCommand
             ]);
         } else {
             $this->copyStubToApp($resourcePage === 'custom' ? 'CustomResourcePage' : 'ResourcePage', $path, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\'.($resourcePage === 'custom' ? 'Page' : $resourcePage),
+                'baseResourcePage' => "{{$context}}\\Resources\\Pages\\".($resourcePage === 'custom' ? 'Page' : $resourcePage),
                 'baseResourcePageClass' => $resourcePage === 'custom' ? 'Page' : $resourcePage,
                 'namespace' => "{$resourceNamespace}\\{$resource}\\Pages".($pageNamespace !== '' ? "\\{$pageNamespace}" : ''),
                 'resource' => "{$resourceNamespace}\\{$resource}",

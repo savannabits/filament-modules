@@ -13,17 +13,23 @@ class FilamentModuleMakeRelationManagerCommand extends MakeRelationManagerComman
 
     protected $description = 'Creates a Filament relation manager class for a resource.';
 
-    protected $signature = 'module:make-filament-relation-manager {module?} {resource?} {relationship?} {recordTitleAttribute?} {--attach} {--associate} {--soft-deletes} {--view} {--F|force}';
+    protected $signature = 'module:make-filament-relation-manager {resource?} {relationship?} {recordTitleAttribute?} {context?} {module?}  {--attach} {--associate} {--soft-deletes} {--view} {--F|force}';
 
     protected ?Module $module;
 
     public function handle(): int
     {
-        $module = (string) Str::of($this->argument('module') ?? $this->askRequired('Module Name (e.g. `sales`)', 'module'));
+        $module = $this->argument('module') ?: app('modules')->getUsedNow();
+        if (!$module) {
+            $module = (string) Str::of($this->askRequired('Module Name (e.g. `Sales`)', 'module'));
+        }
         $this->module = app('modules')->findOrFail($this->getModuleName());
 
-        $resourcePath = module_path($module, 'Filament/Resources/');
-        $resourceNamespace = $this->getModuleNamespace().'\\Filament\\Resources';
+        $contextInput = $this->argument('context') ?? $this->askRequired("Context Name",'context','Filament');
+        $context = Str::of($contextInput)->studly()->toString();
+
+        $resourcePath = module_path($module, "$context/Resources/");
+        $resourceNamespace = $this->getModuleNamespace()."\\$context\\Resources";
 
         $resource = (string) Str::of($this->argument('resource') ?? $this->askRequired('Resource (e.g. `DepartmentResource`)', 'resource'))
             ->studly()
