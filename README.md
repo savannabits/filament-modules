@@ -42,44 +42,56 @@ You can run `php artisan module:make-filament-context -h` to see the expected ar
 ```bash
 #Option 1: Pick an existing module to use first, then run the command (similar to other laravel-modules commands)
 php artisan module:use Blog
-php artisan module:make-filament-context Filament # This will create the Filament context inside the blog module.
+php artisan module:make-filament Filament # This will create the `Filament` filament context inside the Blog module.
+php artisan module:make-filament Accounting # This will create the `Accounting` filament context inside the Blog module.
 
 # Option 2: Pass the Module name as an argument. If the module does not exist, it will be automatically created.
-php artisan module:make-filament-context Filament Blog # This will create the Filament context inside the blog module.
+php artisan module:make-filament Filament Blog # This will create the `Filament` filament context inside the Blog module.
+php artisan module:make-filament Accounting Blog # This will create the `Accounting` filament context inside the Blog module.
 ```
 ### Directory Structure of the generated module:
 ![img.png](img.png)
 ### Config:
 The configuration for each of the generated contexts will be stored under the module's Config directory, e.g `/Modules/Blog/Config/blog-filament.php` in the above case.
-You can adjust the config to change several parameters, for example the admin panel path (by default it is `admin`).
+You can adjust the config to change several parameters, for example the admin panel path (defaults to the slug of the context name).
 
 ### The context's admin panel path
-By default, you should be able to access your admin panel under the url `http://yoururl/:yourModule/:yourPathConfig` e.g `http://yoururl/blog/admin` in the above case.
+By default, you should be able to access your admin panel under the url `http://yoururl/:yourModule/:yourPathConfig` 
+e.g `http://yoururl/blog/admin-panel` and `http://yoururl/blog/accounting` in the above cases.
 If you would like to change the path, you can change it under the corresponding config file.
 
 ### The Context's Service Provider
-This package automatically adds each of the generated context's service provider in providers' list in `app.php config`. Be sure to remove this Service Provider in case you delete the context.
+This package automatically adds each of the generated context's service provider in providers' list in `app.php config`.
+Be sure to remove this Service Provider in case you delete the context.
 
 ## Adding Pages/Resources/Widgets/RelationManagers to Module Context
 
 You may now add filament resources in your FilamentTeams directories. 
 ```bash
-#Page: Pass the Module name as an argument and the name of page.
-php artisan module:make-filament-page {module?} {name?} {--R|resource=} {--T|type=} {--F|force}
+#Generating Resources:
+## Default Context if not passed: Filament
+## If module is not passed, it will default to the currently being used module or ask for a prompt to input the module name.
+php artisan module:make-filament-resource {name?} {context?} {module?} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--F|force}
 
-#Resources: Pass the Module name as an argument and the name of resources.
-php artisan module:make-filament-resource {module?} {name?} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--F|force}
+#Generating Pages
+## Default Context if not passed: Filament
+## If module is not passed, it will default to the currently being used module or ask for a prompt to input the module name.
+php artisan module:make-filament-page {name} {context?}  {module?} {--R|resource=} {--T|type=} {--F|force}
+
+#Generating RelationManagers:
+php artisan module:make-filament-relation-manager {resource?} {relationship?} {recordTitleAttribute?} {context?} {module?}  {--attach} {--associate} {--soft-deletes} {--view} {--F|force}
 
 #Widgets: Pass the Module name as an argument and the name of widget.
 php artisan module:make-filament-widget {module?} {name?} {--R|resource=} {--C|chart} {--T|table} {--S|stats-overview} {--F|force}
 
-#RelationManagers: Pass the Module name as an argument and the name of RelationManager.
-php artisan module:make-filament-relation-manager {module?} {resource?} {relationship?} {recordTitleAttribute?} {--attach} {--associate} {--soft-deletes} {--view} {--F|force}
 ```
 
-### ContextualPage & ContextualResource traits
+### ContextualPage & ContextualResource traits (DEPRECATED)
 
-Pages:
+__NB__: In the latest update you don't need to include these traits since the routing has been modified to be 
+specific to a module and a context using the slug.
+
+Pages (DEPRECATED):
 
 ```php
 namespace YourNamespace\Resources;
@@ -93,7 +105,7 @@ class Dashboard extends Page
 }
 ```
 
-Resources:
+Resources (DEPRECATED):
 
 ```php
 namespace YourNamespace\Resources;

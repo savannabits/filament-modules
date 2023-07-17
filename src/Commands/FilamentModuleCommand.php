@@ -21,7 +21,7 @@ class FilamentModuleCommand extends Command
 
     protected $description = 'Create a Filament context in a module';
 
-    protected $name = 'module:make-filament-context';
+    protected $name = 'module:make-filament';
 
     protected ?Module $module;
 
