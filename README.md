@@ -4,8 +4,8 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/.github/workflows/run-tests.yml?branch=main&label=tests)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/.github/workflows/fix-php-code-style-issues.yml?branch=main&label=Code%20Style)](https://github.com/savannabits/filament-modules/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/savannabits/filament-modules.svg?style=flat-square)](https://packagist.org/packages/savannabits/filament-modules)
-![img_2.png](img_2.png)
-![img_3.png](img_3.png)
+![img_2.png](img_1.png)
+![img_3.png](img_2.png)
 
 
 This plugin provides you with a quick and working configuration to install multiple filament admin contexts in your modular laravel app (using [laravel-modules](https://github.com/nWidart/laravel-modules)).
@@ -27,7 +27,7 @@ If this is your goal, then you are in the right place.
  
 ## Installation
 Before you proceed, this guide assumes that you have configured your app fully to work with Laravel Modules. If you haven't, follow the [Laravel Modules Docs](https://docs.laravelmodules.com/v9/installation-and-setup) before proceeding.
-
+We, of course, also assume that you have configured your default filament admin panel.
 You can install the package via composer:
 
 ```bash
@@ -36,8 +36,8 @@ composer require savannabits/filament-modules
 
 ## Usage
 
-To generate a new Filament Context, use the `module:make-filament-context` command.
-You can run `php artisan module:make-filament-context -h` to see the expected arguments.
+To generate a new Filament Context, use the `module:make-filament` command.
+You can run `php artisan module:make-filament -h` to see the expected arguments.
 
 ```bash
 #Option 1: Pick an existing module to use first, then run the command (similar to other laravel-modules commands)
