@@ -123,9 +123,9 @@ class FilamentModules
         $panel = Str::of($context)->after('-')->replace('filament', 'default')->slug()->replace('-', ' ')->title()->title();
         $moduleContexts = static::getModuleContexts($module);
         $module_lower = \Module::findOrFail($module)->getLowerName();
-        $can = Filament::auth()->user()->can("module_{$module_lower}");
+        $can = Filament::auth()->check() && Filament::auth()->user()->can("module_{$module_lower}");
         $navItem = NavigationItem::make($context)->visible($can)->url(route($context.'.pages.dashboard'))->icon('heroicon-o-bookmark');
-        if ($can || true) {
+        if ($can) {
             Filament::registerNavigationItems([
                 $moduleContexts->count() === 1 ? $navItem->label("$module Module") : $navItem->label("$panel Panel")->group("$module Module"),
             ]);
@@ -135,8 +135,7 @@ class FilamentModules
     public static function hasAuthorizedAccess(string $context)
     {
         $module = Str::of($context)->before('-')->lower();
-
-        return Filament::auth()->user()->can('module_'.$module);
+        return Filament::auth()->check() && Filament::auth()->user()->can('module_'.$module);
     }
 
     public static function renderContextNavigation($module, $context): void
