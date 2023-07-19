@@ -2,6 +2,14 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v1.3.1 - 2023-07-19
+
+### What's Changed
+
+- Patch improvements: Fixed the context name in Context middleware and updated README by @coolsam726 in https://github.com/savannabits/filament-modules/pull/30
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.3.0...v1.3.1
+
 ## v1.3.0 - 2023-07-17
 
 ### What's Changed
