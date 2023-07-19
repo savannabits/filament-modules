@@ -41,6 +41,9 @@ abstract class ContextServiceProvider extends PluginServiceProvider
                 Filament::registerPages($this->getPages());
                 Filament::registerResources($this->getResources());
                 Filament::registerWidgets($this->getWidgets());
+                if ($theme = config('filament-modules.theme')) {
+                    Filament::registerViteTheme($theme);
+                }
             });
         });
     }
