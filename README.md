@@ -66,7 +66,7 @@ Be sure to remove this Service Provider in case you delete the context.
 
 ## Adding Pages/Resources/Widgets/RelationManagers to Module Context
 
-You may now add filament resources in your FilamentTeams directories. 
+You may now add filament resources or pages to your newly generated contexts. 
 ```bash
 #Generating Resources:
 ## Default Context if not passed: Filament
@@ -85,13 +85,41 @@ php artisan module:make-filament-relation-manager {resource?} {relationship?} {r
 php artisan module:make-filament-widget {module?} {name?} {--R|resource=} {--C|chart} {--T|table} {--S|stats-overview} {--F|force}
 
 ```
+### Examples:
+```bash
+php artisan module:make-filament-resource Author Filament Bookstore #Will generate AuthorResource in the Filament Context in the Bookstore module
+```
+```bash
+php artisan module:make-filament-resource Book Admin Bookstore #Will generate BookResource in the Admin Context inside the Bookstore module
+```
+```bash
+php artisan module:use Bookstore
+php artisan module:make-filament-resource Book Admin #Will generate BookResource in the Admin Context inside the Bookstore module
+```
+```bash
+php artisan module:use Bookstore
+php artisan module:make-filament-resource Book #Will generate BookResource in the Filament Context (Used by default) inside the Bookstore module
+```
+```bash
+php artisan module:use Bookstore
+php artisan module:make-filament-page ManageStoreSettings # Will generate the ManageStoreSettings page in the Filament context (default) inside the Bookstore module
+php artisan module:make-filament-page ManageStoreSettings Settings # Will generate the ManageStoreSettings page in the Settings context inside the Bookstore module
+php artisan module:make-filament-page MyProfile Filament Auth # Will generate the MyProfile page in the Filament context inside the Auth module
+```
+```bash
+php artisan module:make-filament-relation-manager AuthorResource books title Filament Bookstore # Assuming Author model has a books relationship, this will generate a BooksRelationManager using title as the main column inside the AuthorResource in the Filament Context in the Bookstore Module
+```
+```bash
+php artisan module:use Bookstore
+php artisan module:make-filament-relation-manager # Will interactively ask questions then generate the relation manager according to the answers in the bookstore module.
+```
+![img4.png](img4.png)
 
-### ContextualPage & ContextualResource traits (DEPRECATED)
+### ContextualPage & ContextualResource traits
 
-__NB__: In the latest update you don't need to include these traits since the routing has been modified to be 
-specific to a module and a context using the slug.
-
-Pages (DEPRECATED):
+In order to ensure proper routing for generated resources and pages, they use a `ContextualResource` and `ContextualPage` trait respectively.
+These traits are automatically appended to newly generated resources and pages. However, just in case you are moving an existing resource or page to your module,
+be sure to apply these contextual traits.
 
 ```php
 namespace YourNamespace\Resources;
@@ -105,7 +133,7 @@ class Dashboard extends Page
 }
 ```
 
-Resources (DEPRECATED):
+Resources:
 
 ```php
 namespace YourNamespace\Resources;
