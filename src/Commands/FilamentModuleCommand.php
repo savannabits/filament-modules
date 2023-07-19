@@ -156,8 +156,8 @@ class FilamentModuleCommand extends Command
 
         $middlewareNs = $moduleNs->append('\\Http\\\Middleware');
         $this->copyStubToApp('ContextMiddleware', $middlewarePath, [
-            'class' => (string)$middlewareClass,
-            'context' => (string)$contextName,
+            'class' => (string) $middlewareClass,
+            'context' => (string) $contextName,
             'Module' => $this->module->getStudlyName(),
             'module' => $this->module->getLowerName(),
             'module_' => $this->module->getSnakeName(),
