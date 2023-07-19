@@ -135,6 +135,7 @@ class FilamentModules
     public static function hasAuthorizedAccess(string $context)
     {
         $module = Str::of($context)->before('-')->lower();
+
         return Filament::auth()->check() && Filament::auth()->user()->can('module_'.$module);
     }
 
