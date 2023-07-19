@@ -2,6 +2,14 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v1.3.3 - 2023-07-19
+
+### What's Changed
+
+- Optionally configure your own theme (css) to be registered for each context in filament-modules config file by @coolsam726 in https://github.com/savannabits/filament-modules/pull/32
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.3.2...v1.3.3
+
 ## v1.3.2 - 2023-07-19
 
 ### What's Changed
