@@ -2,20 +2,14 @@
 
 namespace Savannabits\FilamentModules;
 
-use BezhanSalleh\FilamentShield\Commands\MakeShieldGenerateCommand;
-use BezhanSalleh\FilamentShield\FilamentShield;
-use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\PluginServiceProvider;
-use Illuminate\Support\Str;
 use Livewire\Livewire;
-use Nwidart\Modules\Module;
 use Savannabits\FilamentModules\Commands\FilamentGuardCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleMakePageCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleMakeRelationManagerCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleMakeResourceCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleMakeWidgetCommand;
-use Savannabits\FilamentModules\Commands\ModuleShieldGenerateCommand;
 use Savannabits\FilamentModules\Commands\ShieldGenerateCommand;
 use Savannabits\FilamentModules\Http\Middleware\ApplyContext;
 use Spatie\LaravelPackageTools\Package;

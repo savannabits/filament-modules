@@ -11,7 +11,7 @@ trait ContextualPage
     {
         $slug = static::getSlug();
 
-        return Filament::currentContext() . ".pages.{$slug}";
+        return Filament::currentContext().".pages.{$slug}";
     }
 
     public static function getModuleName()
@@ -26,6 +26,6 @@ trait ContextualPage
 
     public static function bootContextualPage()
     {
-        abort_if(!static::hasAccess(), 403, "You don't have access to the " . static::getModuleName() . " module.");
+        abort_if(! static::hasAccess(), 403, "You don't have access to the ".static::getModuleName().' module.');
     }
 }

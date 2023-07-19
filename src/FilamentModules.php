@@ -114,7 +114,8 @@ class FilamentModules
     public static function getModuleContexts(string $module): Collection
     {
         $prefix = Str::of($module)->lower()->append('-')->toString();
-        return collect(Filament::getContexts())->keys()->filter(fn($item) => Str::of($item)->contains("$prefix"));
+
+        return collect(Filament::getContexts())->keys()->filter(fn ($item) => Str::of($item)->contains("$prefix"));
     }
 
     public static function registerFilamentNavigationItem($module, $context): void
@@ -123,10 +124,10 @@ class FilamentModules
         $moduleContexts = static::getModuleContexts($module);
         $module_lower = \Module::findOrFail($module)->getLowerName();
         $can = Filament::auth()->check() && Filament::auth()->user()->can("module_{$module_lower}");
-        $navItem = NavigationItem::make($context)->visible($can)->url(route($context . '.pages.dashboard'))->icon('heroicon-o-bookmark');
+        $navItem = NavigationItem::make($context)->visible($can)->url(route($context.'.pages.dashboard'))->icon('heroicon-o-bookmark');
         if ($can) {
             Filament::registerNavigationItems([
-                $moduleContexts->count() === 1 ? $navItem->label("$module Module") : $navItem->label("$panel Panel")->group("$module Module")
+                $moduleContexts->count() === 1 ? $navItem->label("$module Module") : $navItem->label("$panel Panel")->group("$module Module"),
             ]);
         }
     }
@@ -134,13 +135,14 @@ class FilamentModules
     public static function hasAuthorizedAccess(string $context)
     {
         $module = Str::of($context)->before('-')->lower();
-        return Filament::auth()->check() && Filament::auth()->user()->can('module_' . $module);
+
+        return Filament::auth()->check() && Filament::auth()->user()->can('module_'.$module);
     }
 
     public static function renderContextNavigation($module, $context): void
     {
-        Filament::registerRenderHook('sidebar.start', fn(): string => Blade::render('<div class="p-2 px-6 bg-primary-100 font-black w-full">' . "$module Module</div>"));
-        Filament::registerRenderHook('sidebar.end', fn(): string => Blade::render('<a class="p-2 px-6 bg-primary-100 font-black w-full inline-flex space-x-2" href="' . route('filament.pages.dashboard') . '"><x-heroicon-o-arrow-left class="w-5"/> Main Module</a>'));
+        Filament::registerRenderHook('sidebar.start', fn (): string => Blade::render('<div class="p-2 px-6 bg-primary-100 font-black w-full">'."$module Module</div>"));
+        Filament::registerRenderHook('sidebar.end', fn (): string => Blade::render('<a class="p-2 px-6 bg-primary-100 font-black w-full inline-flex space-x-2" href="'.route('filament.pages.dashboard').'"><x-heroicon-o-arrow-left class="w-5"/> Main Module</a>'));
     }
 
     public function prepareDefaultNavigation($module, $context): void
@@ -154,5 +156,4 @@ class FilamentModules
             });
         });
     }
-
 }
