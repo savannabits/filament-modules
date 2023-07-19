@@ -2,10 +2,13 @@
 
 namespace Savannabits\FilamentModules;
 
+use Blade;
 use Filament\Facades\Filament;
 use Filament\FilamentManager;
 use Filament\Navigation\NavigationItem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\ForwardsCalls;
+use Str;
 
 class FilamentModules
 {
@@ -108,18 +111,27 @@ class FilamentModules
         return $response;
     }
 
+    public static function getModuleContexts(string $module): Collection
+    {
+        $prefix = Str::of($module)->lower()->append('-')->toString();
+
+        return collect(Filament::getContexts())->keys()->filter(fn ($item) => Str::of($item)->contains("$prefix"));
+    }
+
     public static function registerFilamentNavigationItem($module, $context): void
     {
-        $panel = \Str::of($context)->after('-')->replace('filament', 'default')->slug()->replace('-', ' ')->title()->title();
+        $panel = Str::of($context)->after('-')->replace('filament', 'default')->slug()->replace('-', ' ')->title()->title();
+        $moduleContexts = static::getModuleContexts($module);
+        $navItem = NavigationItem::make($context)->url(route($context.'.pages.dashboard'))->icon('heroicon-o-bookmark');
         Filament::registerNavigationItems([
-            NavigationItem::make($context)->label("$panel Panel")->url(route($context.'.pages.dashboard'))->icon('heroicon-o-bookmark')->group("$module Module"),
+            $moduleContexts->count() === 1 ? $navItem->label("$module Module") : $navItem->label("$panel Panel")->group("$module Module"),
         ]);
     }
 
     public static function renderContextNavigation($module, $context): void
     {
-        Filament::registerRenderHook('sidebar.start', fn (): string => \Blade::render('<div class="p-2 px-6 bg-primary-100 font-black w-full">'."$module Module</div>"));
-        Filament::registerRenderHook('sidebar.end', fn (): string => \Blade::render('<a class="p-2 px-6 bg-primary-100 font-black w-full inline-flex space-x-2" href="'.route('filament.pages.dashboard').'"><x-heroicon-o-arrow-left class="w-5"/> Main Panel</a>'));
+        Filament::registerRenderHook('sidebar.start', fn (): string => Blade::render('<div class="p-2 px-6 bg-primary-100 font-black w-full">'."$module Module</div>"));
+        Filament::registerRenderHook('sidebar.end', fn (): string => Blade::render('<a class="p-2 px-6 bg-primary-100 font-black w-full inline-flex space-x-2" href="'.route('filament.pages.dashboard').'"><x-heroicon-o-arrow-left class="w-5"/> Main Module</a>'));
     }
 
     public function prepareDefaultNavigation($module, $context): void
