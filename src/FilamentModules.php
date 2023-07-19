@@ -110,26 +110,27 @@ class FilamentModules
 
     public static function registerFilamentNavigationItem($module, $context): void
     {
-        $panel = \Str::of($context)->after('-')->replace('filament','default')->slug()->replace('-', ' ')->title()->title();
+        $panel = \Str::of($context)->after('-')->replace('filament', 'default')->slug()->replace('-', ' ')->title()->title();
         Filament::registerNavigationItems([
-            NavigationItem::make($context)->label("$panel Panel")->url(route($context.'.pages.dashboard'))->icon('heroicon-o-bookmark')->group("$module Module")
+            NavigationItem::make($context)->label("$panel Panel")->url(route($context.'.pages.dashboard'))->icon('heroicon-o-bookmark')->group("$module Module"),
         ]);
     }
+
     public static function renderContextNavigation($module, $context): void
     {
-        Filament::registerRenderHook('sidebar.start',fn():string => \Blade::render('<div class="p-2 px-6 bg-primary-100 font-black w-full">'."$module Module</div>"));
-        Filament::registerRenderHook('sidebar.end',fn():string => \Blade::render('<a class="p-2 px-6 bg-primary-100 font-black w-full inline-flex space-x-2" href="'.route('filament.pages.dashboard').'"><x-heroicon-o-arrow-left class="w-5"/> Main Panel</a>'));
+        Filament::registerRenderHook('sidebar.start', fn (): string => \Blade::render('<div class="p-2 px-6 bg-primary-100 font-black w-full">'."$module Module</div>"));
+        Filament::registerRenderHook('sidebar.end', fn (): string => \Blade::render('<a class="p-2 px-6 bg-primary-100 font-black w-full inline-flex space-x-2" href="'.route('filament.pages.dashboard').'"><x-heroicon-o-arrow-left class="w-5"/> Main Panel</a>'));
     }
+
     public function prepareDefaultNavigation($module, $context): void
     {
-        Filament::serving(function () use($module, $context) {
-            Filament::forContext('filament', function () use($module, $context) {
-                app(FilamentModules::class)::registerFilamentNavigationItem($module,$context);
+        Filament::serving(function () use ($module, $context) {
+            Filament::forContext('filament', function () use ($module, $context) {
+                app(FilamentModules::class)::registerFilamentNavigationItem($module, $context);
             });
             Filament::forContext($context, function () use ($module, $context) {
                 app(FilamentModules::class)::renderContextNavigation($module, $context);
             });
         });
     }
-
 }
