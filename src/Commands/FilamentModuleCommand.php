@@ -158,7 +158,10 @@ class FilamentModuleCommand extends Command
         $this->copyStubToApp('ContextMiddleware', $middlewarePath, [
             'class' => (string)$middlewareClass,
             'context' => (string)$contextName,
-            'module' => $this->module->getStudlyName(),
+            'Module' => $this->module->getStudlyName(),
+            'module' => $this->module->getLowerName(),
+            'module_' => $this->module->getSnakeName(),
+            'module-' => Str::slug($this->module->getName()),
             'namespace' => $middlewareNs->replace('\\\\', '\\')->toString(),
         ]);
 
