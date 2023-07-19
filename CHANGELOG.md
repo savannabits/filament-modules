@@ -2,6 +2,14 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v1.3.2 - 2023-07-19
+
+### What's Changed
+
+- Enhancement: If a module has only one context panel, render it directly on the main admin's navigation instead of nesting it in a group by @coolsam726 in https://github.com/savannabits/filament-modules/pull/31
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.3.1...v1.3.2
+
 ## v1.3.1 - 2023-07-19
 
 ### What's Changed
