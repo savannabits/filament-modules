@@ -34,9 +34,8 @@ abstract class ContextServiceProvider extends PluginServiceProvider
             $this->registerComponents();
         });
 
-        $this->app->resolving('filament', function () {
+        $this->app->beforeResolving('modules', function () {
             Filament::addContext(static::$name);
-
             Filament::forContext(static::$name, function () {
                 Filament::registerPages($this->getPages());
                 Filament::registerResources($this->getResources());
