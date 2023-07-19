@@ -2,14 +2,21 @@
 
 namespace Savannabits\FilamentModules;
 
+use BezhanSalleh\FilamentShield\Commands\MakeShieldGenerateCommand;
+use BezhanSalleh\FilamentShield\FilamentShield;
+use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\PluginServiceProvider;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Nwidart\Modules\Module;
 use Savannabits\FilamentModules\Commands\FilamentGuardCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleMakePageCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleMakeRelationManagerCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleMakeResourceCommand;
 use Savannabits\FilamentModules\Commands\FilamentModuleMakeWidgetCommand;
+use Savannabits\FilamentModules\Commands\ModuleShieldGenerateCommand;
+use Savannabits\FilamentModules\Commands\ShieldGenerateCommand;
 use Savannabits\FilamentModules\Http\Middleware\ApplyContext;
 use Spatie\LaravelPackageTools\Package;
 
@@ -52,6 +59,7 @@ class FilamentModulesServiceProvider extends PluginServiceProvider
                 FilamentModuleMakeRelationManagerCommand::class,
                 FilamentModuleMakeResourceCommand::class,
                 FilamentModuleMakeWidgetCommand::class,
+                ShieldGenerateCommand::class,
             ]);
     }
 
@@ -60,10 +68,17 @@ class FilamentModulesServiceProvider extends PluginServiceProvider
         $this->app->extend('filament', function ($service, $app) {
             return new FilamentModules($service);
         });
+        if ($this->app->has('filament-shield')) {
+            $this->app->extend('filament-shield', function ($service, $app) {
+                return new \Savannabits\FilamentModules\Extensions\FilamentShield();
+            });
+        }
+
     }
 
     public function packageBooted(): void
     {
+        parent::packageBooted();
         Livewire::addPersistentMiddleware([
             ApplyContext::class,
         ]);
