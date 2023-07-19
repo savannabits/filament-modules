@@ -14,7 +14,7 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
     {
         $resources = static::getAllFilamentResources();
 
-        $return =  $resources
+        $return = $resources
             ->unique()
             ->filter(function ($resource) {
                 if (Utils::isGeneralExcludeEnabled()) {
@@ -39,8 +39,10 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
             }, collect())
             ->sortKeys()
             ->toArray();
+
         return $return;
     }
+
     public static function getLocalizedResourceLabel(string $entity): string
     {
         $label = static::getAllFilamentResources()->filter(function ($resource) use ($entity) {
@@ -49,14 +51,19 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
 
         return Str::of($label)->headline();
     }
+
     public static function isModule(string $page): bool
     {
         return Str::of($page)->startsWith('module_');
     }
+
     public static function getAssociatedModule(string $page): ?\Nwidart\Modules\Module
     {
-        if (!static::isModule($page)) return null;
+        if (! static::isModule($page)) {
+            return null;
+        }
         $name = Str::of($page)->after('module_')->lower();
+
         return Module::find($name);
     }
 
@@ -73,10 +80,11 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
 
         return invade(new $object())->getNavigationLabel();
     }
+
     protected function getDefaultPermissionIdentifier(string $resource): string
     {
         return Str::of($resource)
-            ->replace('Resources\\','')
+            ->replace('Resources\\', '')
             ->before('Resource')
             ->replace('\\', '')
             ->snake()
@@ -92,8 +100,10 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
                 $resources = $resources->merge(collect(Filament::getResources()));
             });
         }
+
         return $resources;
     }
+
     protected static function getAllFilamentPages(): Collection
     {
         $items = collect();
@@ -103,8 +113,10 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
                 $items = $items->merge(collect(Filament::getPages()));
             });
         }
+
         return $items;
     }
+
     protected static function getAllFilamentWidgets(): Collection
     {
         $items = collect();
@@ -114,9 +126,9 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
                 $items = $items->merge(collect(Filament::getWidgets()));
             });
         }
+
         return $items;
     }
-
 
     public static function getPages(): ?array
     {
@@ -137,8 +149,9 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
 
                 return $pages;
             }, collect())
-            ->merge(collect(Module::all())->map(fn($module) => Str::of($module->getLowerName())->prepend('module_')->toString())->keyBy(fn($item) => $item))
+            ->merge(collect(Module::all())->map(fn ($module) => Str::of($module->getLowerName())->prepend('module_')->toString())->keyBy(fn ($item) => $item))
             ->toArray();
+
         return $return;
     }
 
@@ -189,5 +202,4 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
         // Additionally, generate for each module:
         static::giveSuperAdminPermission($permission);
     }
-
 }

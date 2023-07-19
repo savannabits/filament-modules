@@ -18,8 +18,10 @@ class ShieldGenerateCommand extends MakeShieldGenerateCommand
                 ['guard_name' => Utils::getFilamentAuthGuard()]
             )->name;
         });
+
         return parent::generateForPages($pages);
     }
+
     protected function generatePolicyPath(array $entity): string
     {
         $path = (new \ReflectionClass($entity['fqcn']::getModel()))->getFileName();
@@ -41,6 +43,7 @@ class ShieldGenerateCommand extends MakeShieldGenerateCommand
             ->replaceLast('.php', 'Policy.php')
             ->replace('\\', DIRECTORY_SEPARATOR);
     }
+
     protected function generatePolicyStubVariables(array $entity): array
     {
         $stubVariables = collect(Utils::getResourcePermissionPrefixes($entity['fqcn']))
@@ -62,8 +65,7 @@ class ShieldGenerateCommand extends MakeShieldGenerateCommand
             ? 'App\Policies'
             : Str::of($namespace)
                 ->replace('Models', 'Policies')
-                ->replace('Entities', 'Policies')
-        ; /** @phpstan-ignore-line */
+                ->replace('Entities', 'Policies'); /** @phpstan-ignore-line */
         $stubVariables['model_name'] = $entity['model'];
         $stubVariables['model_fqcn'] = $namespace.'\\'.$entity['model'];
         $stubVariables['model_variable'] = Str::of($entity['model'])->camel();

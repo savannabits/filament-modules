@@ -22,7 +22,7 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
     {
         $context = Str::of($this->argument('context') ?? 'Filament')->studly()->toString();
         $module = $this->argument('module') ?: app('modules')->getUsedNow();
-        if (!$module) {
+        if (! $module) {
             $module = (string) Str::of($this->askRequired('Module Name (e.g. `Sales`)', 'module'));
         }
         $this->module = app('modules')->findOrFail($this->getModuleName());
@@ -46,7 +46,7 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
         $modelClass = (string) Str::of($model)->afterLast('\\');
         $modelNamespace = Str::of($model)->contains('\\') ?
             (string) Str::of($model)->beforeLast('\\') :
-            $this->getModuleNamespace()."\\Entities";
+            $this->getModuleNamespace().'\\Entities';
         $pluralModelClass = (string) Str::of($modelClass)->pluralStudly();
 
         $resource = "{$modelClass}Resource";
@@ -231,7 +231,7 @@ class FilamentModuleMakeResourceCommand extends MakeResourceCommand
                 'resourcePageClass' => $editResourcePageClass,
             ]);
         }
-        $resourceManagersDir = Str::of($resourceNamespace)->replace('\\','/')->rtrim('/')->append('/RelationManagers');
+        $resourceManagersDir = Str::of($resourceNamespace)->replace('\\', '/')->rtrim('/')->append('/RelationManagers');
         $this->ensureSubdirectoryExists($resourceManagersDir);
 
         $this->info("Successfully created {$resource}!");

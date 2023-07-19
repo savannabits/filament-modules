@@ -13,13 +13,19 @@ trait ContextualResource
 
         return Filament::currentContext().".resources.{$slug}";
     }
-    public static function getModuleName() {
+
+    public static function getModuleName()
+    {
         return \Str::of(Filament::currentContext())->before('-')->studly();
     }
-    public static function hasAccess() {
+
+    public static function hasAccess()
+    {
         return FilamentModules::hasAuthorizedAccess(Filament::currentContext());
     }
-    public static function bootContextualResource() {
-        abort_if(!static::hasAccess(),403,"You don't have access to the ".static::getModuleName()." module.");
+
+    public static function bootContextualResource()
+    {
+        abort_if(! static::hasAccess(), 403, "You don't have access to the ".static::getModuleName().' module.');
     }
 }
