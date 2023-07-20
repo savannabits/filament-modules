@@ -114,7 +114,8 @@ class FilamentModules
     public static function getModuleContexts(string $module): Collection
     {
         $prefix = Str::of($module)->lower()->append('-')->toString();
-        return collect(Filament::getContexts())->keys()->filter(fn($item) => Str::of($item)->contains("$prefix"));
+
+        return collect(Filament::getContexts())->keys()->filter(fn ($item) => Str::of($item)->contains("$prefix"));
     }
 
     public static function registerFilamentNavigationItem($module, $context): void
@@ -133,7 +134,7 @@ class FilamentModules
 
     public static function hasAuthorizedAccess(string $context)
     {
-        if (!app()->has('filament-shield')) {
+        if (! app()->has('filament-shield')) {
             return true;
         }
         $module = Str::of($context)->before('-')->lower();
