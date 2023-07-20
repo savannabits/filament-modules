@@ -44,17 +44,20 @@ class FilamentModulesServiceProvider extends PluginServiceProvider
 
     public function configurePackage(Package $package): void
     {
+        $commands = [
+            FilamentModuleCommand::class,
+            FilamentGuardCommand::class,
+            FilamentModuleMakePageCommand::class,
+            FilamentModuleMakeRelationManagerCommand::class,
+            FilamentModuleMakeResourceCommand::class,
+            FilamentModuleMakeWidgetCommand::class,
+        ];
+        if ($this->app->has('filament-shield')) {
+            $commands[] = ShieldGenerateCommand::class;
+        }
         $package->name(static::$name)
             ->hasConfigFile()
-            ->hasCommands([
-                FilamentModuleCommand::class,
-                FilamentGuardCommand::class,
-                FilamentModuleMakePageCommand::class,
-                FilamentModuleMakeRelationManagerCommand::class,
-                FilamentModuleMakeResourceCommand::class,
-                FilamentModuleMakeWidgetCommand::class,
-                ShieldGenerateCommand::class,
-            ]);
+            ->hasCommands($commands);
     }
 
     public function packageRegistered(): void
