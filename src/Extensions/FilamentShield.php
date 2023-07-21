@@ -81,7 +81,7 @@ class FilamentShield extends \BezhanSalleh\FilamentShield\FilamentShield
         return invade(new $object())->getNavigationLabel();
     }
 
-    protected function getDefaultPermissionIdentifier(string $resource): string
+    public function getDefaultPermissionIdentifier(string $resource): string
     {
         return Str::of($resource)
             ->replace('Resources\\', '')
