@@ -146,6 +146,21 @@ class UserResource extends Resource
     use ContextualResource;
 }
 ```
+## Access, Roles and Permissions
+For Access Control, this package is designed to work hand in hand with
+**[Shield (Roles & Permissions)](https://github.com/bezhanSalleh/filament-shield)** by [Bezhan Salleh](https://github.com/bezhanSalleh), which is a wrapper around
+**[spatie/laravel-permission](https://github.com/spatie/laravel-permission)**.
+
+If you don't have the two packages above installed, then Modules will ignore access control and by default allow access to anyone logged in.
+
+With Shield, the package adds two more functionalities:
+1. Generates permissions to allow access to the module. These are prefixed with `module_`. For example, if a user doesn't have the permission `module_Blog` then they won't be able to access any contexts under the `Blog` module.
+   ![img_6.png](img_6.png)
+2. Enables shield to scan for resources and pages registered under the contexts in `Modules` in addition to the default Filament installation and generate permissions for them. If the policies generation option is enabled, the Policy classes are also generated under `Modules\ModuleName\Policies\`.
+   ![img_5.png](img_5.png)
+
+### WIP
+Currently, the permissions for all pages in the various modules are named as page_{BaseClassName}. This brings challenges in case there are pages named similarly but in different contexts. The plan is to override the naming as is in `Shield` so that it can also capture the full path of the page class.
 
 ## Testing
 
