@@ -134,7 +134,7 @@ class FilamentModules
 
     public static function hasAuthorizedAccess(string $context)
     {
-        if (! app()->has('filament-shield')) {
+        if (! (app()->has('filament-shield') && \DB::table(config('permission.table_names.permissions'))->exists())) {
             return true;
         }
         $module = Str::of($context)->before('-')->lower();

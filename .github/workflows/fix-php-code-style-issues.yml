@@ -1,10 +1,8 @@
 name: Fix PHP code style issues
 
 on:
-  push:
-    branches: [ main ]
-  pull_request_target:
-    branches: [ main ]
+  pull_request:
+    branches: [ develop ]
 
 jobs:
   php-code-styling:
