@@ -2,6 +2,22 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v2.0.0 - 2023-07-21
+
+### What's Changed
+
+- Support for Filament Shield and Module Permissions by @coolsam726 in https://github.com/savannabits/filament-modules/pull/33
+- Bug Fix: Check for Filament login before checking permissions by @coolsam726 in https://github.com/savannabits/filament-modules/pull/34
+- Bug Fixes: Enforce Permissions check only if filament-shield is installed: by @coolsam726 in https://github.com/savannabits/filament-modules/pull/36
+- Final Documentation Review for v2.0.0 release: by @coolsam726 in https://github.com/savannabits/filament-modules/pull/37
+
+### Breaking Changes
+
+- `module:make-filament-context` command has been renamed to `module:make-filament`
+- The generation commands have changed their signatures to allow segregation of the context in which they are generated. Refer to docs for the new generation format.
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v1.3.3...v2.0.0
+
 ## v1.3.3 - 2023-07-19
 
 ### What's Changed
