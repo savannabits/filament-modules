@@ -2,6 +2,14 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v2.0.1 - 2023-07-21
+
+### What's Changed
+
+- Filament Shield Extension Enhancement: by @coolsam726 in https://github.com/savannabits/filament-modules/pull/38
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v2.0.0...v2.0.1
+
 ## v2.0.0 - 2023-07-21
 
 ### What's Changed
