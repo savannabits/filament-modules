@@ -2,15 +2,15 @@
 
 namespace {{ namespace }};
 
-use {{ resourceNamespace }};
-use Filament\Pages\Actions;
+use {{ resource }};
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class {{ resourcePageClass }} extends ListRecords
 {
     protected static string $resource = {{ resourceClass }}::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

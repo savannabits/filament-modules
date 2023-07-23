@@ -2,26 +2,22 @@
 
 namespace {{ namespace }};
 
-use {{ resourceNamespace }}\Pages;
-use {{ resourceNamespace }}\RelationManagers;
-use {{ modelNamespace }}\{{ model }};
+use {{ resource }}\Pages;
+use {{ resource }}\RelationManagers;
+use App\Models\{{ model }};
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Savannabits\FilamentModules\Concerns\ContextualResource;
 
 class {{ resourceClass }} extends Resource
 {
-    use ContextualResource;
-
     protected static ?string $model = {{ modelClass }}::class;
-    protected static ?string $slug = '{{ resourceSlug }}';
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-m-rectangle-stack';
 
     public static function form(Form $form): Form
     {
@@ -44,7 +40,9 @@ class {{ resourceClass }} extends Resource
 {{ tableActions }}
             ])
             ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
 {{ tableBulkActions }}
+                ]),
             ]);
     }
 {{ relations }}

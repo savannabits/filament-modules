@@ -1,5 +1,5 @@
 <?php
 
-use Savannabits\FilamentModules\Tests\TestCase;
+use Coolsam\Modules\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

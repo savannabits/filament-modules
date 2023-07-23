@@ -1,6 +1,6 @@
 <?php
 
-namespace Savannabits\FilamentModules\Database\Factories;
+namespace Coolsam\Modules\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

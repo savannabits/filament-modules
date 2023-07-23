@@ -2,8 +2,8 @@
 
 namespace {{ namespace }};
 
-use {{ resourceNamespace }};
-use Filament\Pages\Actions;
+use {{ resource }};
+use Filament\Actions;
 use {{ baseResourcePage }};
 
 class {{ resourcePageClass }} extends {{ baseResourcePageClass }}

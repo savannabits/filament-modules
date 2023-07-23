@@ -1,12 +1,10 @@
 <?php
 
-namespace Savannabits\FilamentModules\Tests;
+namespace Coolsam\Modules\Tests;
 
-use Filament\FilamentServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Savannabits\FilamentModules\FilamentModulesServiceProvider;
+use Coolsam\Modules\ModulesServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -15,16 +13,14 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Savannabits\\FilamentModules\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Coolsam\\Modules\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            LivewireServiceProvider::class,
-            FilamentServiceProvider::class,
-            FilamentModulesServiceProvider::class,
+            ModulesServiceProvider::class,
         ];
     }
 
@@ -33,7 +29,7 @@ class TestCase extends Orchestra
         config()->set('database.default', 'testing');
 
         /*
-        $migration = include __DIR__.'/../database/migrations/create_filament-modules_table.php.stub';
+        $migration = include __DIR__.'/../database/migrations/create_modules_table.php.stub';
         $migration->up();
         */
     }

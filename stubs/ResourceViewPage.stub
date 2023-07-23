@@ -2,15 +2,15 @@
 
 namespace {{ namespace }};
 
-use {{ resourceNamespace }};
-use Filament\Pages\Actions;
+use {{ resource }};
+use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 
 class {{ resourcePageClass }} extends ViewRecord
 {
     protected static string $resource = {{ resourceClass }}::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\EditAction::make(),
