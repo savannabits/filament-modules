@@ -3,9 +3,7 @@
 namespace Coolsam\FilamentModules;
 
 use Filament\Contracts\Plugin;
-use Filament\Facades\Filament;
 use Filament\Panel;
-use Illuminate\Support\HtmlString;
 
 class Modules implements Plugin
 {
