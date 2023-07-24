@@ -1,9 +1,10 @@
 <p align="center">
-    <a href="https://github.com/savannabits/filament-modules/actions?query=workflow%3Arun-tests+branch%3A3.x"><img alt="Tests passing" src="https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/run-tests.yml?branch=3.x&label=tests&style=for-the-badge&logo=github"></a>
+    <a href="https://github.com/savannabits/filament-modules/actions?query=workflow%3Arun-tests+branch%3A3.x"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/run-tests.yml?branch=3.x&label=tests&style=for-the-badge&logo=github"></a>
+    <a href="https://github.com/savannabits/filament-modules/actions?query=workflow%fix-php-code-style-issues+branch%3A3.x"><img alt="Styling" src="https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/fix-php-code-style-issues.yml?branch=3.x&label=code%20style&style=for-the-badge&logo=github"></a>
     <a href="https://laravel.com"><img alt="Laravel v9.x" src="https://img.shields.io/badge/Laravel-v9.x-FF2D20?style=for-the-badge&logo=laravel"></a>
     <a href="https://beta.filamentphp.com"><img alt="Filament v3.x" src="https://img.shields.io/badge/FilamentPHP-v3.x-FB70A9?style=for-the-badge&logo=filament"></a>
     <a href="https://php.net"><img alt="PHP 8.1" src="https://img.shields.io/badge/PHP-8.1-777BB4?style=for-the-badge&logo=php"></a>
-    <a href="https://packagist.org/packages/coolsam/modules"><img alt="Packagist" src="https://img.shields.io/packagist/dt/coolsam/modules.svg?style=for-the-badge&logo=download"></a>
+    <a href="https://packagist.org/packages/coolsam/modules"><img alt="Packagist" src="https://img.shields.io/packagist/dt/coolsam/modules.svg?style=for-the-badge&logo=home"></a>
 </p>
 
 Modules is a FilamentPHP Plugin to enable easy integration with `nwidart/laravel-modules`
