@@ -1,6 +1,6 @@
 <?php
 
-namespace Coolsam\Modules;
+namespace Coolsam\FilamentModules;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
@@ -13,7 +13,7 @@ class Modules implements Plugin
     }
     public function getId(): string
     {
-        return 'nwidart-modules';
+        return 'modules';
     }
 
     public function register(Panel $panel): void

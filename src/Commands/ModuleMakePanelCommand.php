@@ -1,6 +1,6 @@
 <?php
 
-namespace Coolsam\Modules\Commands;
+namespace Coolsam\FilamentModules\Commands;
 
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Filament\Support\Commands\Concerns\CanValidateInput;

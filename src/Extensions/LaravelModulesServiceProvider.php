@@ -1,7 +1,9 @@
 <?php
 
-namespace Coolsam\Modules\Extensions;
+namespace Coolsam\FilamentModules\Extensions;
 
+use Filament\FilamentServiceProvider;
+use Illuminate\Support\Facades\Log;
 use Nwidart\Modules\LaravelModulesServiceProvider as BaseModulesServiceProvider;
 
 class LaravelModulesServiceProvider extends BaseModulesServiceProvider
@@ -10,6 +12,7 @@ class LaravelModulesServiceProvider extends BaseModulesServiceProvider
     {
         $this->registerPanels();
         parent::register();
+        Log::info("Registered Modules");
     }
     public function registerPanels(): void
     {

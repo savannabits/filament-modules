@@ -1,6 +1,6 @@
 {
-    "name": "coolsam/modules",
-    "description": "Support for nwidart/laravel-modules in filamentphp v3.x",
+    "name": "coolsam/filament-modules",
+    "description": "Support for nwidart/laravel-modules in filamentphp",
     "keywords": [
         "coolsam",
         "laravel",
@@ -28,17 +28,17 @@
         "pestphp/pest-plugin-arch": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
         "spatie/laravel-ray": "^1.26",
-        "filament/filament": "^3.0.0-beta"
+        "filament/filament": "^3.0.0-beta",
+        "nwidart/laravel-modules": "^10.0"
     },
     "autoload": {
         "psr-4": {
-            "Coolsam\\Modules\\": "src/",
-            "Coolsam\\Modules\\Database\\Factories\\": "database/factories/"
+            "Coolsam\\FilamentModules\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Coolsam\\Modules\\Tests\\": "tests/"
+            "Coolsam\\FilamentModules\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -58,10 +58,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Coolsam\\Modules\\ModulesServiceProvider"
+                "Coolsam\\FilamentModules\\ModulesServiceProvider"
             ],
             "aliases": {
-                "Modules": "Coolsam\\Modules\\Facades\\Modules"
+                "Modules": "Coolsam\\FilamentModules\\Facades\\Modules"
             }
         }
     },

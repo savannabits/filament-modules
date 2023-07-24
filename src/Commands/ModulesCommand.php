@@ -1,6 +1,6 @@
 <?php
 
-namespace Coolsam\Modules\Commands;
+namespace Coolsam\FilamentModules\Commands;
 
 use Illuminate\Console\Command;
 
