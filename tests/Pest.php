@@ -1,5 +1,5 @@
 <?php
 
-use Coolsam\Modules\Tests\TestCase;
+use Coolsam\FilamentModules\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

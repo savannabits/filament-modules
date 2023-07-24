@@ -2,11 +2,6 @@
 
 namespace Coolsam\FilamentModules;
 
-use Filament\Facades\Filament;
-use Filament\FilamentManager;
-use Filament\FilamentServiceProvider;
-use Illuminate\Support\Facades\Log;
-use Modules\Auth\Providers\Filament\AdminPanelProvider;
 use Coolsam\FilamentModules\Commands\ModuleMakePanelCommand;
 use Coolsam\FilamentModules\Extensions\LaravelModulesServiceProvider;
 use Spatie\LaravelPackageTools\Package;

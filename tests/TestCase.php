@@ -1,10 +1,10 @@
 <?php
 
-namespace Coolsam\Modules\Tests;
+namespace Coolsam\FilamentModules\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Coolsam\Modules\ModulesServiceProvider;
+use Coolsam\FilamentModules\ModulesServiceProvider;
 
 class TestCase extends Orchestra
 {

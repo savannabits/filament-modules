@@ -6,11 +6,6 @@
     <a href="https://packagist.org/packages/coolsam/modules"><img alt="Packagist" src="https://img.shields.io/packagist/dt/coolsam/modules.svg?style=for-the-badge&logo=download"></a>
 </p>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/coolsam/modules/laravel.yml?branch=main&label=tests&style=flat-square)](https://github.com/coolsam/modules/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/coolsam/modules/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/coolsam/modules/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
-
 Modules is a FilamentPHP Plugin to enable easy integration with `nwidart/laravel-modules`
 
 **NB: These docs are for v3, which only supports Filament 3. If you are using Filament
