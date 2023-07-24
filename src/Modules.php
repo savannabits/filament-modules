@@ -24,6 +24,5 @@ class Modules implements Plugin
 
     public function boot(Panel $panel): void
     {
-        //
     }
 }
