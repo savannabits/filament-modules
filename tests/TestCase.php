@@ -2,9 +2,9 @@
 
 namespace Coolsam\FilamentModules\Tests;
 
+use Coolsam\FilamentModules\ModulesServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Coolsam\FilamentModules\ModulesServiceProvider;
 
 class TestCase extends Orchestra
 {

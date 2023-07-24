@@ -11,6 +11,7 @@ class Modules implements Plugin
     {
         return app(static::class);
     }
+
     public function getId(): string
     {
         return 'modules';
