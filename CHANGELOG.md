@@ -2,6 +2,16 @@
 
 All notable changes to `filament-modules` will be documented in this file.
 
+## v3.0.0-beta.0 - 2023-07-24
+
+Complete Rewrite of the package for Livewire v3 and Filamentphp v3
+
+### What's Changed
+
+- 3.x dev by @coolsam726 in https://github.com/savannabits/filament-modules/pull/39
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v2.0.0-beta...v3.0.0-beta.0
+
 ## v2.0.1 - 2023-07-21
 
 ### What's Changed
