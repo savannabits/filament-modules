@@ -20,7 +20,7 @@ Requirements:
 2. PHP >= 8.1
 3. Laravel >= 9.0
 4. Livewire >= 3.0
-5. lwidart/laravel-modules >=10.0
+5. nwidart/laravel-modules >=10.0
 
 ## Installation
 
