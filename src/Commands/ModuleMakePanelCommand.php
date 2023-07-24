@@ -35,7 +35,7 @@ class ModuleMakePanelCommand extends Command
             } catch (\Throwable $exception) {
                 $usedNow = null;
             }
-            $module = Str::of($this->askRequired('Module Name (e.g. `Sales`)', 'module', $usedNow))->toString();
+            $module = Str::of($this->askRequired('Module Name (e.g. `Sales`)', 'module',$usedNow))->toString();
         }
         $this->module = app('modules')->findOrFail($module);
 
@@ -51,7 +51,7 @@ class ModuleMakePanelCommand extends Command
             ->prepend('\\')
             ->prepend($this->getModuleNamespace());
 
-        $moduleJson = static::readModuleJson($this->getModuleName());
+        $moduleJson = static::readModuleJson($this->module->getName());
 //        $panelPath = Str::of($this->module->getLowerName());
         $panelPath = $id->prepend("/")->prepend($this->module->getLowerName());
 
@@ -75,7 +75,7 @@ class ModuleMakePanelCommand extends Command
         $provider = "$namespace\\$class";
         if (!$providers->contains($provider)) {
             $moduleJson['providers'][] = $provider;
-            static::writeToModuleJson($this->getModuleName(),$moduleJson);
+            static::writeToModuleJson($this->module->getName(),$moduleJson);
         }
         $this->components->info("Successfully created {$class}!");
 
@@ -83,7 +83,7 @@ class ModuleMakePanelCommand extends Command
     }
     public function getModuleNamespace(): string
     {
-        return $this->laravel['modules']->config('namespace').'\\'.$this->getModuleName();
+        return $this->laravel['modules']->config('namespace').'\\'.$this->module->getName();
     }
     public static function readModuleJson(string $moduleName) {
         return json_decode(file_get_contents(module_path($moduleName,'module.json')),true);
