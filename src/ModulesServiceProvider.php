@@ -24,9 +24,11 @@ class ModulesServiceProvider extends PackageServiceProvider
                 ModuleMakePanelCommand::class,
             ]);
     }
+
     public function register()
     {
         $this->app->register(LaravelModulesServiceProvider::class);
+
         return parent::register();
     }
 }
