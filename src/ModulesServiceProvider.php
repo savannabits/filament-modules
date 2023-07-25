@@ -2,7 +2,6 @@
 
 namespace Coolsam\FilamentModules;
 
-use Closure;
 use Coolsam\FilamentModules\Commands\ModuleMakePanelCommand;
 use Coolsam\FilamentModules\Extensions\LaravelModulesServiceProvider;
 use Filament\Facades\Filament;
@@ -40,15 +39,15 @@ class ModulesServiceProvider extends PackageServiceProvider
                     $panel
                         ->renderHook(
                             'sidebar.start',
-                            fn() => new HtmlString("<h2 class='m-2 p-2 font-black text-xl'>$title</h2>"),
+                            fn () => new HtmlString("<h2 class='m-2 p-2 font-black text-xl'>$title</h2>"),
                         )->renderHook(
                             'sidebar.end',
-                            fn() => new HtmlString("<a href='".url("/")."' class='m-2 p-2 block rounded-lg font-bold bg-primary-500/10 text-primary-500'>Go to Home</a>"),
-                        )
-                    ;
+                            fn () => new HtmlString("<a href='".url('/')."' class='m-2 p-2 block rounded-lg font-bold bg-primary-500/10 text-primary-500'>Go to Home</a>"),
+                        );
                 }
             }
         });
+
         return parent::register();
     }
 }
