@@ -1,28 +1,50 @@
 <?php
 
-namespace Coolsam\FilamentModules;
+namespace Coolsam\Modules;
 
-use Filament\Contracts\Plugin;
-use Filament\Panel;
+use Illuminate\Console\Command;
+use Illuminate\Support\Traits\Macroable;
+use Nwidart\Modules\Facades\Module;
+use Symfony\Component\Process\Process;
 
-class Modules implements Plugin
+class Modules
 {
-    public static function make(): static
+    use Macroable;
+
+    public function getModule(string $name): \Nwidart\Modules\Module
     {
-        return app(static::class);
+        return Module::findOrFail($name);
     }
 
-    public function getId(): string
+    public function convertPathToNamespace(string $fullPath): string
     {
-        return 'modules';
+        $base = str(trim(config('modules.paths.modules', base_path('Modules')), '/'));
+        $relative = str(trim(config('modules.namespace', 'Modules'), '\\'))->replace('\\', DIRECTORY_SEPARATOR)->toString();
+
+        return str($fullPath)
+            ->replace($base, $relative)
+            ->replace('.php', '')
+            ->explode(DIRECTORY_SEPARATOR)
+            ->map(fn ($piece) => str($piece)->studly()->toString())
+            ->implode('\\');
     }
 
-    public function register(Panel $panel): void
+    public function execCommand(string $command, ?Command $artisan = null): void
     {
-        //
+        $process = Process::fromShellCommandline($command);
+        $process->start();
+        foreach ($process as $type => $data) {
+            if (! $artisan) {
+                echo $data;
+            } else {
+                $artisan->info(trim($data));
+            }
+        }
     }
 
-    public function boot(Panel $panel): void
+    public function packagePath(string $path = ''): string
     {
+        //return the base path of this package
+        return dirname(__DIR__.'../').($path ? DIRECTORY_SEPARATOR.trim($path, DIRECTORY_SEPARATOR) : '');
     }
 }
