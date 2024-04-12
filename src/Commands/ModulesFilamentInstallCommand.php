@@ -139,8 +139,12 @@ class ModulesFilamentInstallCommand extends Command implements \Illuminate\Contr
         $this->info('Filament Plugin created successfully');
     }
 
-    protected function createDefaultFilamentCluster()
+    protected function createDefaultFilamentCluster(): void
     {
-        // TODO: Implement
+        $module = $this->getModule();
+        $this->call('module:make:filament-cluster', [
+            'name' => $module->getStudlyName(),
+            'module' => $module->getStudlyName(),
+        ]);
     }
 }

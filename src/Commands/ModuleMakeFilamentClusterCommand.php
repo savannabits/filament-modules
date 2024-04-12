@@ -5,7 +5,7 @@ namespace Coolsam\Modules\Commands;
 use Coolsam\Modules\Concerns\GeneratesModularFiles;
 use Illuminate\Console\GeneratorCommand;
 
-class ModulesMakeClusterCommand extends GeneratorCommand
+class ModuleMakeFilamentClusterCommand extends GeneratorCommand
 {
     use GeneratesModularFiles;
 
@@ -13,7 +13,7 @@ class ModulesMakeClusterCommand extends GeneratorCommand
 
     protected $description = 'Create a new Filament cluster class in the module';
 
-    protected $type = 'Cluster';
+    protected $type = 'Filament Cluster';
 
     protected function getRelativeNamespace(): string
     {
@@ -22,7 +22,7 @@ class ModulesMakeClusterCommand extends GeneratorCommand
 
     protected function getStub(): string
     {
-        return $this->resolveStubPath('/stubs/cluster.stub');
+        return $this->resolveStubPath('/stubs/filament-cluster.stub');
     }
 
     protected function stubReplacements(): array

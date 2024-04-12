@@ -109,7 +109,8 @@ class ModulesServiceProvider extends PackageServiceProvider
     {
         return [
             Commands\ModulesFilamentInstallCommand::class,
-            Commands\ModulesMakeClusterCommand::class,
+            Commands\ModuleMakeFilamentClusterCommand::class,
+            Commands\ModuleMakeFilamentPluginCommand::class,
         ];
     }
 
