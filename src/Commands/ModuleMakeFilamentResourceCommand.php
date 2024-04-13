@@ -133,16 +133,16 @@ class ModuleMakeFilamentResourceCommand extends Command
         }
 
         $pages = '';
-        $pages .= '\'index\' => Pages\\'.($this->option('simple') ? $manageResourcePageClass : $listResourcePageClass).'::route(\'/\'),';
+        $pages .= '\'index\' => Pages\\' . ($this->option('simple') ? $manageResourcePageClass : $listResourcePageClass) . '::route(\'/\'),';
 
         if (! $this->option('simple')) {
-            $pages .= PHP_EOL."'create' => Pages\\{$createResourcePageClass}::route('/create'),";
+            $pages .= PHP_EOL . "'create' => Pages\\{$createResourcePageClass}::route('/create'),";
 
             if ($this->option('view')) {
-                $pages .= PHP_EOL."'view' => Pages\\{$viewResourcePageClass}::route('/{record}'),";
+                $pages .= PHP_EOL . "'view' => Pages\\{$viewResourcePageClass}::route('/{record}'),";
             }
 
-            $pages .= PHP_EOL."'edit' => Pages\\{$editResourcePageClass}::route('/{record}/edit'),";
+            $pages .= PHP_EOL . "'edit' => Pages\\{$editResourcePageClass}::route('/{record}/edit'),";
         }
 
         $tableActions = [];
@@ -163,12 +163,12 @@ class ModuleMakeFilamentResourceCommand extends Command
                 $tableActions[] = 'Tables\Actions\RestoreAction::make(),';
             }
         } else {
-            $relations .= PHP_EOL.'public static function getRelations(): array';
-            $relations .= PHP_EOL.'{';
-            $relations .= PHP_EOL.'    return [';
-            $relations .= PHP_EOL.'        //';
-            $relations .= PHP_EOL.'    ];';
-            $relations .= PHP_EOL.'}'.PHP_EOL;
+            $relations .= PHP_EOL . 'public static function getRelations(): array';
+            $relations .= PHP_EOL . '{';
+            $relations .= PHP_EOL . '    return [';
+            $relations .= PHP_EOL . '        //';
+            $relations .= PHP_EOL . '    ];';
+            $relations .= PHP_EOL . '}' . PHP_EOL;
         }
 
         $tableActions = implode(PHP_EOL, $tableActions);
@@ -183,13 +183,13 @@ class ModuleMakeFilamentResourceCommand extends Command
             $tableBulkActions[] = 'Tables\Actions\ForceDeleteBulkAction::make(),';
             $tableBulkActions[] = 'Tables\Actions\RestoreBulkAction::make(),';
 
-            $eloquentQuery .= PHP_EOL.PHP_EOL.'public static function getEloquentQuery(): Builder';
-            $eloquentQuery .= PHP_EOL.'{';
-            $eloquentQuery .= PHP_EOL.'    return parent::getEloquentQuery()';
-            $eloquentQuery .= PHP_EOL.'        ->withoutGlobalScopes([';
-            $eloquentQuery .= PHP_EOL.'            SoftDeletingScope::class,';
-            $eloquentQuery .= PHP_EOL.'        ]);';
-            $eloquentQuery .= PHP_EOL.'}';
+            $eloquentQuery .= PHP_EOL . PHP_EOL . 'public static function getEloquentQuery(): Builder';
+            $eloquentQuery .= PHP_EOL . '{';
+            $eloquentQuery .= PHP_EOL . '    return parent::getEloquentQuery()';
+            $eloquentQuery .= PHP_EOL . '        ->withoutGlobalScopes([';
+            $eloquentQuery .= PHP_EOL . '            SoftDeletingScope::class,';
+            $eloquentQuery .= PHP_EOL . '        ]);';
+            $eloquentQuery .= PHP_EOL . '}';
         }
 
         $tableBulkActions = implode(PHP_EOL, $tableBulkActions);
@@ -202,8 +202,8 @@ class ModuleMakeFilamentResourceCommand extends Command
             class_exists($potentialCluster) &&
             is_subclass_of($potentialCluster, Cluster::class)
         ) {
-            $clusterAssignment = $this->indentString(PHP_EOL.PHP_EOL.'protected static ?string $cluster = '.class_basename($potentialCluster).'::class;');
-            $clusterImport = "use {$potentialCluster};".PHP_EOL;
+            $clusterAssignment = $this->indentString(PHP_EOL . PHP_EOL . 'protected static ?string $cluster = ' . class_basename($potentialCluster) . '::class;');
+            $clusterImport = "use {$potentialCluster};" . PHP_EOL;
         }
 
         $this->copyStubToApp('Resource', $resourcePath, [
@@ -211,7 +211,7 @@ class ModuleMakeFilamentResourceCommand extends Command
             'clusterImport' => $clusterImport,
             'eloquentQuery' => $this->indentString($eloquentQuery, 1),
             'formSchema' => $this->indentString($this->option('generate') ? $this->getResourceFormSchema(
-                $modelNamespace.($modelSubNamespace !== '' ? "\\{$modelSubNamespace}" : '').'\\'.$modelClass,
+                $modelNamespace . ($modelSubNamespace !== '' ? "\\{$modelSubNamespace}" : '') . '\\' . $modelClass,
             ) : '//', 4),
             'model' => ($model === 'Resource') ? "{$modelNamespace}\\Resource as ResourceModel" : "{$modelNamespace}\\{$model}",
             'modelClass' => ($model === 'Resource') ? 'ResourceModel' : $modelClass,
@@ -223,7 +223,7 @@ class ModuleMakeFilamentResourceCommand extends Command
             'tableActions' => $this->indentString($tableActions, 4),
             'tableBulkActions' => $this->indentString($tableBulkActions, 5),
             'tableColumns' => $this->indentString($this->option('generate') ? $this->getResourceTableColumns(
-                $modelNamespace.($modelSubNamespace !== '' ? "\\{$modelSubNamespace}" : '').'\\'.$modelClass,
+                $modelNamespace . ($modelSubNamespace !== '' ? "\\{$modelSubNamespace}" : '') . '\\' . $modelClass,
             ) : '//', 4),
             'tableFilters' => $this->indentString(
                 $this->option('soft-deletes') ? 'Tables\Filters\TrashedFilter::make(),' : '//',
@@ -233,7 +233,7 @@ class ModuleMakeFilamentResourceCommand extends Command
 
         if ($this->option('simple')) {
             $this->copyStubToApp('ResourceManagePage', $manageResourcePagePath, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\ManageRecords'.($needsAlias ? ' as BaseManageRecords' : ''),
+                'baseResourcePage' => 'Filament\\Resources\\Pages\\ManageRecords' . ($needsAlias ? ' as BaseManageRecords' : ''),
                 'baseResourcePageClass' => $needsAlias ? 'BaseManageRecords' : 'ManageRecords',
                 'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
                 'resource' => "{$namespace}\\{$resourceClass}",
@@ -242,7 +242,7 @@ class ModuleMakeFilamentResourceCommand extends Command
             ]);
         } else {
             $this->copyStubToApp('ResourceListPage', $listResourcePagePath, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\ListRecords'.($needsAlias ? ' as BaseListRecords' : ''),
+                'baseResourcePage' => 'Filament\\Resources\\Pages\\ListRecords' . ($needsAlias ? ' as BaseListRecords' : ''),
                 'baseResourcePageClass' => $needsAlias ? 'BaseListRecords' : 'ListRecords',
                 'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
                 'resource' => "{$namespace}\\{$resourceClass}",
@@ -251,7 +251,7 @@ class ModuleMakeFilamentResourceCommand extends Command
             ]);
 
             $this->copyStubToApp('ResourcePage', $createResourcePagePath, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\CreateRecord'.($needsAlias ? ' as BaseCreateRecord' : ''),
+                'baseResourcePage' => 'Filament\\Resources\\Pages\\CreateRecord' . ($needsAlias ? ' as BaseCreateRecord' : ''),
                 'baseResourcePageClass' => $needsAlias ? 'BaseCreateRecord' : 'CreateRecord',
                 'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
                 'resource' => "{$namespace}\\{$resourceClass}",
@@ -263,7 +263,7 @@ class ModuleMakeFilamentResourceCommand extends Command
 
             if ($this->option('view')) {
                 $this->copyStubToApp('ResourceViewPage', $viewResourcePagePath, [
-                    'baseResourcePage' => 'Filament\\Resources\\Pages\\ViewRecord'.($needsAlias ? ' as BaseViewRecord' : ''),
+                    'baseResourcePage' => 'Filament\\Resources\\Pages\\ViewRecord' . ($needsAlias ? ' as BaseViewRecord' : ''),
                     'baseResourcePageClass' => $needsAlias ? 'BaseViewRecord' : 'ViewRecord',
                     'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
                     'resource' => "{$namespace}\\{$resourceClass}",
@@ -284,7 +284,7 @@ class ModuleMakeFilamentResourceCommand extends Command
             $editPageActions = implode(PHP_EOL, $editPageActions);
 
             $this->copyStubToApp('ResourceEditPage', $editResourcePagePath, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\EditRecord'.($needsAlias ? ' as BaseEditRecord' : ''),
+                'baseResourcePage' => 'Filament\\Resources\\Pages\\EditRecord' . ($needsAlias ? ' as BaseEditRecord' : ''),
                 'baseResourcePageClass' => $needsAlias ? 'BaseEditRecord' : 'EditRecord',
                 'actions' => $this->indentString($editPageActions, 3),
                 'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
