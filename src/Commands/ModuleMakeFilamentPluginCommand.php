@@ -29,6 +29,7 @@ class ModuleMakeFilamentPluginCommand extends GeneratorCommand
     {
         return [
             'moduleStudlyName' => $this->getModule()->getStudlyName(),
+            'pluginId' => str($this->argument('name'))->replace('Plugin', '')->studly()->lower()->toString(),
         ];
     }
 }

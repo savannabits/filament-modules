@@ -127,16 +127,13 @@ class ModulesFilamentInstallCommand extends Command implements \Illuminate\Contr
         }
     }
 
-    protected function createDefaultFilamentPlugin()
+    protected function createDefaultFilamentPlugin(): void
     {
-        $plugin = $this->getModule()->appPath('Filament/Plugin.php');
-        if (file_exists($plugin)) {
-            $this->error('Filament Plugin already exists');
-            exit(1);
-        }
-
-        $this->copyStubToApp('filament-plugin', $plugin);
-        $this->info('Filament Plugin created successfully');
+        $module = $this->getModule();
+        $this->call('module:make:filament-plugin', [
+            'name' => $module->getStudlyName().'Plugin',
+            'module' => $module->getStudlyName(),
+        ]);
     }
 
     protected function createDefaultFilamentCluster(): void
