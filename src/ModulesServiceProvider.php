@@ -1,16 +1,24 @@
 <?php
 
-namespace Coolsam\FilamentModules;
+namespace Coolsam\Modules;
 
-use Coolsam\FilamentModules\Commands\ModuleMakePanelCommand;
-use Coolsam\FilamentModules\Extensions\LaravelModulesServiceProvider;
-use Filament\Facades\Filament;
-use Illuminate\Support\HtmlString;
+use Coolsam\Modules\Testing\TestsModules;
+use Filament\Support\Assets\Asset;
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Filesystem\Filesystem;
+use Livewire\Features\SupportTesting\Testable;
+use Nwidart\Modules\Module;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class ModulesServiceProvider extends PackageServiceProvider
 {
+    public static string $name = 'modules';
+
+    public static string $viewNamespace = 'modules';
+
     public function configurePackage(Package $package): void
     {
         /*
@@ -18,44 +26,185 @@ class ModulesServiceProvider extends PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
          */
-        $package
-            ->name('modules')
-            ->hasConfigFile('modules')
-            ->hasViews()
-            ->hasCommands([
-                ModuleMakePanelCommand::class,
-            ]);
+        $package->name(static::$name)
+            ->hasCommands($this->getCommands())
+            ->hasInstallCommand(function (InstallCommand $command) {
+                $command
+                    ->publishConfigFile()
+                    ->endWith(function (InstallCommand $command) {
+                        $command->askToStarRepoOnGitHub('savannabits/filament-modules');
+                    });
+            });
+
+        $configFileName = 'filament-modules';
+
+        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
+            $package->hasConfigFile($configFileName);
+        }
+
+        if (file_exists($package->basePath('/../database/migrations'))) {
+            $package->hasMigrations($this->getMigrations());
+        }
+
+        if (file_exists($package->basePath('/../resources/lang'))) {
+            $package->hasTranslations();
+        }
+
+        if (file_exists($package->basePath('/../resources/views'))) {
+            $package->hasViews(static::$viewNamespace);
+        }
     }
 
-    public function register()
+    public function packageRegistered(): void
     {
-        $this->app->register(LaravelModulesServiceProvider::class);
-        $this->app->singleton('coolsam-modules', Modules::class);
-        $this->app->afterResolving('filament', function () {
-            foreach (Filament::getPanels() as $panel) {
-                $id = \Str::of($panel->getId());
-                if ($id->contains('::')) {
-                    $title = $id->replace(['::', '-'], [' ', ' '])->title()->toString();
-                    $panel
-                        ->renderHook(
-                            'panels::sidebar.nav.start',
-                            fn () => new HtmlString("<h2 class='m-2 p-2 font-black text-xl'>$title</h2>"),
-                        )
-                        ->renderHook(
-                            'panels::sidebar.nav.end',
-                            fn () => new HtmlString(
-                                '<a href="'.url('/').'" class="m-2 p-2 mt-4 inline-flex gap-2 block rounded-lg font-bold bg-gray-500/10">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-                                        </svg>
-                                        Main Panel
-                                      </a>'
-                            ),
-                        );
-                }
+        $this->registerModuleMacros();
+    }
+
+    public function packageBooted(): void
+    {
+        // Asset Registration
+        FilamentAsset::register(
+            $this->getAssets(),
+            $this->getAssetPackageName()
+        );
+
+        FilamentAsset::registerScriptData(
+            $this->getScriptData(),
+            $this->getAssetPackageName()
+        );
+
+        // Icon Registration
+        FilamentIcon::register($this->getIcons());
+
+        // Handle Stubs
+        if (app()->runningInConsole()) {
+            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+                $this->publishes([
+                    $file->getRealPath() => base_path("stubs/modules/{$file->getFilename()}"),
+                ], 'modules-stubs');
             }
+        }
+
+        // Testing
+        Testable::mixin(new TestsModules());
+    }
+
+    protected function getAssetPackageName(): ?string
+    {
+        return 'coolsam/modules';
+    }
+
+    /**
+     * @return array<Asset>
+     */
+    protected function getAssets(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<class-string>
+     */
+    protected function getCommands(): array
+    {
+        return [
+            Commands\ModulesFilamentInstallCommand::class,
+            Commands\ModuleMakeFilamentClusterCommand::class,
+            Commands\ModuleMakeFilamentPluginCommand::class,
+        ];
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getIcons(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getRoutes(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getScriptData(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getMigrations(): array
+    {
+        return [
+            //            'create_modules_table',
+        ];
+    }
+
+    protected function registerModuleMacros(): void
+    {
+        Module::macro('namespace', function (string $relativeNamespace = '') {
+            $base = trim($this->app['config']->get('modules.namespace', 'Modules'), '\\');
+            $relativeNamespace = trim($relativeNamespace, '\\');
+            $studlyName = $this->getStudlyName();
+
+            return trim("{$base}\\{$studlyName}\\{$relativeNamespace}", '\\');
         });
 
-        return parent::register();
+        Module::macro('getTitle', function () {
+            return str($this->getStudlyName())->kebab()->title()->replace('-', ' ')->toString();
+        });
+
+        Module::macro('appNamespace', function (string $relativeNamespace = '') {
+            $relativeNamespace = trim($relativeNamespace, '\\');
+            $relativeNamespace = str_replace('App\\', '', $relativeNamespace);
+            $relativeNamespace = str_replace('App', '', $relativeNamespace);
+            $relativeNamespace = trim($relativeNamespace, '\\');
+            $relativeNamespace = 'App\\' . $relativeNamespace;
+
+            return $this->namespace($relativeNamespace);
+        });
+        Module::macro('appPath', function (string $relativePath = '') {
+            $appPath = $this->getExtraPath('App');
+
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+        });
+
+        Module::macro('databasePath', function (string $relativePath = '') {
+            $appPath = $this->getExtraPath('Database');
+
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+        });
+
+        Module::macro('resourcesPath', function (string $relativePath = '') {
+            $appPath = $this->getExtraPath('resources');
+
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+        });
+
+        Module::macro('migrationsPath', function (string $relativePath = '') {
+            $appPath = $this->databasePath('migrations');
+
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+        });
+
+        Module::macro('seedersPath', function (string $relativePath = '') {
+            $appPath = $this->databasePath('Seeders');
+
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+        });
+
+        Module::macro('factoriesPath', function (string $relativePath = '') {
+            $appPath = $this->databasePath('Factories');
+
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
+        });
     }
 }
