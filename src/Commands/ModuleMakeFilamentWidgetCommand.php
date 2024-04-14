@@ -138,12 +138,12 @@ class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
 
         $view = str(str($widget)->prepend(
             (string) str($resource === null ? ($panel ? "{$namespace}\\" : 'livewire\\') : "{$resourceNamespace}\\{$resource}\\widgets\\")
-                ->replaceFirst($module->appNamespace().'\\', '')
+                ->replaceFirst($module->appNamespace() . '\\', '')
         )
             ->replace('\\', '/')
             ->explode('/')
             ->map(fn ($segment) => Str::lower(Str::kebab($segment)))
-            ->implode('.'))->prepend($module->getLowerName().'::');
+            ->implode('.'))->prepend($module->getLowerName() . '::');
 
         $path = (string) str($widget)
             ->prepend('/')
@@ -154,7 +154,7 @@ class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
 
         $viewPath = $module->resourcesPath(
             (string) str($view)
-                ->replace($module->getLowerName().'::', '')
+                ->replace($module->getLowerName() . '::', '')
                 ->replace('.', '/')
                 ->prepend('views/')
                 ->append('.blade.php'),
@@ -184,7 +184,7 @@ class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
 
             $this->copyStubToApp('ChartWidget', $path, [
                 'class' => $widgetClass,
-                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets".($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace.($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
+                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets" . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
                 'type' => match ($chartType) {
                     'Bar chart' => 'bar',
                     'Bubble chart' => 'bubble',
@@ -199,17 +199,17 @@ class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
         } elseif ($type === 'Stats overview') {
             $this->copyStubToApp('StatsOverviewWidget', $path, [
                 'class' => $widgetClass,
-                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets".($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace.($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
+                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets" . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
             ]);
         } elseif ($type === 'Table') {
             $this->copyStubToApp('TableWidget', $path, [
                 'class' => $widgetClass,
-                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets".($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace.($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
+                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets" . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
             ]);
         } else {
             $this->copyStubToApp('Widget', $path, [
                 'class' => $widgetClass,
-                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets".($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace.($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
+                'namespace' => filled($resource) ? "{$resourceNamespace}\\{$resource}\\Widgets" . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : '') : $namespace . ($widgetNamespace !== '' ? "\\{$widgetNamespace}" : ''),
                 'view' => $view,
             ]);
 
