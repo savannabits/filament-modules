@@ -83,7 +83,7 @@ class ModulesFilamentInstallCommand extends Command implements \Illuminate\Contr
     {
         try {
             return Module::findOrFail($this->moduleName);
-        } catch (ModuleNotFoundException|\Throwable $exception) {
+        } catch (ModuleNotFoundException | \Throwable $exception) {
             if (confirm("Module $this->moduleName does not exist. Would you like to generate it?", true)) {
                 $this->call('module:make', ['name' => [$this->moduleName]]);
 
@@ -131,7 +131,7 @@ class ModulesFilamentInstallCommand extends Command implements \Illuminate\Contr
     {
         $module = $this->getModule();
         $this->call('module:make:filament-plugin', [
-            'name' => $module->getStudlyName().'Plugin',
+            'name' => $module->getStudlyName() . 'Plugin',
             'module' => $module->getStudlyName(),
         ]);
     }
