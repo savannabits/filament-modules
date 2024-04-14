@@ -13,7 +13,6 @@ use Filament\Support\Commands\Concerns\CanReadModelSchemas;
 use Filament\Tables\Commands\Concerns\CanGenerateTables;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use ReflectionClass;
 
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
@@ -302,10 +301,5 @@ class ModuleMakeFilamentResourceCommand extends Command
     protected function getDefaultStubPath(): string
     {
         return base_path('vendor/filament/filament/stubs');
-        //        $reflectionClass = new ReflectionClass($this);
-        //
-        //        return (string) str($reflectionClass->getFileName())
-        //            ->beforeLast('Commands')
-        //            ->append('../stubs');
     }
 }
