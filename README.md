@@ -5,6 +5,9 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Afix-php-code-style+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
 
+![image](https://github.com/savannabits/filament-modules/assets/5610289/ba191f1d-b5ee-4eb9-9db7-d42a19cc8d38)
+
+
 This package brings the power of modules to Laravel Filament. It allows you to organize your filament code into fully
 autonomous modules that can be easily shared and reused across multiple projects.
 With this package, you can turn each of your modules into a fully functional Filament Plugin with its own resources,
