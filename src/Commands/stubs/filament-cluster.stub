@@ -19,7 +19,7 @@ class {{ class }} extends Cluster
 
     public static function getNavigationLabel(): string
     {
-        return '{{ navigationLabel }}';
+        return '__({{ navigationLabel }})';
     }
 
     public static function getNavigationIcon(): ?string
