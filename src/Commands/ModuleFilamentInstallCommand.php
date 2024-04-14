@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 
 use function Laravel\Prompts\confirm;
 
-class ModulesFilamentInstallCommand extends Command implements \Illuminate\Contracts\Console\PromptsForMissingInput
+class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contracts\Console\PromptsForMissingInput
 {
     use CanManipulateFiles;
     use PromptsForMissingInput;

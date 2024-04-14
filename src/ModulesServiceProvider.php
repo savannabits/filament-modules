@@ -108,11 +108,12 @@ class ModulesServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
-            Commands\ModulesFilamentInstallCommand::class,
+            Commands\ModuleFilamentInstallCommand::class,
             Commands\ModuleMakeFilamentClusterCommand::class,
             Commands\ModuleMakeFilamentPluginCommand::class,
             Commands\ModuleMakeFilamentResourceCommand::class,
             Commands\ModuleMakeFilamentPageCommand::class,
+            Commands\ModuleMakeFilamentWidgetCommand::class,
         ];
     }
 
