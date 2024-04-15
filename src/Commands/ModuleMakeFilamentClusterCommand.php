@@ -17,7 +17,7 @@ class ModuleMakeFilamentClusterCommand extends GeneratorCommand
 
     protected function getRelativeNamespace(): string
     {
-        return 'App\\Filament\\Clusters';
+        return 'Filament\\Clusters';
     }
 
     protected function getStub(): string

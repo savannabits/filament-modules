@@ -17,7 +17,7 @@ class ModuleMakeFilamentPluginCommand extends GeneratorCommand
 
     protected function getRelativeNamespace(): string
     {
-        return 'App\\Filament';
+        return 'Filament';
     }
 
     protected function getStub(): string
