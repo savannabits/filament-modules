@@ -19,7 +19,7 @@ trait GeneratesModularFiles
 
     protected function resolveStubPath($stub): string
     {
-        return FilamentModules::packagePath('src/Commands/' . trim($stub, DIRECTORY_SEPARATOR));
+        return FilamentModules::packagePath('src/Commands/'.trim($stub, DIRECTORY_SEPARATOR));
     }
 
     public function getModule(): Module
@@ -29,7 +29,7 @@ trait GeneratesModularFiles
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return trim($rootNamespace, '\\') . '\\' . trim(Str::replace(DIRECTORY_SEPARATOR, '\\', $this->getRelativeNamespace()), '\\');
+        return trim($rootNamespace, '\\').'\\'.trim(Str::replace(DIRECTORY_SEPARATOR, '\\', $this->getRelativeNamespace()), '\\');
     }
 
     abstract protected function getRelativeNamespace(): string;
@@ -41,9 +41,9 @@ trait GeneratesModularFiles
 
     protected function getPath($name): string
     {
-        $name = Str::replaceFirst($this->rootNamespace(), '', $name);
+        $name = Str::replaceFirst($this->rootNamespace(), 'app', $name);
 
-        return $this->getModule()->getExtraPath(str_replace('\\', '/', $name) . '.php');
+        return $this->getModule()->getExtraPath(str_replace('\\', '/', $name).'.php');
     }
 
     protected function possibleModels()
@@ -61,7 +61,7 @@ trait GeneratesModularFiles
     {
         $views = $this->getModule()->resourcesPath('views');
 
-        return $views . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return $views.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
 
     protected function buildClass($name)
@@ -89,7 +89,7 @@ trait GeneratesModularFiles
     {
         return [
             'name' => [
-                'What should the ' . strtolower($this->type ?: 'class') . ' be named?',
+                'What should the '.strtolower($this->type ?: 'class').' be named?',
                 match ($this->type) {
                     'Cast' => 'E.g. Json',
                     'Channel' => 'E.g. OrderChannel',

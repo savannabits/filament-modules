@@ -83,7 +83,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
     {
         try {
             return Module::findOrFail($this->moduleName);
-        } catch (ModuleNotFoundException | \Throwable $exception) {
+        } catch (ModuleNotFoundException|\Throwable $exception) {
             if (confirm("Module $this->moduleName does not exist. Would you like to generate it?", true)) {
                 $this->call('module:make', ['name' => [$this->moduleName]]);
 
@@ -101,9 +101,11 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
         }
 
         if ($this->cluster) {
+            $dir = $this->getModule()->appPath('Filament/Clusters');
             if (! is_dir($dir = $this->getModule()->appPath('Filament/Clusters'))) {
                 $this->makeDirectory($dir);
             }
+
         } else {
             if (! is_dir($dir = $this->getModule()->appPath('Filament/Pages'))) {
                 $this->makeDirectory($dir);
@@ -131,7 +133,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
     {
         $module = $this->getModule();
         $this->call('module:make:filament-plugin', [
-            'name' => $module->getStudlyName() . 'Plugin',
+            'name' => $module->getStudlyName().'Plugin',
             'module' => $module->getStudlyName(),
         ]);
     }
