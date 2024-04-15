@@ -170,18 +170,18 @@ class ModulesServiceProvider extends PackageServiceProvider
             $relativeNamespace = str_replace('App\\', '', $relativeNamespace);
             $relativeNamespace = str_replace('App', '', $relativeNamespace);
             $relativeNamespace = trim($relativeNamespace, '\\');
-            $relativeNamespace = 'App\\' . $relativeNamespace;
+            $relativeNamespace = '\\' . $relativeNamespace;
 
             return $this->namespace($relativeNamespace);
         });
         Module::macro('appPath', function (string $relativePath = '') {
-            $appPath = $this->getExtraPath('App');
+            $appPath = $this->getExtraPath('app');
 
             return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('databasePath', function (string $relativePath = '') {
-            $appPath = $this->getExtraPath('Database');
+            $appPath = $this->getExtraPath('database');
 
             return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
@@ -199,13 +199,13 @@ class ModulesServiceProvider extends PackageServiceProvider
         });
 
         Module::macro('seedersPath', function (string $relativePath = '') {
-            $appPath = $this->databasePath('Seeders');
+            $appPath = $this->databasePath('seeders');
 
             return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('factoriesPath', function (string $relativePath = '') {
-            $appPath = $this->databasePath('Factories');
+            $appPath = $this->databasePath('factories');
 
             return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });

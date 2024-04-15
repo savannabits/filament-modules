@@ -101,9 +101,11 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
         }
 
         if ($this->cluster) {
+            $dir = $this->getModule()->appPath('Filament/Clusters');
             if (! is_dir($dir = $this->getModule()->appPath('Filament/Clusters'))) {
                 $this->makeDirectory($dir);
             }
+
         } else {
             if (! is_dir($dir = $this->getModule()->appPath('Filament/Pages'))) {
                 $this->makeDirectory($dir);

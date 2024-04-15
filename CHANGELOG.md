@@ -2,6 +2,14 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v3.0.1 - 2024-04-15
+
+### What's Changed
+
+* Bug Fix: navigation label translation key during filament cluster generation by @coolsam726 in https://github.com/savannabits/filament-modules/pull/83
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v3.0.0...v3.0.1
+
 ## v3.0.0 - 2024-04-14
 
 ### What's Changed

@@ -17,7 +17,8 @@ class ModulesPlugin implements Plugin
     {
         $panel
             ->topNavigation(config('filament-modules.clusters.enabled', false) && config('filament-modules.clusters.use-top-navigation', false));
-        foreach ($this->getModulePlugins() as $modulePlugin) {
+        $plugins = $this->getModulePlugins();
+        foreach ($plugins as $modulePlugin) {
             $panel->plugin($modulePlugin::make());
         }
     }
@@ -46,7 +47,7 @@ class ModulesPlugin implements Plugin
         }
         // get a glob of all Filament plugins
         $basePath = str(config('modules.paths.modules', 'Modules'));
-        $pattern = $basePath . '/*/App/Filament/*Plugin.php';
+        $pattern = $basePath . '/*/app/Filament/*Plugin.php';
         $pluginPaths = glob($pattern);
 
         return collect($pluginPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->toArray();
