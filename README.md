@@ -1,4 +1,8 @@
-# Filament Modules
+# Filament Modules v4.x
+
+> **NOTE:** This documentation is for **version 4.x** of the package, which only supports **Laravel 11** and
+**nwidart/laravel-modules ^11**. If you are using Laravel 10, please refer to
+> the [3.x documentation](https://github.com/savannabits/filament-modules/tree/3.x).
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -30,23 +34,26 @@ with Laravel Filament.
 
 ## Requirements
 
-v3 of this package requires the following dependencies:
+v4.x of this package requires the following dependencies:
 
-- Laravel 10.x or higher
+- Laravel 11.x or higher
 - Filament 3.x or higher
-- PHP 8.1 or higher
-- nwidart/laravel-modules 10.x
+- PHP 8.2 or higher
+- nwidart/laravel-modules 11.x
+
+If you are using Laravel 10 please use [version 3.x](https://github.com/savannabits/filament-modules/tree/3.x) instead.
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require coolsam/modules
+composer require coolsam/modules:^4
 ```
 
-This will automatically install `nwidart/laravel-modules` as well. Make sure you go through
-the [documentation](https://docs.laravelmodules.com) to understand how to use the package and to configure it properly
+This will automatically install `nwidart/laravel-modules: ^11` as well. Make sure you go through
+the [documentation](https://laravelmodules.com/docs/v11/introduction) to understand how to use the package and to
+configure it properly
 before proceeding.
 
 You can publish the config file with:
@@ -118,7 +125,7 @@ At the end of this installation, you will have the following structure in your m
 
 - Modules
     - MyModule
-        - App
+        - app
             - Filament
                 - Clusters
                     - MyModule
