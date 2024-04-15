@@ -2,6 +2,15 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.0.1 - 2024-04-15
+
+### What's Changed
+
+* New Feature: A command to generate a Theme inside a module by @coolsam726 in https://github.com/savannabits/filament-modules/pull/89
+* README: Added the Filament Theme command documentation by @coolsam726 in https://github.com/savannabits/filament-modules/pull/90
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.0...v4.0.1
+
 ## v4.0.0 - 2024-04-15
 
 ### What's Changed
