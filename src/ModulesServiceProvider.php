@@ -114,6 +114,7 @@ class ModulesServiceProvider extends PackageServiceProvider
             Commands\ModuleMakeFilamentResourceCommand::class,
             Commands\ModuleMakeFilamentPageCommand::class,
             Commands\ModuleMakeFilamentWidgetCommand::class,
+            Commands\ModuleMakeFilamentThemeCommand::class,
         ];
     }
 

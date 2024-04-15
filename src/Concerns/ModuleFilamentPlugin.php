@@ -44,6 +44,7 @@ trait ModuleFilamentPlugin
                 for: $namespace,
             );
         }
+        $this->afterRegister($panel);
     }
 
     public static function make(): static
@@ -57,5 +58,10 @@ trait ModuleFilamentPlugin
         $plugin = filament(app(static::class)->getId());
 
         return $plugin;
+    }
+
+    public function afterRegister(Panel $panel)
+    {
+        // override this to implement additional logic
     }
 }
