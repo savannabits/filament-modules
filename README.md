@@ -186,6 +186,14 @@ php artisan module:make:filament-plugin
 
 Follow the interactive prompts to create a new plugin in your module.
 
+### Create a new Filament Theme
+
+```bash
+php artisan module:make:filament-theme
+```
+
+Follow the prompts and instructions to create a new Filament Theme in your module and to register it to your panel.
+
 ## Testing
 
 ```bash
