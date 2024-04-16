@@ -2,6 +2,7 @@
 
 namespace Coolsam\Modules;
 
+use Coolsam\Modules\Facades\FilamentModules;
 use Coolsam\Modules\Testing\TestsModules;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Facades\FilamentAsset;
@@ -60,8 +61,23 @@ class ModulesServiceProvider extends PackageServiceProvider
         $this->registerModuleMacros();
     }
 
+    public function attemptToRegisterModuleProviders(): void
+    {
+        // It is necessary to register them here to avoid late registration (after Panels have already been booted)
+        $providers = glob(config('modules.paths.modules').'/*/*/Providers/*ServiceProvider.php');
+        foreach ($providers as $provider) {
+            $namespace = FilamentModules::convertPathToNamespace($provider);
+            $module = str($namespace)->before('\Providers\\')->afterLast('\\')->toString();
+            $className = str($namespace)->afterLast('\\')->toString();
+            if (str($className)->startsWith($module)){
+                // register the module service provider
+                $this->app->register($namespace);
+            }
+        }
+    }
     public function packageBooted(): void
     {
+        $this->attemptToRegisterModuleProviders();
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
