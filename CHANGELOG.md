@@ -2,6 +2,14 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.0.2 - 2024-04-16
+
+### What's Changed
+
+* Early Registration of the Main providers for each module. by @coolsam726 in https://github.com/savannabits/filament-modules/pull/91
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.1...v4.0.2
+
 ## v4.0.1 - 2024-04-15
 
 ### What's Changed
