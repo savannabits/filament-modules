@@ -51,6 +51,6 @@ class Modules
     public function packagePath(string $path = ''): string
     {
         //return the base path of this package
-        return dirname(__DIR__ . '../') . ($path ? DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR) : '');
+        return dirname(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR) . ($path ? DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR) : '');
     }
 }
