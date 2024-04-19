@@ -64,7 +64,7 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function attemptToRegisterModuleProviders(): void
     {
         // It is necessary to register them here to avoid late registration (after Panels have already been booted)
-        $providers = glob(config('modules.paths.modules') . '/*/*/Providers/*ServiceProvider.php');
+        $providers = glob(config('modules.paths.modules') . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . '*ServiceProvider.php');
         foreach ($providers as $provider) {
             $namespace = FilamentModules::convertPathToNamespace($provider);
             $module = str($namespace)->before('\Providers\\')->afterLast('\\')->toString();
