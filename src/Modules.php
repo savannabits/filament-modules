@@ -23,6 +23,8 @@ class Modules
 
         return str($relative)
             ->ltrim('/\\')
+            ->replace('/', DIRECTORY_SEPARATOR)
+            ->replace('\\', DIRECTORY_SEPARATOR)
             ->prepend(DIRECTORY_SEPARATOR)
             ->prepend(config('modules.namespace', 'Modules'))
             ->replace(DIRECTORY_SEPARATOR, '\\')
