@@ -2,6 +2,18 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.0.3 - 2024-04-19
+
+### What's Changed
+
+* New Test: Testing the convertPathToNamespace helper method by @coolsam726 in https://github.com/savannabits/filament-modules/pull/93
+* Attempt 1 to fix the `convertPathToNamespace` helper by @coolsam726 in https://github.com/savannabits/filament-modules/pull/94
+* Attempt 2: Test if convertPathToNamespace is fixed by @coolsam726 in https://github.com/savannabits/filament-modules/pull/95
+* Attempt 3: To Fix convertPathToNamespace for windows platform by @coolsam726 in https://github.com/savannabits/filament-modules/pull/96
+* Bug Fix: Registering Module Service Providers was not working on windows by @coolsam726 in https://github.com/savannabits/filament-modules/pull/97 - Fixes #92
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.2...v4.0.3
+
 ## v4.0.2 - 2024-04-16
 
 ### What's Changed
