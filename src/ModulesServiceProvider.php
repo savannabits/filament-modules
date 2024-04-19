@@ -64,17 +64,18 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function attemptToRegisterModuleProviders(): void
     {
         // It is necessary to register them here to avoid late registration (after Panels have already been booted)
-        $providers = glob(config('modules.paths.modules').'/*/*/Providers/*ServiceProvider.php');
+        $providers = glob(config('modules.paths.modules') . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . '*ServiceProvider.php');
         foreach ($providers as $provider) {
             $namespace = FilamentModules::convertPathToNamespace($provider);
             $module = str($namespace)->before('\Providers\\')->afterLast('\\')->toString();
             $className = str($namespace)->afterLast('\\')->toString();
-            if (str($className)->startsWith($module)){
+            if (str($className)->startsWith($module)) {
                 // register the module service provider
                 $this->app->register($namespace);
             }
         }
     }
+
     public function packageBooted(): void
     {
         $this->attemptToRegisterModuleProviders();
@@ -94,7 +95,7 @@ class ModulesServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/modules/{$file->getFilename()}"),
                 ], 'modules-stubs');
@@ -187,44 +188,44 @@ class ModulesServiceProvider extends PackageServiceProvider
             $relativeNamespace = str_replace('App\\', '', $relativeNamespace);
             $relativeNamespace = str_replace('App', '', $relativeNamespace);
             $relativeNamespace = trim($relativeNamespace, '\\');
-            $relativeNamespace = '\\'.$relativeNamespace;
+            $relativeNamespace = '\\' . $relativeNamespace;
 
             return $this->namespace($relativeNamespace);
         });
         Module::macro('appPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('app');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('databasePath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('database');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('resourcesPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('resources');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('migrationsPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('migrations');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('seedersPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('seeders');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('factoriesPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('factories');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
     }
 }
