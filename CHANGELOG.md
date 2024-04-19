@@ -2,6 +2,40 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.0.2 - 2024-04-16
+
+### What's Changed
+
+* Early Registration of the Main providers for each module. by @coolsam726 in https://github.com/savannabits/filament-modules/pull/91
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.1...v4.0.2
+
+## v4.0.1 - 2024-04-15
+
+### What's Changed
+
+* New Feature: A command to generate a Theme inside a module by @coolsam726 in https://github.com/savannabits/filament-modules/pull/89
+* README: Added the Filament Theme command documentation by @coolsam726 in https://github.com/savannabits/filament-modules/pull/90
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.0...v4.0.1
+
+## v4.0.0 - 2024-04-15
+
+### What's Changed
+
+* 4.x dev - Support for nwidart/laravel-modules 11.x by @coolsam726 in https://github.com/savannabits/filament-modules/pull/82
+* Added Version 4.x Documentation by @coolsam726 in https://github.com/savannabits/filament-modules/pull/84
+* README Adjustment: Put the version NOTE below the badges by @coolsam726 in https://github.com/savannabits/filament-modules/pull/86
+* support laravel-modules v11 for laravel 11 by @vellea in https://github.com/savannabits/filament-modules/pull/81
+* Fixed Tests by @coolsam726 in https://github.com/savannabits/filament-modules/pull/87
+* Fix PHP version in phpstan workflow by @coolsam726 in https://github.com/savannabits/filament-modules/pull/88
+
+### New Contributors
+
+* @vellea made their first contribution in https://github.com/savannabits/filament-modules/pull/81
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v3.0.1...v4.0.0
+
 ## v3.0.1 - 2024-04-15
 
 ### What's Changed
