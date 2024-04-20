@@ -38,13 +38,12 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $this->moduleName = $this->argument('module');
         if (! $this->option('cluster')) {
             $this->cluster = confirm('Do you want to organize your code into filament clusters?', true);
         }
-        $module = $this->getModule(true);
         // Ensure the Filament directories exist
         $this->ensureFilamentDirectoriesExist();
         // Create Filament Plugin
