@@ -19,12 +19,10 @@ class Modules
     public function convertPathToNamespace(string $fullPath): string
     {
         $base = str(trim(config('modules.paths.modules', base_path('Modules')), '/\\'));
-        $relative = str($fullPath)->afterLast($base)->ltrim('/\\app');
+        $relative = str($fullPath)->afterLast($base)->replaceFirst(DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 
         return str($relative)
             ->ltrim('/\\')
-            ->replace('/', DIRECTORY_SEPARATOR)
-            ->replace('\\', DIRECTORY_SEPARATOR)
             ->prepend(DIRECTORY_SEPARATOR)
             ->prepend(config('modules.namespace', 'Modules'))
             ->replace(DIRECTORY_SEPARATOR, '\\')
