@@ -239,7 +239,7 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
             (string) str($view)
                 ->replace($module->getLowerName() . '::', '')
                 ->replace('.', DIRECTORY_SEPARATOR)
-                ->prepend('views'.DIRECTORY_SEPARATOR)
+                ->prepend('views' . DIRECTORY_SEPARATOR)
                 ->append('.blade.php'),
         );
 
