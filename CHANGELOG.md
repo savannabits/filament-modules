@@ -2,6 +2,14 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.0.4 - 2024-04-20
+
+### What's Changed
+
+* Bug Fix: Wrong Directory Separators causing errors when registering Module Plugins by @coolsam726 in https://github.com/savannabits/filament-modules/pull/98
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.3...v4.0.4
+
 ## v4.0.3 - 2024-04-19
 
 ### What's Changed
