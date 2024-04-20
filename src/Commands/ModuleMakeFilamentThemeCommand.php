@@ -40,7 +40,7 @@ class ModuleMakeFilamentThemeCommand extends MakeThemeCommand
             'yarn' => 'yarn add',
             default => "{$pm} install",
         };
-        $cdCommand = 'cd '.$module->getPath();
+        $cdCommand = 'cd ' . $module->getPath();
 
         exec("$cdCommand && {$installCommand} tailwindcss @tailwindcss/forms @tailwindcss/typography postcss postcss-nesting autoprefixer --save-dev");
 
@@ -66,9 +66,9 @@ class ModuleMakeFilamentThemeCommand extends MakeThemeCommand
             'viewPathPrefix' => $viewPathPrefix,
         ]);
 
-        $this->components->info('Filament theme [resources/css/filament/theme.css] and [resources/css/filament/tailwind.config.js] created successfully in '.$module->getStudlyName().' module.');
+        $this->components->info('Filament theme [resources/css/filament/theme.css] and [resources/css/filament/tailwind.config.js] created successfully in ' . $module->getStudlyName() . ' module.');
 
-        $buildDirectory = 'build-'.$module->getLowerName();
+        $buildDirectory = 'build-' . $module->getLowerName();
         $moduleStudlyName = $module->getStudlyName();
 
         if (empty(glob($module->getExtraPath('vite.config.*s')))) {
@@ -76,7 +76,7 @@ class ModuleMakeFilamentThemeCommand extends MakeThemeCommand
             $this->components->bulletList([
                 "It looks like you don't have Vite installed in your module. Please use your asset bundling system of choice to compile `resources/css/filament/theme.css` into `public/$buildDirectory/css/filament/theme.css`.",
                 "If you're not currently using a bundler, we recommend using Vite. Alternatively, you can use the Tailwind CLI with the following command inside the $moduleStudlyName module:",
-                'npx tailwindcss --input ./resources/css/filament/theme.css --output ./public/'.$buildDirectory.'/css/filament/theme.css --config ./resources/css/filament/tailwind.config.js --minify',
+                'npx tailwindcss --input ./resources/css/filament/theme.css --output ./public/' . $buildDirectory . '/css/filament/theme.css --config ./resources/css/filament/tailwind.config.js --minify',
                 "Make sure to register the theme in the {$moduleStudlyName} module plugin under the afterRegister() function using `->theme(asset('css/filament/theme.css'))`",
             ]);
 
@@ -103,7 +103,7 @@ class ModuleMakeFilamentThemeCommand extends MakeThemeCommand
 
     protected function getDefaultStubPath(): string
     {
-        return __DIR__.'/stubs';
+        return __DIR__ . '/stubs';
     }
 
     private function getModule(): Module
