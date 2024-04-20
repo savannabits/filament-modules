@@ -37,7 +37,7 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
             ->trim('/')
             ->trim('\\')
             ->trim(' ')
-            ->replace('/', '\\');
+            ->replace(DIRECTORY_SEPARATOR, '\\');
         $pageClass = (string) str($page)->afterLast('\\');
         $pageNamespace = str($page)->contains('\\') ?
             (string) str($page)->beforeLast('\\') :
@@ -86,7 +86,7 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
                 ->trim('/')
                 ->trim('\\')
                 ->trim(' ')
-                ->replace('/', '\\');
+                ->replace(DIRECTORY_SEPARATOR, '\\');
 
             if (! str($resource)->endsWith('Resource')) {
                 $resource .= 'Resource';
@@ -229,17 +229,17 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
             ->implode('.'))->prepend($module->getLowerName() . '::');
 
         $path = (string) str($page)
-            ->prepend('/')
+            ->prepend(DIRECTORY_SEPARATOR)
             ->prepend(empty($resource) ? $path : $resourcePath . "\\{$resource}\\Pages\\")
-            ->replace('\\', '/')
-            ->replace('//', '/')
+            ->replace('\\', DIRECTORY_SEPARATOR)
+            ->replace('//', DIRECTORY_SEPARATOR)
             ->append('.php');
 
         $viewPath = $module->resourcesPath(
             (string) str($view)
                 ->replace($module->getLowerName() . '::', '')
-                ->replace('.', '/')
-                ->prepend('views/')
+                ->replace('.', DIRECTORY_SEPARATOR)
+                ->prepend('views' . DIRECTORY_SEPARATOR)
                 ->append('.blade.php'),
         );
 

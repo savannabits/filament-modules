@@ -19,7 +19,7 @@ class Modules
     public function convertPathToNamespace(string $fullPath): string
     {
         $base = str(trim(config('modules.paths.modules', base_path('Modules')), '/\\'));
-        $relative = str($fullPath)->afterLast($base)->ltrim('/\\app');
+        $relative = str($fullPath)->afterLast($base)->replaceFirst(DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 
         return str($relative)
             ->ltrim('/\\')
@@ -49,6 +49,6 @@ class Modules
     public function packagePath(string $path = ''): string
     {
         //return the base path of this package
-        return dirname(__DIR__ . '../') . ($path ? DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR) : '');
+        return dirname(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR) . ($path ? DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR) : '');
     }
 }
