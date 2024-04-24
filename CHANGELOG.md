@@ -2,6 +2,14 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.0.6 - 2024-04-24
+
+### What's Changed
+
+* Refactor: Replace '/' with DIRECTORY_SEPARATOR in the File generation Concerns by @coolsam726 in https://github.com/savannabits/filament-modules/pull/103
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.5...v4.0.6
+
 ## v4.0.5 - 2024-04-24
 
 ### What's Changed
