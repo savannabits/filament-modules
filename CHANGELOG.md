@@ -2,6 +2,16 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.0.5 - 2024-04-24
+
+### What's Changed
+
+* Failing Tests: Changed the test to use DIRECTORY_SEPARATOR by @coolsam726 in https://github.com/savannabits/filament-modules/pull/99
+* Code Cleanup: PHPStan was failing by @coolsam726 in https://github.com/savannabits/filament-modules/pull/100
+* Bug Fix: Duplicate src in file path by @coolsam726 in https://github.com/savannabits/filament-modules/pull/102
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.4...v4.0.5
+
 ## v4.0.4 - 2024-04-20
 
 ### What's Changed
