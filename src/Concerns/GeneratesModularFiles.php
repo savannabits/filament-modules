@@ -19,7 +19,7 @@ trait GeneratesModularFiles
 
     protected function resolveStubPath($stub): string
     {
-        return FilamentModules::packagePath('src/Commands/' . trim($stub, DIRECTORY_SEPARATOR));
+        return FilamentModules::packagePath('Commands/' . trim($stub, DIRECTORY_SEPARATOR));
     }
 
     public function getModule(): Module
