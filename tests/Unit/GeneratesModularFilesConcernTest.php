@@ -24,5 +24,5 @@ test('can generate the correct stubs path', function () {
     // include the GeneratesModularFiles trait
     $d = DIRECTORY_SEPARATOR;
     expect($this->trait->getStub())
-        ->toEqual(realpath(__DIR__."{$d}..{$d}..{$d}src{$d}Commands{$d}stubs{$d}filament-plugin.stub"));
+        ->toEqual(realpath(__DIR__ . "{$d}..{$d}..{$d}src{$d}Commands{$d}stubs{$d}filament-plugin.stub"));
 });
