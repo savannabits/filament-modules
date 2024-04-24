@@ -21,5 +21,5 @@ beforeEach(function () {
 test('can generate the correct stubs path', function () {
     // include the GeneratesModularFiles trait
     expect($this->trait->getStub())
-        ->toEqual(realpath(__DIR__.'/../../src/Commands/stubs/filament-plugin.stub'));
+        ->toEqual(realpath(__DIR__ . '/../../src/Commands/stubs/filament-plugin.stub'));
 });
