@@ -3,8 +3,11 @@
 namespace Coolsam\Modules\Concerns;
 
 use Coolsam\Modules\Facades\FilamentModules;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Nwidart\Modules\Module;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 use function Laravel\Prompts\confirm;
 
@@ -34,12 +37,17 @@ trait CanManipulateFiles
 
     /**
      * @param  array<string, string>  $replacements
+     *
+     * @throws FileNotFoundException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function copyStubToApp(string $stub, string $targetPath, array $replacements = []): void
     {
+        $D = DIRECTORY_SEPARATOR;
         $filesystem = app(Filesystem::class);
 
-        $stubPath = $this->getDefaultStubPath() . "/{$stub}.stub";
+        $stubPath = $this->getDefaultStubPath() . "{$D}{$stub}.stub";
 
         $stub = str($filesystem->get($stubPath));
 
@@ -72,7 +80,7 @@ trait CanManipulateFiles
 
     protected function getDefaultStubPath(): string
     {
-        return $this->getModule()->appPath('Commands/stubs');
+        return $this->getModule()->appPath('Commands' . DIRECTORY_SEPARATOR . 'stubs');
     }
 
     protected function getModule(): Module

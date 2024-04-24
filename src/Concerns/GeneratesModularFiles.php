@@ -19,7 +19,7 @@ trait GeneratesModularFiles
 
     protected function resolveStubPath($stub): string
     {
-        return FilamentModules::packagePath('Commands/' . trim($stub, DIRECTORY_SEPARATOR));
+        return FilamentModules::packagePath('Commands' . DIRECTORY_SEPARATOR . trim($stub, DIRECTORY_SEPARATOR));
     }
 
     public function getModule(): Module
@@ -43,7 +43,7 @@ trait GeneratesModularFiles
     {
         $name = Str::replaceFirst($this->rootNamespace(), 'app', $name);
 
-        return $this->getModule()->getExtraPath(str_replace('\\', '/', $name) . '.php');
+        return $this->getModule()->getExtraPath(str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php');
     }
 
     protected function possibleModels()
