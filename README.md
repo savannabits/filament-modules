@@ -93,7 +93,7 @@ In order to achieve this, you need to register the `ModulesPlugin` in your panel
 ```php
 // e.g. in App\Providers\Filament\AdminPanelProvider.php
  
-use Filament\Plugin\ModulesPlugin;
+use Coolsam\Modules\ModulesPlugin;
 public function panel(Panel $panel): Panel
 {
     return $panel
