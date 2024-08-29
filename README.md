@@ -64,7 +64,7 @@ php artisan vendor:publish --tag="modules-config"
 Alternatively, just run the installation command and follow the prompts:
 
 ```bash
-php artisan modules:install
+php artisan module:filament:install
 ```
 
 ### Configuration
