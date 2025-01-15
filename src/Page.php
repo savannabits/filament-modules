@@ -3,7 +3,7 @@
 namespace Coolsam\Modules;
 
 
-abstract class Resource extends \Filament\Resources\Resource
+abstract class Page extends \Filament\Pages\Page
 {
 
     use \Coolsam\Modules\Traits\CanAccessTrait;
