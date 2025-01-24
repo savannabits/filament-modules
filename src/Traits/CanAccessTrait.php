@@ -16,7 +16,7 @@ trait CanAccessTrait
         $isModuleEnabled = \Nwidart\Modules\Facades\Module::find(
             static::getCurrentModuleName()
         )?->isEnabled();
-        $parentAccess = parent::canAccess();
+        $parentAccess = function_exists('canAccess') ? parent::canAccess() : true;
 
         if ($isModuleEnabled && $parentAccess) {
             return true;
