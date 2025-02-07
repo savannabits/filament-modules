@@ -103,7 +103,7 @@ class ModulesServiceProvider extends PackageServiceProvider
         }
 
         // Testing
-        Testable::mixin(new TestsModules());
+        Testable::mixin(new TestsModules);
     }
 
     protected function getAssetPackageName(): ?string

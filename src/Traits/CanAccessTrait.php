@@ -1,4 +1,5 @@
 <?php
+
 namespace Coolsam\Modules\Traits;
 
 trait CanAccessTrait
@@ -8,6 +9,7 @@ trait CanAccessTrait
         $provider = static::class;
         $provider = explode('\\', $provider);
         $provider = strtolower($provider[1]);
+
         return $provider;
     }
 
@@ -21,6 +23,7 @@ trait CanAccessTrait
         if ($isModuleEnabled && $parentAccess) {
             return true;
         }
+
         return false;
     }
 }
