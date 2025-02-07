@@ -192,7 +192,24 @@ Follow the interactive prompts to create a new plugin in your module.
 php artisan module:make:filament-theme
 ```
 
-Follow the prompts and instructions to create a new Filament Theme in your module and to register it to your panel.
+
+
+### Follow the instructions to protect your resources and pages if your module is not active.
+
+```php
+use Coolsam\Modules\Resource;
+```
+use the above resource class instead of `use Filament/Resources/Resource;` into your resource class file to protect your resources.
+
+```php
+use Coolsam\Modules\Page;
+```
+use the above page class instead of `use Filament/Pages/Page;` into your page class file to protect your pages.
+
+```php
+use CanAccessTrait;
+```
+use the above trait directly into your resource and page class file to protect your resources and pages.
 
 ## Testing
 
