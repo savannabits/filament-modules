@@ -2,6 +2,28 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.1.0 - 2025-02-24
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 1.6.0 to 2.1.0 by @dependabot in https://github.com/savannabits/filament-modules/pull/104
+* Bump dependabot/fetch-metadata from 2.1.0 to 2.2.0 by @dependabot in https://github.com/savannabits/filament-modules/pull/108
+* changing from Filament\Plugin to Coolsam\Modules in ReadMe.md by @dedanirungu in https://github.com/savannabits/filament-modules/pull/110
+* Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot in https://github.com/savannabits/filament-modules/pull/119
+* Bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot in https://github.com/savannabits/filament-modules/pull/120
+* [style] fix install command on readme file by @alissn in https://github.com/savannabits/filament-modules/pull/112
+* [Bug fix]  implement the resource and page security by @aisuvro in https://github.com/savannabits/filament-modules/pull/118
+* Only Discover resources/widgets ...etc if module enabled by @Saifallak in https://github.com/savannabits/filament-modules/pull/121
+
+### New Contributors
+
+* @dedanirungu made their first contribution in https://github.com/savannabits/filament-modules/pull/110
+* @alissn made their first contribution in https://github.com/savannabits/filament-modules/pull/112
+* @aisuvro made their first contribution in https://github.com/savannabits/filament-modules/pull/118
+* @Saifallak made their first contribution in https://github.com/savannabits/filament-modules/pull/121
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.0.6...v4.1.0
+
 ## v4.0.6 - 2024-04-24
 
 ### What's Changed
