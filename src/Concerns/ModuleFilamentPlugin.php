@@ -17,6 +17,11 @@ trait ModuleFilamentPlugin
     public function register(Panel $panel): void
     {
         $module = $this->getModule();
+
+        if (! $module->isEnabled()) {
+            return;
+        }
+
         $useClusters = config('filament-modules.clusters.enabled', false);
         $panel->discoverPages(
             in: $module->appPath('Filament' . DIRECTORY_SEPARATOR . 'Pages'),
