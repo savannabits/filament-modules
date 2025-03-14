@@ -207,6 +207,21 @@ use Coolsam\Modules\Page;
 use the above page class instead of `use Filament/Pages/Page;` into your page class file to protect your pages.
 
 ```php
+use Coolsam\Modules\TableWidget;
+```
+use the above page class instead of `use Filament/Pages/TableWidget;` into your widget class file to protect your TableWidget.
+
+```php
+use Coolsam\Modules\ChartWidget;
+```
+use the above page class instead of `use Filament/Pages/ChartWidget;` into your widget class file to protect your ChartWidget.
+
+```php
+use Coolsam\Modules\StatsOverviewWidget;
+```
+use the above page class instead of `use Filament/Pages/StatsOverviewWidget;` into your widget class file to protect your StatsOverviewWidget.
+
+```php
 use CanAccessTrait;
 ```
 use the above trait directly into your resource and page class file to protect your resources and pages.
