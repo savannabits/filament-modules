@@ -2,6 +2,20 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.1.2 - 2025-03-19
+
+### What's Changed
+
+* Update composer.json by @cjango in https://github.com/savannabits/filament-modules/pull/123
+* Add new widget classes and update README for widgets protection by @aisuvro in https://github.com/savannabits/filament-modules/pull/122
+* Added Laravel Modules 12 support  by @coolsam726 in https://github.com/savannabits/filament-modules/pull/125
+
+### New Contributors
+
+* @cjango made their first contribution in https://github.com/savannabits/filament-modules/pull/123
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.1.0...v4.1.2
+
 ## v4.1.0 - 2025-02-24
 
 ### What's Changed
