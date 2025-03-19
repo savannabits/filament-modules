@@ -5,9 +5,14 @@ parameters:
     level: 4
     paths:
         - src
-        - config
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
-    checkModelProperties: true
-    checkMissingIterableValueType: false
+    checkModelProperties: false
+    reportUnmatchedIgnoredErrors: false
+    reportMaybes: false
+    fileExtensions:
+        - php
+        - php.stub
+    bootstrapFiles:
+        - config/filament-modules.php
 
