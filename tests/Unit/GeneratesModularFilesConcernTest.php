@@ -14,6 +14,7 @@ beforeEach(function () {
         public function getStub()
         {
             $d = DIRECTORY_SEPARATOR;
+
             return $this->resolveStubPath("stubs{$d}filament-plugin.stub");
         }
     };
