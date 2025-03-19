@@ -3,7 +3,7 @@
 namespace Coolsam\Modules;
 
 
-abstract class TableWidget extends \Filament\Widgets\TableWidget
+abstract class ChartWidget extends \Filament\Widgets\ChartWidget
 {
 
     use \Coolsam\Modules\Traits\CanAccessTrait;
