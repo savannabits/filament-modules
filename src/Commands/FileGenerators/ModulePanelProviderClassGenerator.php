@@ -125,14 +125,15 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
         $panelId = str($id)->prepend('-')->prepend($this->getModule()->getKebabName())->toString();
         $urlPath = str($id)->prepend('/')->prepend($this->getModule()->getKebabName())->toString();
         $label = $this->getModule()->getTitle() . ' ' . str($id)->studly()->snake()->title()->replace(['_', '-'], ' ')->toString();
-        $componentsDirectory = $isDefault ? '' : (Str::studly($id) . '/');
-        $componentsNamespace = $isDefault ? '' : (Str::studly($id) . '\\');
+        $componentsDirectory = Str::studly($panelId);
+        $componentsNamespace = (Str::studly($panelId) . '\\');
 
         $rootNamespace = str($this->getModule()->namespace())->rtrim('\\')->append('\\')->toString();
         $moduleName = $this->getModule()->getName();
 
         return new Literal(
             <<<PHP
+                \$separator = DIRECTORY_SEPARATOR;
                 return \$panel{$defaultOutput}
                     ->id(?)
                     ->path(?){$loginOutput}
@@ -140,17 +141,17 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
                     ->colors([
                         'primary' => {$this->simplifyFqn(Color::class)}::Amber,
                     ])
-                    ->discoverResources(in: module_path("$moduleName",'Filament/{$componentsDirectory}Resources'), for: '{$rootNamespace}Filament\\{$componentsNamespace}Resources')
-                    ->discoverPages(in:module_path("$moduleName", 'Filament/{$componentsDirectory}Pages'), for: '{$rootNamespace}Filament\\{$componentsNamespace}Pages')
+                    ->discoverResources(in: module("$moduleName", true)->appPath("Filament{\$separator}{$componentsDirectory}{\$separator}Resources"), for: module("$moduleName", true)->appNamespace('Filament\\{$componentsNamespace}Resources'))
+                    ->discoverPages(in:module("$moduleName", true)->appPath("Filament{\$separator}{$componentsDirectory}{\$separator}Pages"), for: module("$moduleName", true)->appNamespace('Filament\\{$componentsNamespace}Pages'))
                     ->pages([
                         {$this->simplifyFqn(Dashboard::class)}::class,
                     ])
-                    ->discoverWidgets(in:module_path("$moduleName", 'Filament/{$componentsDirectory}Widgets'), for: '{$rootNamespace}Filament\\{$componentsNamespace}Widgets')
+                    ->discoverWidgets(in:module("$moduleName", true)->appPath("Filament{\$separator}{$componentsDirectory}{\$separator}Widgets"), for: module("$moduleName", true)->appNamespace('Filament\\{$componentsNamespace}Widgets'))
                     ->widgets([
                         {$this->simplifyFqn(AccountWidget::class)}::class,
                         {$this->simplifyFqn(FilamentInfoWidget::class)}::class,
                     ])
-                    ->discoverClusters(in: module_path("$moduleName", 'Filament/{$componentsDirectory}Clusters'), for: '{$rootNamespace}Filament\\{$componentsNamespace}Clusters')
+                    ->discoverClusters(in: module("$moduleName", true)->appPath("Filament{\$separator}{$componentsDirectory}{\$separator}Clusters"), for: module("$moduleName", true)->appNamespace('Filament\\{$componentsNamespace}Clusters'))
                     ->middleware([
                         {$this->simplifyFqn(EncryptCookies::class)}::class,
                         {$this->simplifyFqn(AddQueuedCookiesToResponse::class)}::class,

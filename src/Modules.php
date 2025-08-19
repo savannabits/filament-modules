@@ -2,6 +2,8 @@
 
 namespace Coolsam\Modules;
 
+use Coolsam\Modules\Enums\ConfigMode;
+use Filament\Panel;
 use Illuminate\Console\Command;
 use Illuminate\Support\Traits\Macroable;
 use Nwidart\Modules\Facades\Module;
@@ -14,6 +16,34 @@ class Modules
     public function getModule(string $name): \Nwidart\Modules\Module
     {
         return Module::findOrFail($name);
+    }
+
+    /**
+     * @param  string  $moduleName
+     * @return Panel[]
+     */
+    public function getModulePanels(string $moduleName): array
+    {
+        $module = $this->getModule($moduleName);
+
+        // Scan the Providers/Filament directory of the panel for providers
+        $panelPath = $module->appPath("Providers" . DIRECTORY_SEPARATOR . "Filament");
+        $module = Module::find($moduleName);
+        if (! $module || ! is_dir($panelPath)) {
+            return [];
+        }
+        $pattern = $panelPath . DIRECTORY_SEPARATOR . '*PanelProvider.php';
+        $panelPaths = glob($pattern);
+        $panels_ids = collect($panelPaths)->map(function ($path) use($module, $moduleName) {
+            // Convert the path to a namespace
+            $namespace = $this->convertPathToNamespace($path);
+            // Get the panel ID from the class name
+            $id = str($namespace)->afterLast('\\')->before('PanelProvider')->kebab()->lower();
+            return str($id)->prepend('-')->prepend($this->getModule($moduleName)->getKebabName());
+        });
+        return collect(filament()->getPanels())->filter(function ($panel) use ($panels_ids) {
+            return $panels_ids->contains($panel->getId());
+        })->values()->all();
     }
 
     public function convertPathToNamespace(string $fullPath): string
@@ -50,5 +80,10 @@ class Modules
     {
         // return the base path of this package
         return dirname(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR) . ($path ? DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR) : '');
+    }
+
+    public function getMode(): ?ConfigMode
+    {
+        return ConfigMode::tryFrom(config('filament-modules.mode', ConfigMode::BOTH->value));
     }
 }
