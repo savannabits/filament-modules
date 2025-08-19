@@ -3,6 +3,7 @@
 namespace Coolsam\Modules\Concerns;
 
 use Coolsam\Modules\Facades\FilamentModules;
+use Illuminate\Console\Concerns\PromptsForMissingInput;
 use Illuminate\Support\Str;
 use Nwidart\Modules\Module;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,6 +11,7 @@ use Symfony\Component\Finder\Finder;
 
 trait GeneratesModularFiles
 {
+    use PromptsForMissingInput;
     protected function getArguments(): array
     {
         return array_merge(parent::getArguments(), [
