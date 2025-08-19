@@ -57,6 +57,13 @@ trait GeneratesModularFiles
             ->all();
     }
 
+    public function possibleFqnModels(): array
+    {
+        return collect($this->possibleModels())
+            ->map(fn ($model) => $this->getModule()->appNamespace("Models\\{$model}"))
+            ->all();
+    }
+
     protected function viewPath($path = ''): string
     {
         $views = $this->getModule()->resourcesPath('views');
