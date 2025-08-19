@@ -3,9 +3,9 @@
 namespace Coolsam\Modules\Commands;
 
 use Coolsam\Modules\Concerns\GeneratesModularFiles;
-use Illuminate\Console\GeneratorCommand;
+use Filament\Commands\MakeClusterCommand;
 
-class ModuleMakeFilamentClusterCommand extends GeneratorCommand
+class ModuleMakeFilamentClusterCommand extends MakeClusterCommand
 {
     use GeneratesModularFiles;
 
@@ -13,7 +13,7 @@ class ModuleMakeFilamentClusterCommand extends GeneratorCommand
 
     protected $description = 'Create a new Filament cluster class in the module';
 
-    protected $type = 'Filament Cluster';
+    protected string $type = 'Filament Cluster';
 
     protected function getRelativeNamespace(): string
     {

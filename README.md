@@ -1,13 +1,12 @@
-# Filament Modules v4.x
+# Filament Modules v5.x
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Afix-php-code-style+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
 
-> **NOTE:** This documentation is for **version 4.x** of the package, which only supports **Laravel 11** and
-**nwidart/laravel-modules ^11**. If you are using Laravel 10, please refer to
-> the [3.x documentation](https://github.com/savannabits/filament-modules/tree/3.x).
+> **NOTE:** This documentation is for **version 5.x** of the package, which supports **Laravel 11+**, **Filament 4.x** and
+**nwidart/laravel-modules 11+**. If you are using Filament 3.x, please refer to [4.x documentation](https://github.com/savannabits/filament-modules/tree/4.x) or [3.x documentation](https://github.com/savannabits/filament-modules/tree/3.x) if you are using Laravel 10.
 
 ![image](https://github.com/savannabits/filament-modules/assets/5610289/ba191f1d-b5ee-4eb9-9db7-d42a19cc8d38)
 
@@ -36,11 +35,9 @@ with Laravel Filament.
 v4.x of this package requires the following dependencies:
 
 - Laravel 11.x or higher
-- Filament 3.x or higher
+- Filament 4.x or higher
 - PHP 8.2 or higher
-- nwidart/laravel-modules 11.x
-
-If you are using Laravel 10 please use [version 3.x](https://github.com/savannabits/filament-modules/tree/3.x) instead.
+- nwidart/laravel-modules 11.x or 12.x
 
 ## Installation
 
@@ -50,10 +47,8 @@ You can install the package via composer:
 composer require coolsam/modules:^4
 ```
 
-This will automatically install `nwidart/laravel-modules: ^11` as well. Make sure you go through
-the [documentation](https://laravelmodules.com/docs/v11/introduction) to understand how to use the package and to
-configure it properly
-before proceeding.
+This will automatically install `nwidart/laravel-modules: ^11` (for Laravel 11) or `nwidart/laravel-modules: ^12` (for Laravel 12) as well. Make sure you go through
+the [documentation](https://laravelmodules.com/docs/12) to understand how to use the package and to configure it properly before proceeding.
 
 You can publish the config file with:
 

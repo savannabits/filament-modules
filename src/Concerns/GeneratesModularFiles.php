@@ -13,7 +13,7 @@ trait GeneratesModularFiles
     protected function getArguments(): array
     {
         return array_merge(parent::getArguments(), [
-            ['module', InputArgument::REQUIRED, 'The name of the module in which this should be installed'],
+            ['module', InputArgument::OPTIONAL, 'The name of the module in which this should be installed'],
         ]);
     }
 
@@ -118,6 +118,11 @@ trait GeneratesModularFiles
                     'Filament Plugin' => 'e.g AccessControlPlugin',
                     default => '',
                 },
+            ],
+            'module' => [
+                'In which Module should we create this?',
+                'e.g Blog',
+                true,
             ],
         ];
     }
