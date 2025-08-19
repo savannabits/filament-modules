@@ -5,26 +5,26 @@ namespace Coolsam\Modules\Commands;
 use Coolsam\Modules\Commands\FileGenerators\ModulePanelProviderClassGenerator;
 use Coolsam\Modules\Concerns\GeneratesModularFiles;
 use Filament\Commands\MakePanelCommand;
-use Filament\Facades\Filament;
 use Filament\Support\Commands\Concerns\CanGeneratePanels;
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Filament\Support\Commands\Exceptions\FailureCommandOutput;
-use Illuminate\Console\Concerns\PromptsForMissingInput;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
 
 class ModuleMakeFilamentPanelCommand extends MakePanelCommand
 {
-    use GeneratesModularFiles;
     use CanGeneratePanels;
     use CanManipulateFiles;
+    use GeneratesModularFiles;
 
-    protected $name = "module:make:filament-panel";
+    protected $name = 'module:make:filament-panel';
+
     protected $description = 'Create a new Filament panel class in the specified module';
 
     /**
@@ -88,7 +88,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
     protected function ensureModuleArgument(): void
     {
         if (! $this->argument('module')) {
-            $module = select("Please select the module to create the panel in:", \Module::allEnabled());
+            $module = select('Please select the module to create the panel in:', \Module::allEnabled());
             if (! $module) {
                 $this->components->error('No module selected. Aborting panel creation.');
                 exit(1);
@@ -96,6 +96,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
             $this->input->setArgument('module', $module);
         }
     }
+
     protected function getRelativeNamespace(): string
     {
         return 'Providers\\Filament';

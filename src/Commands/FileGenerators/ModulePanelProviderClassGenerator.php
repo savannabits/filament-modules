@@ -1,4 +1,5 @@
 <?php
+
 namespace Coolsam\Modules\Commands\FileGenerators;
 
 use Filament\Http\Middleware\Authenticate;
@@ -27,6 +28,7 @@ use Nette\PhpGenerator\Method;
 class ModulePanelProviderClassGenerator extends ClassGenerator
 {
     public ?\Nwidart\Modules\Module $module;
+
     final public function __construct(
         protected string $fqn,
         protected string $id,
@@ -120,9 +122,9 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
             : '';
 
         $id = str($this->getId())->kebab()->lower()->toString();
-        $panelId = str($id)->prepend("-")->prepend($this->getModule()->getKebabName())->toString();
-        $urlPath = str($id)->prepend("/")->prepend($this->getModule()->getKebabName())->toString();
-        $label = $this->getModule()->getTitle() . ' ' . str($id)->studly()->snake()->title()->replace(['_','-'], ' ')->toString();
+        $panelId = str($id)->prepend('-')->prepend($this->getModule()->getKebabName())->toString();
+        $urlPath = str($id)->prepend('/')->prepend($this->getModule()->getKebabName())->toString();
+        $label = $this->getModule()->getTitle() . ' ' . str($id)->studly()->snake()->title()->replace(['_', '-'], ' ')->toString();
         $componentsDirectory = $isDefault ? '' : (Str::studly($id) . '/');
         $componentsNamespace = $isDefault ? '' : (Str::studly($id) . '\\');
 

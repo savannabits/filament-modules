@@ -3,18 +3,17 @@
 namespace Coolsam\Modules\Commands;
 
 use Coolsam\Modules\Concerns\GeneratesModularFiles;
-use Coolsam\Modules\Facades\FilamentModules;
 use Filament\Commands\MakeResourceCommand;
-
 use Nwidart\Modules\Facades\Module;
+
 use function Laravel\Prompts\select;
-use function Laravel\Prompts\text;
 
 class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
 {
     use GeneratesModularFiles;
 
-    protected $name = "module:make:filament-resource";
+    protected $name = 'module:make:filament-resource';
+
     protected $description = 'Create a new Filament resource class in the specified module';
 
     protected string $type = 'Resource';
@@ -25,6 +24,7 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
     ];
 
     use GeneratesModularFiles;
+
     protected function getDefaultStubPath(): string
     {
         return base_path('vendor/filament/filament/stubs');
@@ -39,14 +39,15 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
     {
         $this->ensureModuleArgument();
         $this->ensureModelNamespace();
+
         return parent::handle();
     }
 
     public function ensureModuleArgument(): void
     {
-        if (!$this->argument('module')) {
-            $module = select("Please select the module to create the resource in:", Module::allEnabled());
-            if (!$module) {
+        if (! $this->argument('module')) {
+            $module = select('Please select the module to create the resource in:', Module::allEnabled());
+            if (! $module) {
                 $this->error('No module selected. Aborting resource creation.');
                 exit(1);
             }
@@ -57,18 +58,18 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
     public function ensureModelNamespace(): void
     {
         $modelNamespace = $this->input->getOption('model-namespace');
-        if (!$modelNamespace) {
+        if (! $modelNamespace) {
             // try to get from name
             $name = $this->input->getArgument('model');
             if ($name) {
                 $modelName = str_replace('Resource', '', class_basename($name));
             } else {
-                $modelName = select("Please select the model within this module for the resource:", $this->possibleFqnModels());
+                $modelName = select('Please select the model within this module for the resource:', $this->possibleFqnModels());
             }
-            $modelNamespace = $this->rootNamespace(). '\\Models';
+            $modelNamespace = $this->rootNamespace() . '\\Models';
             // Ask to select model namespace
 
-            if (!$modelName) {
+            if (! $modelName) {
                 $this->error('No model namespace selected. Aborting resource creation.');
                 exit(1);
             }

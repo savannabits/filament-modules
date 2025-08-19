@@ -29,7 +29,8 @@ class ModulesPlugin implements Plugin
         }
     }
 
-    public function boot(Panel $panel): void {
+    public function boot(Panel $panel): void
+    {
         // Register panels
         $mode = ConfigMode::tryFrom(config('filament-modules.mode', ConfigMode::BOTH->value));
         if ($mode?->shouldRegisterPanels()) {
@@ -42,17 +43,18 @@ class ModulesPlugin implements Plugin
             $panel->navigationGroups([
                 NavigationGroup::make($group)
                     ->icon($groupIcon)
-                    ->collapsed()
+                    ->collapsed(),
             ]);
-            $navItems = collect($panels)->map(function (Panel $panel) use ($group, $groupIcon, $groupSort, $openInNewTab) {
+            $navItems = collect($panels)->map(function (Panel $panel) use ($group, $groupSort, $openInNewTab) {
                 $moduleName = str($panel->getPath())->before('/');
                 $module = \Module::find($moduleName);
-                if (!$module) {
+                if (! $module) {
                     return null;
                 }
-//                $panelLabel = str($panel->getId())->after($moduleName)->trim('-')->snake()->title()->replace('_', ' ');
-//                $label = str($module->getTitle())->append(" - ")->append($panelLabel);
-                $label = $panel->getBrandName() ?? str($panel->getId())->after($moduleName)->trim('-')->studly()->snake()->replace("_", " ")->toString();
+                //                $panelLabel = str($panel->getId())->after($moduleName)->trim('-')->snake()->title()->replace('_', ' ');
+                //                $label = str($module->getTitle())->append(" - ")->append($panelLabel);
+                $label = $panel->getBrandName() ?? str($panel->getId())->after($moduleName)->trim('-')->studly()->snake()->replace('_', ' ')->toString();
+
                 return NavigationItem::make($label)
                     ->group($group)
                     ->sort($groupSort)
@@ -92,6 +94,7 @@ class ModulesPlugin implements Plugin
 
     /**
      * Get all Filament panels registered by modules.
+     *
      * @return Panel[]
      */
     protected function getModulePanels(): array
@@ -101,17 +104,19 @@ class ModulesPlugin implements Plugin
         $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*.php';
         $panelPaths = glob($pattern);
 
-        $panelIds = collect($panelPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->map(function($class) {
+        $panelIds = collect($panelPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->map(function ($class) {
             // Get the panel ID and check if it is registered
             $id = str($class)->afterLast('\\')->before('PanelProvider')->kebab()->lower();
             // get module it belongs to as well
             $moduleName = str($class)->after('Modules\\')->before('\\Providers\\Filament');
             $module = \Module::find($moduleName);
-            if (!$module) {
+            if (! $module) {
                 return null;
             }
-            return str($id)->prepend("-")->prepend($module->getKebabName());
+
+            return str($id)->prepend('-')->prepend($module->getKebabName());
         });
+
         return collect(filament()->getPanels())->filter(function ($panel) use ($panelIds) {
             // Check if the panel ID is in the list of panel IDs
             return $panelIds->contains($panel->getId());

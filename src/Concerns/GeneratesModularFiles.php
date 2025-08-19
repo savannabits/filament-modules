@@ -12,6 +12,7 @@ use Symfony\Component\Finder\Finder;
 trait GeneratesModularFiles
 {
     use PromptsForMissingInput;
+
     protected function getArguments(): array
     {
         return array_merge(parent::getArguments(), [

@@ -8,6 +8,7 @@ use Filament\Support\Commands\Exceptions\FailureCommandOutput;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+
 use function Laravel\Prompts\text;
 
 trait CanGenerateModulePanels

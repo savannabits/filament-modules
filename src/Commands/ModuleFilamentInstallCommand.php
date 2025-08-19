@@ -109,7 +109,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
             $this->makeDirectory($dir);
         }
 
-        if (! is_dir($dir = $this->getModule()->appPath("Providers". DIRECTORY_SEPARATOR . 'Filament'))) {
+        if (! is_dir($dir = $this->getModule()->appPath('Providers' . DIRECTORY_SEPARATOR . 'Filament'))) {
             $this->makeDirectory($dir);
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 // config for Coolsam/Modules
 return [
     'mode' => \Coolsam\Modules\Enums\ConfigMode::BOTH->value, // 'plugins' or 'panels', determines how the Filament Modules are registered
