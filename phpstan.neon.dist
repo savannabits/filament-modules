@@ -1,7 +1,11 @@
 includes:
     - phpstan-baseline.neon
+    - vendor/nunomad/phpstan-filament/extension.neon
 
 parameters:
+    larastan:
+     analyze:
+        - src
     level: 4
     paths:
         - src
