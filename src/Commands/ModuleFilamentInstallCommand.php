@@ -55,10 +55,9 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
         if ($this->mode->shouldRegisterPlugins()) {
             // Create Filament Plugin
             $this->createDefaultFilamentPlugin();
-
-            if ($this->cluster && confirm('Would you like to create a default Cluster for the module?', true)) {
-                $this->createDefaultFilamentCluster();
-            }
+        }
+        if ($this->cluster && confirm('Would you like to create a default Cluster for the module?', true)) {
+            $this->createDefaultFilamentCluster();
         }
 
         // TODO: Support creation of panels
@@ -157,6 +156,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
         $this->call('module:make:filament-cluster', [
             'name' => $module->getStudlyName(),
             'module' => $module->getStudlyName(),
+            '--panel' => filament()->getDefaultPanel()->getId(),
         ]);
     }
 }

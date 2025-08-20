@@ -59,7 +59,6 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->registerModuleMacros();
-        $this->attemptToRegisterModuleProviders();
     }
 
     public function attemptToRegisterModuleProviders(): void
@@ -85,6 +84,7 @@ class ModulesServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        $this->attemptToRegisterModuleProviders();
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
