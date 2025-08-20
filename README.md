@@ -55,7 +55,7 @@ v5.x of this package requires the following dependencies:
 You can install the package via composer:
 
 ```bash
-composer require coolsam/modules:^4
+composer require coolsam/modules
 ```
 
 This will automatically install `nwidart/laravel-modules: ^11` (for Laravel 11) or `nwidart/laravel-modules: ^12` (for
