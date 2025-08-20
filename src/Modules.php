@@ -46,6 +46,23 @@ class Modules
         })->values()->all();
     }
 
+    public function getModuleClusters(string $moduleName)
+    {
+        $module = $this->getModule($moduleName);
+
+        // Scan the Clusters directory of the module for clusters
+        $clusterPath = $module->appPath("Filament" . DIRECTORY_SEPARATOR . "Clusters");
+        if (! is_dir($clusterPath)) {
+            return [];
+        }
+        $pattern = $clusterPath . DIRECTORY_SEPARATOR ."*".DIRECTORY_SEPARATOR. '*Cluster.php';
+        $clusterPaths = glob($pattern);
+        return collect($clusterPaths)->map(function ($path) use ($module) {
+            // Convert the path to a namespace
+            return $this->convertPathToNamespace($path);
+        })->all();
+    }
+
     public function convertPathToNamespace(string $fullPath): string
     {
         $base = str(trim(config('modules.paths.modules', base_path('Modules')), '/\\'));
@@ -85,5 +102,30 @@ class Modules
     public function getMode(): ?ConfigMode
     {
         return ConfigMode::tryFrom(config('filament-modules.mode', ConfigMode::BOTH->value));
+    }
+
+    public function getModuleFilamentPageComponentLocation(string $moduleName, ?string $panelId = null, bool $forCluster = false): array
+    {
+        $module = $this->getModule($moduleName);
+        $viewPath = $module->getExtraPath('resources'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'pages');
+        $componentNamespace = $module->appNamespace('Filament\\Pages');
+        if ($panelId) {
+            $panelDir = str($panelId)->studly()->toString();
+            $viewPath = $module->getExtraPath('resources'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.str($panelDir)->kebab()->toString());
+            $componentNamespace = $module->appNamespace('Filament\\' . $panelDir);
+        } elseif ($forCluster) {
+            $viewPath = $module->getExtraPath('resources'.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'filament'.DIRECTORY_SEPARATOR.'clusters');
+            $componentNamespace = $module->appNamespace('Filament\\Clusters');
+        }
+        // Create if it doesn't exist
+        if (! is_dir($viewPath)) {
+            mkdir($viewPath, 0755, true);
+        }
+        $viewNamespace = $module->getLowerName();
+        return [
+            'namespace' => $componentNamespace,
+            'path' => $viewPath,
+            'viewNamespace' => $viewNamespace,
+        ];
     }
 }
