@@ -9,7 +9,6 @@ use Filament\Commands\MakeResourceCommand;
 use Illuminate\Support\Arr;
 use Nwidart\Modules\Facades\Module;
 
-use Symfony\Component\Console\Input\InputOption;
 use function Laravel\Prompts\search;
 use function Laravel\Prompts\select;
 
@@ -93,7 +92,7 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
     public function ensurePanel()
     {
         $defaultPanel = filament()->getDefaultPanel();
-        if (!FilamentModules::getMode()->shouldRegisterPanels()) {
+        if (! FilamentModules::getMode()->shouldRegisterPanels()) {
             $this->panel = $defaultPanel;
         } else {
             $modulePanels = FilamentModules::getModulePanels($this->getModule());
@@ -128,7 +127,7 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
         } else {
             // Default to the module's filament resources directory
             $directories = [
-                $this->getModule()->appPath("Filament".DIRECTORY_SEPARATOR."Resources"),
+                $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Resources'),
             ];
             $namespaces = [
                 $this->getModule()->appNamespace('Filament\\Resources'),
@@ -145,7 +144,7 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
         if (count($namespaces) < 2) {
             return [
                 (Arr::first($namespaces) ?? $this->getModule()->appNamespace('Filament\\Resources')),
-                (Arr::first($directories) ?? $this->getModule()->appPath("Filament".DIRECTORY_SEPARATOR."Resources")),
+                (Arr::first($directories) ?? $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Resources')),
             ];
         }
 

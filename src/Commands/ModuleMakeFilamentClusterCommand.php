@@ -6,6 +6,7 @@ use Coolsam\Modules\Concerns\GeneratesModularFiles;
 use Coolsam\Modules\Facades\FilamentModules;
 use Filament\Commands\MakeClusterCommand;
 use Illuminate\Support\Arr;
+
 use function Laravel\Prompts\search;
 use function Laravel\Prompts\select;
 
@@ -54,7 +55,7 @@ class ModuleMakeFilamentClusterCommand extends MakeClusterCommand
             $defaultPanel = filament()->getDefaultPanel();
             $options = collect([
                 $defaultPanel,
-                ...$panels
+                ...$panels,
             ])->mapWithKeys(function ($panel) {
                 return [$panel->getId() => $panel->getId()];
             })->toArray();
@@ -91,7 +92,8 @@ class ModuleMakeFilamentClusterCommand extends MakeClusterCommand
 
         if (count($namespaces) < 2) {
             $this->clustersNamespace = (Arr::first($namespaces) ?? $this->getModule()->appNamespace('Filament\\Clusters'));
-            $this->clustersDirectory = (Arr::first($directories) ?? $this->getModule()->appPath("Filament".DIRECTORY_SEPARATOR."Clusters".DIRECTORY_SEPARATOR));
+            $this->clustersDirectory = (Arr::first($directories) ?? $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Clusters' . DIRECTORY_SEPARATOR));
+
             return;
         }
 

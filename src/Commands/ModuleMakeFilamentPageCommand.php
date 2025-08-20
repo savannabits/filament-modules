@@ -13,6 +13,7 @@ use Filament\Support\Facades\FilamentCli;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
+
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\search;
 use function Laravel\Prompts\select;
@@ -22,7 +23,9 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
     use GeneratesModularFiles;
 
     protected $name = 'module:make:filament-page';
+
     protected $description = 'Create a new Filament page class in the specified module';
+
     protected string $type = 'Page';
 
     protected $aliases = [
@@ -32,7 +35,7 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
 
     protected function getRelativeNamespace(): string
     {
-        return "Filament\\Pages";
+        return 'Filament\\Pages';
     }
 
     /**
@@ -42,14 +45,15 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
     {
         $this->ensureModuleArgument();
         $this->ensurePanel();
+
         return parent::handle();
     }
 
     public function ensureModuleArgument(): void
     {
-        if (!$this->argument('module')) {
+        if (! $this->argument('module')) {
             $module = select('Please select the module to create the page in:', \Module::allEnabled());
-            if (!$module) {
+            if (! $module) {
                 $this->error('No module selected. Aborting page creation.');
                 exit(1);
             }
@@ -63,22 +67,24 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
      */
     public function ensurePanel(): void
     {
-        if (!$this->option('panel')) {
+        if (! $this->option('panel')) {
             $defaultPanel = filament()->getDefaultPanel();
 
-            if (!FilamentModules::getMode()->shouldRegisterPanels()) {
+            if (! FilamentModules::getMode()->shouldRegisterPanels()) {
                 $this->input->setOption('panel', $defaultPanel->getId());
+
                 return;
             }
             $panels = FilamentModules::getModulePanels($this->argument('module'));
             if (empty($panels)) {
                 $this->input->setOption('panel', $defaultPanel->getId());
+
                 return;
             }
             $options = collect([
                 $defaultPanel,
-                ...$panels
-            ])->mapWithKeys(function (Panel|Cluster $panel) {
+                ...$panels,
+            ])->mapWithKeys(function (Panel | Cluster $panel) {
                 return [$panel->getId() => $panel->getId()];
             })->toArray();
 
@@ -88,7 +94,7 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
                 default: $defaultPanel->getId(),
             );
 
-            if (!$selectedPanel) {
+            if (! $selectedPanel) {
                 $this->error('No panel selected. Aborting page creation.');
                 exit(1);
             }
@@ -108,9 +114,10 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
             $clusters = FilamentModules::getModuleClusters($this->argument('module'));
             if (empty($clusters)) {
                 $this->clusterFqn = null;
+
                 return;
             }
-            if (confirm("Would you like to create the page in a cluster?", false)) {
+            if (confirm('Would you like to create the page in a cluster?', false)) {
                 if (count($clusters) === 1) {
                     $this->clusterFqn = Arr::first($clusters);
                     // Show this to the user and ask to continue
@@ -143,17 +150,20 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
             return;
         }
 
-        if (!FilamentModules::getMode()->shouldRegisterPanels()) {
+        if (! FilamentModules::getMode()->shouldRegisterPanels()) {
             $this->pagesNamespace = $this->getModule()->appNamespace('Filament\\Pages');
-            $this->pagesDirectory = $this->getModule()->appPath("Filament".DIRECTORY_SEPARATOR."Pages".DIRECTORY_SEPARATOR);
+            $this->pagesDirectory = $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Pages' . DIRECTORY_SEPARATOR);
+
             return;
         }
 
         $panelModules = FilamentModules::getModulePanels($this->argument('module'));
-        if (empty($panelModules) || !collect($panelModules)->contains(fn(Panel|Cluster $panel
-            ) => $panel->getId() === $this->panel->getId())) {
+        if (empty($panelModules) || ! collect($panelModules)->contains(fn (
+            Panel | Cluster $panel
+        ) => $panel->getId() === $this->panel->getId())) {
             $this->pagesNamespace = $this->getModule()->appNamespace('Filament\\Pages');
-            $this->pagesDirectory = $this->getModule()->appPath("Filament".DIRECTORY_SEPARATOR."Pages".DIRECTORY_SEPARATOR);
+            $this->pagesDirectory = $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Pages' . DIRECTORY_SEPARATOR);
+
             return;
         }
 
@@ -169,7 +179,8 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
 
         if (count($namespaces) < 2) {
             $this->pagesNamespace = (Arr::first($namespaces) ?? $this->getModule()->appNamespace('Filament\\Pages'));
-            $this->pagesDirectory = (Arr::first($directories) ?? $this->getModule()->appPath("Filament".DIRECTORY_SEPARATOR."Pages".DIRECTORY_SEPARATOR));
+            $this->pagesDirectory = (Arr::first($directories) ?? $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Pages' . DIRECTORY_SEPARATOR));
+
             return;
         }
 
@@ -187,9 +198,13 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
 
                 $search = str($search)->trim()->replace(['\\', '/'], '');
 
-                return array_filter($keyedNamespaces,
-                    fn(string $namespace): bool => str($namespace)->replace(['\\', '/'], '')->contains($search,
-                        ignoreCase: true));
+                return array_filter(
+                    $keyedNamespaces,
+                    fn (string $namespace): bool => str($namespace)->replace(['\\', '/'], '')->contains(
+                        $search,
+                        ignoreCase: true
+                    )
+                );
             },
         );
         $this->pagesDirectory = $directories[array_search($this->pagesNamespace, $namespaces)];
@@ -197,27 +212,27 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
 
     protected function configureLocation(): void
     {
-        $this->fqn = $this->pagesNamespace.'\\'.$this->fqnEnd;
+        $this->fqn = $this->pagesNamespace . '\\' . $this->fqnEnd;
 
-        if ((!$this->hasResource) || ($this->resourcePageType === ResourcePage::class)) {
+        if ((! $this->hasResource) || ($this->resourcePageType === ResourcePage::class)) {
             $componentLocations = FilamentCli::getComponentLocations();
             if (FilamentModules::getMode()->shouldRegisterPanels()) {
                 $modelPanels = FilamentModules::getModulePanels($this->argument('module'));
-                $modelPanel = collect($modelPanels)->first(fn(Panel|Cluster $panel) => $panel->getId() === $this->panel->getId());
+                $modelPanel = collect($modelPanels)->first(fn (Panel | Cluster $panel) => $panel->getId() === $this->panel->getId());
             } else {
                 $modelPanel = null;
             }
-            $pageComponent = FilamentModules::getModuleFilamentPageComponentLocation($this->getModule()->getName(), panelId: $modelPanel?->getId(), forCluster: !!$this->clusterFqn);
+            $pageComponent = FilamentModules::getModuleFilamentPageComponentLocation($this->getModule()->getName(), panelId: $modelPanel?->getId(), forCluster: (bool) $this->clusterFqn);
             $componentLocations[$pageComponent['namespace']] = $pageComponent;
             $matchingComponentLocationNamespaces = collect($componentLocations)
                 ->keys()
-                ->filter(fn(string $namespace): bool => str($this->fqn)->startsWith($namespace));
+                ->filter(fn (string $namespace): bool => str($this->fqn)->startsWith($namespace));
             // Manually add this module's namespace there
             $v = str($this->fqn)
                 ->whenContains(
                     'Filament\\',
-                    fn(Stringable $fqn) => $fqn->after('Filament\\')->prepend('Filament\\'),
-                    fn(Stringable $fqn) => $fqn->replaceFirst(app()->getNamespace(), ''),
+                    fn (Stringable $fqn) => $fqn->after('Filament\\')->prepend('Filament\\'),
+                    fn (Stringable $fqn) => $fqn->replaceFirst(app()->getNamespace(), ''),
                 )
                 ->replace('\\', '/')
                 ->explode('/')
