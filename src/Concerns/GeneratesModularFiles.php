@@ -3,6 +3,7 @@
 namespace Coolsam\Modules\Concerns;
 
 use Coolsam\Modules\Facades\FilamentModules;
+use Illuminate\Console\Concerns\PromptsForMissingInput;
 use Illuminate\Support\Str;
 use Nwidart\Modules\Module;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,10 +11,12 @@ use Symfony\Component\Finder\Finder;
 
 trait GeneratesModularFiles
 {
+    use PromptsForMissingInput;
+
     protected function getArguments(): array
     {
         return array_merge(parent::getArguments(), [
-            ['module', InputArgument::REQUIRED, 'The name of the module in which this should be installed'],
+            ['module', InputArgument::OPTIONAL, 'The name of the module in which this should be installed'],
         ]);
     }
 
@@ -54,6 +57,13 @@ trait GeneratesModularFiles
             ->map(fn ($file) => $file->getBasename('.php'))
             ->sort()
             ->values()
+            ->all();
+    }
+
+    public function possibleFqnModels(): array
+    {
+        return collect($this->possibleModels())
+            ->map(fn ($model) => $this->getModule()->appNamespace("Models\\{$model}"))
             ->all();
     }
 
@@ -118,6 +128,11 @@ trait GeneratesModularFiles
                     'Filament Plugin' => 'e.g AccessControlPlugin',
                     default => '',
                 },
+            ],
+            'module' => [
+                'In which Module should we create this?',
+                'e.g Blog',
+                true,
             ],
         ];
     }

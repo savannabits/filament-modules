@@ -2,6 +2,7 @@
 
 namespace Coolsam\Modules\Commands;
 
+use Coolsam\Modules\Enums\ConfigMode;
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Illuminate\Console\Command;
 use Illuminate\Console\Concerns\PromptsForMissingInput;
@@ -33,6 +34,8 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
 
     private bool $cluster;
 
+    private ConfigMode $mode = ConfigMode::BOTH;
+
     private string $moduleName;
 
     /**
@@ -41,17 +44,23 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
     public function handle(): void
     {
         $this->moduleName = $this->argument('module');
+        $this->mode = ConfigMode::tryFrom(\Config::get('filament-modules.mode', ConfigMode::BOTH->value));
+
         if (! $this->option('cluster')) {
             $this->cluster = confirm('Do you want to organize your code into filament clusters?', true);
         }
         // Ensure the Filament directories exist
         $this->ensureFilamentDirectoriesExist();
-        // Create Filament Plugin
-        $this->createDefaultFilamentPlugin();
 
+        if ($this->mode->shouldRegisterPlugins()) {
+            // Create Filament Plugin
+            $this->createDefaultFilamentPlugin();
+        }
         if ($this->cluster && confirm('Would you like to create a default Cluster for the module?', true)) {
             $this->createDefaultFilamentCluster();
         }
+
+        // TODO: Support creation of panels
     }
 
     protected function getArguments(): array
@@ -99,6 +108,10 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
             $this->makeDirectory($dir);
         }
 
+        if (! is_dir($dir = $this->getModule()->appPath('Providers' . DIRECTORY_SEPARATOR . 'Filament'))) {
+            $this->makeDirectory($dir);
+        }
+
         if ($this->cluster) {
             $dir = $this->getModule()->appPath('Filament/Clusters');
             if (! is_dir($dir = $this->getModule()->appPath('Filament/Clusters'))) {
@@ -143,6 +156,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
         $this->call('module:make:filament-cluster', [
             'name' => $module->getStudlyName(),
             'module' => $module->getStudlyName(),
+            '--panel' => filament()->getDefaultPanel()->getId(),
         ]);
     }
 }

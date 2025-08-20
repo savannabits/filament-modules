@@ -15,6 +15,11 @@ class ModuleMakeFilamentPluginCommand extends GeneratorCommand
 
     protected $type = 'Filament Plugin';
 
+    protected $aliases = [
+        'module:filament:plugin',
+        'module:filament:make-plugin',
+    ];
+
     protected function getRelativeNamespace(): string
     {
         return 'Filament';

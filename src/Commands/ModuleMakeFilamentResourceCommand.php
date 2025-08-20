@@ -2,304 +2,178 @@
 
 namespace Coolsam\Modules\Commands;
 
+use Coolsam\Modules\Concerns\GeneratesModularFiles;
+use Coolsam\Modules\Enums\ConfigMode;
 use Coolsam\Modules\Facades\FilamentModules;
-use Filament\Clusters\Cluster;
-use Filament\Facades\Filament;
-use Filament\Forms\Commands\Concerns\CanGenerateForms;
-use Filament\Panel;
-use Filament\Support\Commands\Concerns\CanIndentStrings;
-use Filament\Support\Commands\Concerns\CanManipulateFiles;
-use Filament\Support\Commands\Concerns\CanReadModelSchemas;
-use Filament\Tables\Commands\Concerns\CanGenerateTables;
-use Illuminate\Console\Command;
+use Filament\Commands\MakeResourceCommand;
 use Illuminate\Support\Arr;
+use Nwidart\Modules\Facades\Module;
 
+use function Laravel\Prompts\search;
 use function Laravel\Prompts\select;
-use function Laravel\Prompts\text;
 
-class ModuleMakeFilamentResourceCommand extends Command
+class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
 {
-    use CanGenerateForms;
-    use CanGenerateTables;
-    use CanIndentStrings;
-    use CanManipulateFiles;
-    use CanReadModelSchemas;
+    use GeneratesModularFiles;
 
-    protected $signature = 'module:make:filament-resource {name?} {module?} {--model-namespace=} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--panel=} {--F|force}';
+    protected $name = 'module:make:filament-resource';
 
-    protected $description = 'Create a new Filament resource in a module';
+    protected $description = 'Create a new Filament resource class in the specified module';
 
-    public function handle(): int
-    {
-        $moduleName = $this->argument('module') ?? text('In which Module should we create the resource?', 'e.g Blog', required: true);
-        $moduleStudlyName = str($moduleName)->studly()->toString();
-        $module = FilamentModules::getModule($moduleStudlyName);
-        $modelNamespace = $this->option('model-namespace') ?? $module->appNamespace('Models');
-        $modelNamespace = str($modelNamespace)->rtrim('\\')->toString();
+    protected string $type = 'Resource';
 
-        // Copied from make:filament-resource and modified by smaosa
-        $model = (string) str($this->argument('name') ?? text(
-            label: 'What is the model name?',
-            placeholder: 'BlogPost',
-            required: true,
-        ))
-            ->studly()
-            ->beforeLast('Resource')
-            ->trim('/')
-            ->trim('\\')
-            ->trim(' ')
-            ->studly()
-            ->replace('/', '\\');
+    protected $aliases = [
+        'module:filament:resource',
+        'module:filament:make-resource',
+    ];
 
-        if (blank($model)) {
-            $model = 'Resource';
-        }
-
-        $modelClass = (string) str($model)->afterLast('\\');
-        $modelSubNamespace = str($model)->contains('\\') ?
-            (string) str($model)->beforeLast('\\') :
-            '';
-        $pluralModelClass = (string) str($modelClass)->pluralStudly();
-        $needsAlias = $modelClass === 'Record';
-
-        $panel = $this->option('panel');
-
-        if ($panel) {
-            $panel = Filament::getPanel($panel);
-        }
-
-        if (! $panel) {
-            $panels = Filament::getPanels();
-
-            /** @var Panel $panel */
-            $panel = (count($panels) > 1) ? $panels[select(
-                label: 'Which panel would you like to create this in?',
-                options: array_map(
-                    fn (Panel $panel): string => $panel->getId(),
-                    $panels,
-                ),
-                default: Filament::getDefaultPanel()->getId()
-            )] : Arr::first($panels);
-        }
-
-        $resourceDirectories = collect($panel->getResourceDirectories())->filter(fn ($directory) => str($directory)->contains($module->appPath()))->values()->toArray();
-        $resourceNamespaces = collect($panel->getResourceNamespaces())->filter(fn ($namespace) => str($namespace)->contains($module->appNamespace()))->values()->toArray();
-
-        $namespace = (count($resourceNamespaces) > 1) ?
-            select(
-                label: 'Which namespace would you like to create this in?',
-                options: $resourceNamespaces
-            ) :
-            (Arr::first($resourceNamespaces) ?? $module->appNamespace('Filament\\Resources'));
-        $path = (count($resourceDirectories) > 1) ?
-            $resourceDirectories[array_search($namespace, $resourceNamespaces)] :
-            (Arr::first($resourceDirectories) ?? $module->appPath('Filament/Resources/'));
-
-        $resource = "{$model}Resource";
-        $resourceClass = "{$modelClass}Resource";
-        $resourceNamespace = $modelSubNamespace;
-        $namespace .= $resourceNamespace !== '' ? "\\{$resourceNamespace}" : '';
-        $listResourcePageClass = "List{$pluralModelClass}";
-        $manageResourcePageClass = "Manage{$pluralModelClass}";
-        $createResourcePageClass = "Create{$modelClass}";
-        $editResourcePageClass = "Edit{$modelClass}";
-        $viewResourcePageClass = "View{$modelClass}";
-
-        $baseResourcePath =
-            (string) str($resource)
-                ->prepend('/')
-                ->prepend($path)
-                ->replace('\\', '/')
-                ->replace('//', '/');
-
-        $resourcePath = "{$baseResourcePath}.php";
-        $resourcePagesDirectory = "{$baseResourcePath}/Pages";
-        $listResourcePagePath = "{$resourcePagesDirectory}/{$listResourcePageClass}.php";
-        $manageResourcePagePath = "{$resourcePagesDirectory}/{$manageResourcePageClass}.php";
-        $createResourcePagePath = "{$resourcePagesDirectory}/{$createResourcePageClass}.php";
-        $editResourcePagePath = "{$resourcePagesDirectory}/{$editResourcePageClass}.php";
-        $viewResourcePagePath = "{$resourcePagesDirectory}/{$viewResourcePageClass}.php";
-
-        if (! $this->option('force') && $this->checkForCollision([
-            $resourcePath,
-            $listResourcePagePath,
-            $manageResourcePagePath,
-            $createResourcePagePath,
-            $editResourcePagePath,
-            $viewResourcePagePath,
-        ])) {
-            return static::INVALID;
-        }
-
-        $pages = '';
-        $pages .= '\'index\' => Pages\\' . ($this->option('simple') ? $manageResourcePageClass : $listResourcePageClass) . '::route(\'/\'),';
-
-        if (! $this->option('simple')) {
-            $pages .= PHP_EOL . "'create' => Pages\\{$createResourcePageClass}::route('/create'),";
-
-            if ($this->option('view')) {
-                $pages .= PHP_EOL . "'view' => Pages\\{$viewResourcePageClass}::route('/{record}'),";
-            }
-
-            $pages .= PHP_EOL . "'edit' => Pages\\{$editResourcePageClass}::route('/{record}/edit'),";
-        }
-
-        $tableActions = [];
-
-        if ($this->option('view')) {
-            $tableActions[] = 'Tables\Actions\ViewAction::make(),';
-        }
-
-        $tableActions[] = 'Tables\Actions\EditAction::make(),';
-
-        $relations = '';
-
-        if ($this->option('simple')) {
-            $tableActions[] = 'Tables\Actions\DeleteAction::make(),';
-
-            if ($this->option('soft-deletes')) {
-                $tableActions[] = 'Tables\Actions\ForceDeleteAction::make(),';
-                $tableActions[] = 'Tables\Actions\RestoreAction::make(),';
-            }
-        } else {
-            $relations .= PHP_EOL . 'public static function getRelations(): array';
-            $relations .= PHP_EOL . '{';
-            $relations .= PHP_EOL . '    return [';
-            $relations .= PHP_EOL . '        //';
-            $relations .= PHP_EOL . '    ];';
-            $relations .= PHP_EOL . '}' . PHP_EOL;
-        }
-
-        $tableActions = implode(PHP_EOL, $tableActions);
-
-        $tableBulkActions = [];
-
-        $tableBulkActions[] = 'Tables\Actions\DeleteBulkAction::make(),';
-
-        $eloquentQuery = '';
-
-        if ($this->option('soft-deletes')) {
-            $tableBulkActions[] = 'Tables\Actions\ForceDeleteBulkAction::make(),';
-            $tableBulkActions[] = 'Tables\Actions\RestoreBulkAction::make(),';
-
-            $eloquentQuery .= PHP_EOL . PHP_EOL . 'public static function getEloquentQuery(): Builder';
-            $eloquentQuery .= PHP_EOL . '{';
-            $eloquentQuery .= PHP_EOL . '    return parent::getEloquentQuery()';
-            $eloquentQuery .= PHP_EOL . '        ->withoutGlobalScopes([';
-            $eloquentQuery .= PHP_EOL . '            SoftDeletingScope::class,';
-            $eloquentQuery .= PHP_EOL . '        ]);';
-            $eloquentQuery .= PHP_EOL . '}';
-        }
-
-        $tableBulkActions = implode(PHP_EOL, $tableBulkActions);
-
-        $potentialCluster = (string) str($namespace)->beforeLast('\Resources');
-        $clusterAssignment = null;
-        $clusterImport = null;
-
-        if (
-            class_exists($potentialCluster) &&
-            is_subclass_of($potentialCluster, Cluster::class)
-        ) {
-            $clusterAssignment = $this->indentString(PHP_EOL . PHP_EOL . 'protected static ?string $cluster = ' . class_basename($potentialCluster) . '::class;');
-            $clusterImport = "use {$potentialCluster};" . PHP_EOL;
-        }
-
-        $this->copyStubToApp('Resource', $resourcePath, [
-            'clusterAssignment' => $clusterAssignment,
-            'clusterImport' => $clusterImport,
-            'eloquentQuery' => $this->indentString($eloquentQuery, 1),
-            'formSchema' => $this->indentString($this->option('generate') ? $this->getResourceFormSchema(
-                $modelNamespace . ($modelSubNamespace !== '' ? "\\{$modelSubNamespace}" : '') . '\\' . $modelClass,
-            ) : '//', 4),
-            'model' => ($model === 'Resource') ? "{$modelNamespace}\\Resource as ResourceModel" : "{$modelNamespace}\\{$model}",
-            'modelClass' => ($model === 'Resource') ? 'ResourceModel' : $modelClass,
-            'namespace' => $namespace,
-            'pages' => $this->indentString($pages, 3),
-            'relations' => $this->indentString($relations, 1),
-            'resource' => "{$namespace}\\{$resourceClass}",
-            'resourceClass' => $resourceClass,
-            'tableActions' => $this->indentString($tableActions, 4),
-            'tableBulkActions' => $this->indentString($tableBulkActions, 5),
-            'tableColumns' => $this->indentString($this->option('generate') ? $this->getResourceTableColumns(
-                $modelNamespace . ($modelSubNamespace !== '' ? "\\{$modelSubNamespace}" : '') . '\\' . $modelClass,
-            ) : '//', 4),
-            'tableFilters' => $this->indentString(
-                $this->option('soft-deletes') ? 'Tables\Filters\TrashedFilter::make(),' : '//',
-                4,
-            ),
-        ]);
-
-        if ($this->option('simple')) {
-            $this->copyStubToApp('ResourceManagePage', $manageResourcePagePath, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\ManageRecords' . ($needsAlias ? ' as BaseManageRecords' : ''),
-                'baseResourcePageClass' => $needsAlias ? 'BaseManageRecords' : 'ManageRecords',
-                'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                'resource' => "{$namespace}\\{$resourceClass}",
-                'resourceClass' => $resourceClass,
-                'resourcePageClass' => $manageResourcePageClass,
-            ]);
-        } else {
-            $this->copyStubToApp('ResourceListPage', $listResourcePagePath, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\ListRecords' . ($needsAlias ? ' as BaseListRecords' : ''),
-                'baseResourcePageClass' => $needsAlias ? 'BaseListRecords' : 'ListRecords',
-                'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                'resource' => "{$namespace}\\{$resourceClass}",
-                'resourceClass' => $resourceClass,
-                'resourcePageClass' => $listResourcePageClass,
-            ]);
-
-            $this->copyStubToApp('ResourcePage', $createResourcePagePath, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\CreateRecord' . ($needsAlias ? ' as BaseCreateRecord' : ''),
-                'baseResourcePageClass' => $needsAlias ? 'BaseCreateRecord' : 'CreateRecord',
-                'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                'resource' => "{$namespace}\\{$resourceClass}",
-                'resourceClass' => $resourceClass,
-                'resourcePageClass' => $createResourcePageClass,
-            ]);
-
-            $editPageActions = [];
-
-            if ($this->option('view')) {
-                $this->copyStubToApp('ResourceViewPage', $viewResourcePagePath, [
-                    'baseResourcePage' => 'Filament\\Resources\\Pages\\ViewRecord' . ($needsAlias ? ' as BaseViewRecord' : ''),
-                    'baseResourcePageClass' => $needsAlias ? 'BaseViewRecord' : 'ViewRecord',
-                    'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                    'resource' => "{$namespace}\\{$resourceClass}",
-                    'resourceClass' => $resourceClass,
-                    'resourcePageClass' => $viewResourcePageClass,
-                ]);
-
-                $editPageActions[] = 'Actions\ViewAction::make(),';
-            }
-
-            $editPageActions[] = 'Actions\DeleteAction::make(),';
-
-            if ($this->option('soft-deletes')) {
-                $editPageActions[] = 'Actions\ForceDeleteAction::make(),';
-                $editPageActions[] = 'Actions\RestoreAction::make(),';
-            }
-
-            $editPageActions = implode(PHP_EOL, $editPageActions);
-
-            $this->copyStubToApp('ResourceEditPage', $editResourcePagePath, [
-                'baseResourcePage' => 'Filament\\Resources\\Pages\\EditRecord' . ($needsAlias ? ' as BaseEditRecord' : ''),
-                'baseResourcePageClass' => $needsAlias ? 'BaseEditRecord' : 'EditRecord',
-                'actions' => $this->indentString($editPageActions, 3),
-                'namespace' => "{$namespace}\\{$resourceClass}\\Pages",
-                'resource' => "{$namespace}\\{$resourceClass}",
-                'resourceClass' => $resourceClass,
-                'resourcePageClass' => $editResourcePageClass,
-            ]);
-        }
-
-        $this->components->info("Filament resource [{$resourcePath}] created successfully.");
-
-        return static::SUCCESS;
-    }
+    use GeneratesModularFiles;
 
     protected function getDefaultStubPath(): string
     {
         return base_path('vendor/filament/filament/stubs');
+    }
+
+    protected function getRelativeNamespace(): string
+    {
+        return 'Filament\\Resources';
+    }
+
+    public function handle(): int
+    {
+        $this->ensureModuleArgument();
+        $this->ensureModelNamespace();
+        $this->ensurePanel();
+
+        return parent::handle();
+    }
+
+    public function ensureModuleArgument(): void
+    {
+        if (! $this->argument('module')) {
+            $module = select('Please select the module to create the resource in:', Module::allEnabled());
+            if (! $module) {
+                $this->error('No module selected. Aborting resource creation.');
+                exit(1);
+            }
+            $this->input->setArgument('module', $module);
+        }
+    }
+
+    public function ensureModelNamespace(): void
+    {
+        $modelNamespace = $this->input->getOption('model-namespace');
+        if (! $modelNamespace) {
+            // try to get from name
+            $name = $this->input->getArgument('model');
+            if ($name) {
+                $modelName = str_replace('Resource', '', class_basename($name));
+            } else {
+                $modelName = select('Please select the model within this module for the resource:', $this->possibleFqnModels());
+            }
+            $modelNamespace = $this->rootNamespace() . '\\Models';
+            // Ask to select model namespace
+
+            if (! $modelName) {
+                $this->error('No model namespace selected. Aborting resource creation.');
+                exit(1);
+            }
+
+            $modelName = class_basename($modelName);
+
+            $this->input->setOption('model-namespace', $modelNamespace);
+            $this->input->setArgument('model', $modelName);
+
+            $this->output->info("Using model namespace: {$modelNamespace}");
+            $this->output->info("Using model name: {$modelName}");
+        }
+    }
+
+    public function ensurePanel()
+    {
+        $defaultPanel = filament()->getDefaultPanel();
+        if (! FilamentModules::getMode()->shouldRegisterPanels()) {
+            $this->panel = $defaultPanel;
+        } else {
+            $modulePanels = FilamentModules::getModulePanels($this->getModule());
+            $options = [
+                $defaultPanel->getId(),
+                ...collect($modulePanels)->map(fn ($panel) => $panel->getId())->values()->all(),
+            ];
+            $panelId = select(
+                label: 'Please select the Filament panel to create the resource in:',
+                options: $options,
+                default: $defaultPanel->getId(),
+            );
+            $this->input->setOption('panel', $panelId);
+            $this->panel = filament()->getPanel($panelId, isStrict: false);
+            if (! $this->panel) {
+                $this->error("Panel [{$panelId}] not found. Aborting resource creation.");
+                exit(1);
+            }
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getResourcesLocation(string $question): array
+    {
+        $modulePanels = FilamentModules::getModulePanels($this->getModule());
+        $mode = ConfigMode::tryFrom(config('filament-modules.mode', ConfigMode::BOTH->value));
+        if ($mode->shouldRegisterPanels() && in_array($this->panel->getId(), collect($modulePanels)->map(fn ($panel) => $panel->getId())->all())) {
+            $directories = $this->panel->getResourceDirectories();
+            $namespaces = $this->panel->getResourceNamespaces();
+        } else {
+            // Default to the module's filament resources directory
+            $directories = [
+                $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Resources'),
+            ];
+            $namespaces = [
+                $this->getModule()->appNamespace('Filament\\Resources'),
+            ];
+        }
+
+        foreach ($directories as $index => $directory) {
+            if (str($directory)->startsWith(base_path('vendor'))) {
+                unset($directories[$index]);
+                unset($namespaces[$index]);
+            }
+        }
+
+        if (count($namespaces) < 2) {
+            return [
+                (Arr::first($namespaces) ?? $this->getModule()->appNamespace('Filament\\Resources')),
+                (Arr::first($directories) ?? $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Resources')),
+            ];
+        }
+
+        if ($this->option('resource-namespace')) {
+            return [
+                (string) $this->option('resource-namespace'),
+                $directories[array_search($this->option('resource-namespace'), $namespaces)],
+            ];
+        }
+
+        $keyedNamespaces = array_combine(
+            $namespaces,
+            $namespaces,
+        );
+
+        return [
+            $namespace = search(
+                label: $question,
+                options: function (?string $search) use ($keyedNamespaces): array {
+                    if (blank($search)) {
+                        return $keyedNamespaces;
+                    }
+
+                    $search = str($search)->trim()->replace(['\\', '/'], '');
+
+                    return array_filter($keyedNamespaces, fn (string $namespace): bool => str($namespace)->replace(['\\', '/'], '')->contains($search, ignoreCase: true));
+                },
+            ),
+            $directories[array_search($namespace, $namespaces)],
+        ];
     }
 }

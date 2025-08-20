@@ -64,7 +64,13 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function attemptToRegisterModuleProviders(): void
     {
         // It is necessary to register them here to avoid late registration (after Panels have already been booted)
-        $providers = glob(config('modules.paths.modules') . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . '*ServiceProvider.php');
+        $pattern1 = config('modules.paths.modules', 'Modules') . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . '*Provider.php';
+        $pattern2 = config('modules.paths.modules', 'Modules') . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*Provider.php';
+        $serviceProviders = glob($pattern1);
+        $panelProviders = glob($pattern2);
+        //        dd($panelProviders);
+        $providers = array_merge($serviceProviders, $panelProviders);
+
         foreach ($providers as $provider) {
             $namespace = FilamentModules::convertPathToNamespace($provider);
             $module = str($namespace)->before('\Providers\\')->afterLast('\\')->toString();
@@ -132,6 +138,7 @@ class ModulesServiceProvider extends PackageServiceProvider
             Commands\ModuleMakeFilamentPageCommand::class,
             Commands\ModuleMakeFilamentWidgetCommand::class,
             Commands\ModuleMakeFilamentThemeCommand::class,
+            Commands\ModuleMakeFilamentPanelCommand::class,
         ];
     }
 
