@@ -2,6 +2,17 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v5.0.0 - Support for Filament v4 - 2025-08-21
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/128
+* Bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/132
+* 5.x Updates by @coolsam726 in https://github.com/savannabits/filament-modules/pull/135
+* 5.x - Docs and Tests Fixes by @coolsam726 in https://github.com/savannabits/filament-modules/pull/136
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.2.0...v5.0.0
+
 ## v4.2.0 - 2025-03-19
 
 ### What's Changed
