@@ -2,6 +2,16 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v5.0.1 - 2025-08-22
+
+### What's Changed
+
+* Bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/133
+* Bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/130
+* Panel Generation and Registration Improvements: by @coolsam726 in https://github.com/savannabits/filament-modules/pull/139
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v5.0.0...v5.0.1
+
 ## v5.0.0 - Support for Filament v4 - 2025-08-21
 
 ### What's Changed
