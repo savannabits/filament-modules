@@ -33,6 +33,7 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
         protected string $fqn,
         protected string $id,
         protected string $moduleName,
+        protected string $navigationLabel,
         protected bool $isDefault = false,
     ) {
         $this->module = \Module::find($this->moduleName);
@@ -84,6 +85,7 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
     protected function addMethodsToClass(ClassType $class): void
     {
         $this->addPanelMethodToClass($class);
+        $this->addNavigationLabelMethodToClass($class);
     }
 
     public function getModule(): \Nwidart\Modules\Module
@@ -101,6 +103,25 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
             ->setType(Panel::class);
 
         $this->configurePanelMethod($method);
+    }
+
+    protected function addNavigationLabelMethodToClass(ClassType $class): void
+    {
+        $class->addMethod('getNavigationLabel')
+            ->setPublic()
+            ->setReturnType('string')
+            ->setBody($this->generateNavigationLabelMethodBody());
+    }
+
+    protected function generateNavigationLabelMethodBody(): string
+    {
+        $navigationLabel = $this->navigationLabel;
+
+        return new Literal(
+            <<<PHP
+                return __("$navigationLabel");
+            PHP,
+        );
     }
 
     public function generatePanelMethodBody(): string
@@ -137,7 +158,7 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
                 return \$panel{$defaultOutput}
                     ->id(?)
                     ->path(?){$loginOutput}
-                    ->brandName("$label")
+                    ->brandName(\$this->getNavigationLabel())
                     ->colors([
                         'primary' => {$this->simplifyFqn(Color::class)}::Amber,
                     ])

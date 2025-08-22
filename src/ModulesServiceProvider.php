@@ -59,13 +59,20 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->registerModuleMacros();
+        $this->autoDiscoverPanels();
     }
 
     public function attemptToRegisterModuleProviders(): void
     {
         // It is necessary to register them here to avoid late registration (after Panels have already been booted)
-        $pattern1 = config('modules.paths.modules', 'Modules') . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . '*Provider.php';
-        $pattern2 = config('modules.paths.modules', 'Modules') . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*Provider.php';
+        $pattern1 = config(
+            'modules.paths.modules',
+            'Modules'
+        ) . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . '*Provider.php';
+        $pattern2 = config(
+            'modules.paths.modules',
+            'Modules'
+        ) . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*Provider.php';
         $serviceProviders = glob($pattern1);
         $panelProviders = glob($pattern2);
         //        dd($panelProviders);
@@ -80,6 +87,28 @@ class ModulesServiceProvider extends PackageServiceProvider
                 $this->app->register($namespace);
             }
         }
+    }
+
+    public function autoDiscoverPanels(): void
+    {
+        $this->app->beforeResolving('filament', function () {
+            $modules = \Module::allEnabled();
+            $cacheKey = 'filament-modules-panel-providers';
+            $ttl = 10;  // 24 hours
+            $modules = \Module::allEnabled();
+            $panels = collect($modules)->flatMap(function (Module $module) {
+                $panelProviders = glob($module->getExtraPath('app/Providers/Filament') . '/*.php');
+
+                return collect($panelProviders)->map(function ($path) {
+                    return $this->app[Modules::class]->convertPathToNamespace($path);
+                })->toArray();
+            })->toArray();
+            foreach ($panels as $panel) {
+                if (class_exists($panel)) {
+                    $this->app->register($panel);
+                }
+            }
+        });
     }
 
     public function packageBooted(): void
