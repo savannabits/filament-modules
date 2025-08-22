@@ -8,8 +8,6 @@ use Filament\Commands\MakePanelCommand;
 use Filament\Support\Commands\Concerns\CanGeneratePanels;
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Filament\Support\Commands\Exceptions\FailureCommandOutput;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -96,7 +94,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
         if (! $this->option('label')) {
             $label = text(
                 label: 'What is the navigation label for the panel?',
-                placeholder: Str::title($this->argument('id') ?? $this->getModule()->getName()." App"),
+                placeholder: Str::title($this->argument('id') ?? $this->getModule()->getName() . ' App'),
                 required: true,
                 validate: fn (string $value) => empty($value) ? 'The navigation label cannot be empty.' : null,
                 hint: 'This is used in the navigation to identify the panel.',

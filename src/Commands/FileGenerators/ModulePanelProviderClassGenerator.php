@@ -104,6 +104,7 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
 
         $this->configurePanelMethod($method);
     }
+
     protected function addNavigationLabelMethodToClass(ClassType $class): void
     {
         $class->addMethod('getNavigationLabel')
@@ -111,6 +112,7 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
             ->setReturnType('string')
             ->setBody($this->generateNavigationLabelMethodBody());
     }
+
     protected function generateNavigationLabelMethodBody(): string
     {
         $navigationLabel = $this->navigationLabel;

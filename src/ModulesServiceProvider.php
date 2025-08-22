@@ -65,10 +65,14 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function attemptToRegisterModuleProviders(): void
     {
         // It is necessary to register them here to avoid late registration (after Panels have already been booted)
-        $pattern1 = config('modules.paths.modules',
-                'Modules').'/*'.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR.'Providers'.DIRECTORY_SEPARATOR.'*Provider.php';
-        $pattern2 = config('modules.paths.modules',
-                'Modules').'/*'.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR.'Providers'.DIRECTORY_SEPARATOR.'Filament'.DIRECTORY_SEPARATOR.'*Provider.php';
+        $pattern1 = config(
+            'modules.paths.modules',
+            'Modules'
+        ) . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . '*Provider.php';
+        $pattern2 = config(
+            'modules.paths.modules',
+            'Modules'
+        ) . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*Provider.php';
         $serviceProviders = glob($pattern1);
         $panelProviders = glob($pattern2);
         //        dd($panelProviders);
@@ -92,8 +96,9 @@ class ModulesServiceProvider extends PackageServiceProvider
             $cacheKey = 'filament-modules-panel-providers';
             $ttl = 10;  // 24 hours
             $modules = \Module::allEnabled();
-            $panels =  collect($modules)->flatMap(function (Module $module) {
-                $panelProviders = glob($module->getExtraPath('app/Providers/Filament').'/*.php');
+            $panels = collect($modules)->flatMap(function (Module $module) {
+                $panelProviders = glob($module->getExtraPath('app/Providers/Filament') . '/*.php');
+
                 return collect($panelProviders)->map(function ($path) {
                     return $this->app[Modules::class]->convertPathToNamespace($path);
                 })->toArray();
@@ -125,7 +130,7 @@ class ModulesServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/modules/{$file->getFilename()}"),
                 ], 'modules-stubs');
@@ -219,44 +224,44 @@ class ModulesServiceProvider extends PackageServiceProvider
             $relativeNamespace = str_replace('App\\', '', $relativeNamespace);
             $relativeNamespace = str_replace('App', '', $relativeNamespace);
             $relativeNamespace = trim($relativeNamespace, '\\');
-            $relativeNamespace = '\\'.$relativeNamespace;
+            $relativeNamespace = '\\' . $relativeNamespace;
 
             return $this->namespace($relativeNamespace);
         });
         Module::macro('appPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('app');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('databasePath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('database');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('resourcesPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('resources');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('migrationsPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('migrations');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('seedersPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('seeders');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
 
         Module::macro('factoriesPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('factories');
 
-            return $appPath.($relativePath ? DIRECTORY_SEPARATOR.$relativePath : '');
+            return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
     }
 }
