@@ -66,6 +66,12 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
                 mode: InputOption::VALUE_NONE,
                 description: 'Overwrite the contents of the files if they already exist',
             ),
+            new InputOption(
+                name: 'label',
+                shortcut: null,
+                mode: InputOption::VALUE_OPTIONAL,
+                description: 'The navigation label for the panel',
+            ),
         ];
     }
 
@@ -75,7 +81,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
             $this->ensureModuleArgument();
             $this->generatePanel(
                 id: $this->argument('id'),
-                placeholderId: 'app',
+                placeholderId: 'default',
                 isForced: $this->option('force'),
             );
         } catch (FailureCommandOutput) {
@@ -83,6 +89,24 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
         }
 
         return static::SUCCESS;
+    }
+
+    protected function ensureNavigationLabelOption(): void
+    {
+        if (! $this->option('label')) {
+            $label = text(
+                label: 'What is the navigation label for the panel?',
+                placeholder: Str::title($this->argument('id') ?? $this->getModule()->getName()." App"),
+                required: true,
+                validate: fn (string $value) => empty($value) ? 'The navigation label cannot be empty.' : null,
+                hint: 'This is used in the navigation to identify the panel.',
+            );
+            if (empty($label)) {
+                $this->components->error('Navigation label cannot be empty. Aborting panel creation.');
+                exit(1);
+            }
+            $this->input->setOption('label', $label);
+        }
     }
 
     protected function ensureModuleArgument(): void
@@ -123,6 +147,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
             $this->components->error('Panel ID cannot be empty. Aborting panel creation.');
             exit(1);
         }
+        $this->ensureNavigationLabelOption();
 
         $basename = (string) str($id)
             ->studly()
@@ -130,7 +155,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
 
         $path = $module->appPath(
             (string) str($basename)
-                ->prepend('Providers/Filament/')
+                ->prepend('/Providers/Filament/')
                 ->replace('\\', '/')
                 ->append('.php'),
         );
@@ -145,33 +170,9 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
             'fqn' => $fqn,
             'id' => $id,
             'moduleName' => $module->getName(),
+            'navigationLabel' => $this->option('label'),
         ]));
 
-        $hasBootstrapProvidersFile = file_exists($bootstrapProvidersPath = App::getBootstrapProvidersPath());
-
-        if ($hasBootstrapProvidersFile) {
-            ServiceProvider::addProviderToBootstrapFile(
-                $fqn,
-                $bootstrapProvidersPath,
-            );
-        } else {
-            $appConfig = file_get_contents(config_path('app.php'));
-
-            if (! Str::contains($appConfig, "{$fqn}::class")) {
-                file_put_contents(config_path('app.php'), str_replace(
-                    app()->getNamespace() . 'Providers\\RouteServiceProvider::class,',
-                    "{$fqn}::class," . PHP_EOL . '        ' . app()->getNamespace() . 'Providers\\RouteServiceProvider::class,',
-                    $appConfig,
-                ));
-            }
-        }
-
         $this->components->info("Filament panel [{$path}] created successfully.");
-
-        if ($hasBootstrapProvidersFile) {
-            $this->components->warn("We've attempted to register the {$basename} in your [bootstrap/providers.php] file. If you get an error while trying to access your panel then this process has probably failed. You can manually register the service provider by adding it to the array.");
-        } else {
-            $this->components->warn("We've attempted to register the {$basename} in your [config/app.php] file as a service provider.  If you get an error while trying to access your panel then this process has probably failed. You can manually register the service provider by adding it to the [providers] array.");
-        }
     }
 }
