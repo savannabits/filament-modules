@@ -2,6 +2,14 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v5.0.2 - 2025-08-31
+
+### What's Changed
+
+* Fix: Support nwidart/laravel-modules v11 by @coolsam726 in https://github.com/savannabits/filament-modules/pull/141
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v5.0.1...v5.0.2
+
 ## v5.0.1 - 2025-08-22
 
 ### What's Changed
