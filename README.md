@@ -65,6 +65,23 @@ properly before proceeding.
 
 **Task: Configure your Laravel Modules first before continuing.**
 
+### Autoloading modules
+
+Don't forget to autoload modules by adding the merge-plugin to your composer.json according to the [laravel modules documentation](https://laravelmodules.com/docs/12/getting-started/installation-and-setup#autoloading):
+
+```json
+"extra": {
+    "laravel": {
+        "dont-discover": []
+    },
+    "merge-plugin": {
+        "include": [
+            "Modules/*/composer.json"
+        ]
+    }
+},
+```
+
 Next, Run the installation command and follow the prompts to publish the config file and set up the package:
 
 ```bash
