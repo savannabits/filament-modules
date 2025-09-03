@@ -45,7 +45,9 @@ class ModulesPlugin implements Plugin
         }
         // get a glob of all Filament plugins
         $basePath = str(config('modules.paths.modules', 'Modules'));
-        $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*Plugin.php';
+        $appFolder = trim(config('modules.paths.app_folder', 'app'), '/\\');
+        $appPath = $appFolder . DIRECTORY_SEPARATOR;
+        $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $appPath . 'Filament' . DIRECTORY_SEPARATOR . '*Plugin.php';
         $pluginPaths = glob($pattern);
 
         return collect($pluginPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->toArray();
