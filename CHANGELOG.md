@@ -2,6 +2,19 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v5.0.5 - 2025-09-03
+
+### What's Changed
+
+* Fix: read app_folder variable from laravel-modules by @piotrczech in https://github.com/savannabits/filament-modules/pull/146
+* Feature: Support Generation of Filament classes for custom Module classes by @coolsam726 in https://github.com/savannabits/filament-modules/pull/147
+
+### New Contributors
+
+* @piotrczech made their first contribution in https://github.com/savannabits/filament-modules/pull/146
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v5.0.4...v5.0.5
+
 ## v5.0.4 - 2025-09-03
 
 ### What's Changed
