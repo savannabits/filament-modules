@@ -98,6 +98,7 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
             $modulePanels = FilamentModules::getModulePanels($this->getModule());
             if (count($modulePanels) === 0) {
                 $this->panel = $defaultPanel;
+
                 return;
             }
             $options = [

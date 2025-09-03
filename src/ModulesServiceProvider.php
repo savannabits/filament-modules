@@ -212,8 +212,8 @@ class ModulesServiceProvider extends PackageServiceProvider
             $relativeNamespace = trim($relativeNamespace, '\\');
             $studlyName = $this->getStudlyName();
 
-            return str($base)->append("\\")->append($studlyName)->append("\\")->append($relativeNamespace)->replace("\\\\", "\\")->toString();
-//            return trim("{$base}\\{$studlyName}\\{$relativeNamespace}", '\\');
+            return str($base)->append('\\')->append($studlyName)->append('\\')->append($relativeNamespace)->replace('\\\\', '\\')->toString();
+            //            return trim("{$base}\\{$studlyName}\\{$relativeNamespace}", '\\');
         });
 
         Module::macro('getTitle', function () {

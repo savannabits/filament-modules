@@ -39,7 +39,7 @@ trait GeneratesModularFiles
 
     protected function rootNamespace(): string
     {
-        return $this->getModule()->namespace("");
+        return $this->getModule()->namespace('');
     }
 
     protected function getPath($name): string
@@ -52,7 +52,7 @@ trait GeneratesModularFiles
 
     protected function possibleModels()
     {
-        $modelPath = $this->getModule()->appPath(config('modules.paths.generator.model.path','Models'));
+        $modelPath = $this->getModule()->appPath(config('modules.paths.generator.model.path', 'Models'));
 
         return collect(Finder::create()->files()->depth(0)->in($modelPath))
             ->map(fn ($file) => $file->getBasename('.php'))
@@ -64,7 +64,7 @@ trait GeneratesModularFiles
     public function possibleFqnModels(): array
     {
         return collect($this->possibleModels())
-            ->map(fn ($model) => str($this->getModule()->appNamespace("Models"))->trim('\\')->append("\\{$model}")->toString())
+            ->map(fn ($model) => str($this->getModule()->appNamespace('Models'))->trim('\\')->append("\\{$model}")->toString())
             ->all();
     }
 
