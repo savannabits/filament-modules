@@ -103,7 +103,8 @@ class ModulesPlugin implements Plugin
     {
         // get a glob of all Filament panels
         $basePath = str(config('modules.paths.modules', 'Modules'));
-        $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*.php';
+        $appFolder = str(config('modules.paths.app_folder', 'app'));
+        $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $appFolder . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*.php';
         $panelPaths = glob($pattern);
 
         $panelIds = collect($panelPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->map(function ($class) {
