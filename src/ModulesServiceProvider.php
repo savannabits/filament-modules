@@ -227,6 +227,7 @@ class ModulesServiceProvider extends PackageServiceProvider
                 $relativeNamespace = str_replace($prefix . '\\', '', $relativeNamespace);
                 $relativeNamespace = str_replace($prefix, '', $relativeNamespace);
             }
+
             return $this->namespace($relativeNamespace);
         });
         Module::macro('appPath', function (string $relativePath = '') {
