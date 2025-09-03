@@ -21,7 +21,7 @@ class Modules
         $appFolder = trim(config('modules.paths.app_folder', 'app'), '/\\');
         $appPath = $appFolder . DIRECTORY_SEPARATOR;
         $base = str(trim(config('modules.paths.modules', base_path('Modules')), '/\\'));
-        $replacementPath = str_replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, '/', DIRECTORY_SEPARATOR . $appPath);
+        $replacementPath = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, '/', DIRECTORY_SEPARATOR . $appPath);
         $relative = str($fullPath)->afterLast($base)->replaceFirst($replacementPath, DIRECTORY_SEPARATOR);
 
         return str($relative)
