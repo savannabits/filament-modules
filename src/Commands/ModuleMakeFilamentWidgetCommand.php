@@ -107,7 +107,8 @@ class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
 
         if (! $panel) {
             $namespace = $module->appNamespace('Livewire');
-            $path = $module->appPath((string) str($namespace)->after('App\\')->replace('\\', '/'));
+            $prefix = str(config('modules.paths.app_folder', 'app'))->ltrim(DIRECTORY_SEPARATOR, '\\')->studly();
+            $path = $module->appPath((string) str($namespace)->after("{$prefix}\\")->replace('\\', '/'));
         } elseif ($resource === null) {
             $widgetDirectories = collect($panel->getWidgetDirectories())->filter(fn ($dir) => str($dir)->contains($module->appPath()))->values()->all();
             $widgetNamespaces = collect($panel->getWidgetNamespaces())->filter(fn ($dir) => str($dir)->contains($module->appNamespace()))->values()->all();

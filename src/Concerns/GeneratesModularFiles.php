@@ -44,7 +44,8 @@ trait GeneratesModularFiles
 
     protected function getPath($name): string
     {
-        $name = Str::replaceFirst($this->rootNamespace(), 'app', $name);
+        $appFolder = str(config('modules.paths.app_folder', 'app'));
+        $name = Str::replaceFirst($this->rootNamespace(), $appFolder, $name);
 
         return $this->getModule()->getExtraPath(str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php');
     }
