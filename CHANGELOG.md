@@ -2,6 +2,14 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v5.0.6 - 2025-09-03
+
+### What's Changed
+
+* Bug Fix: rtrim was erroneously removing s in Models by @coolsam726 in https://github.com/savannabits/filament-modules/pull/148
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v5.0.5...v5.0.6
+
 ## v5.0.5 - 2025-09-03
 
 ### What's Changed
