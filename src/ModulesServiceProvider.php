@@ -184,16 +184,17 @@ class ModulesServiceProvider extends PackageServiceProvider
         });
 
         Module::macro('appNamespace', function (string $relativeNamespace = '') {
+            $prefix = str(config('modules.paths.app_folder','app'))->ltrim(DIRECTORY_SEPARATOR, '\\')->studly();
             $relativeNamespace = trim($relativeNamespace, '\\');
-            $relativeNamespace = str_replace('App\\', '', $relativeNamespace);
-            $relativeNamespace = str_replace('App', '', $relativeNamespace);
+            $relativeNamespace = str_replace($prefix.'\\', '', $relativeNamespace);
+            $relativeNamespace = str_replace($prefix, '', $relativeNamespace);
             $relativeNamespace = trim($relativeNamespace, '\\');
             $relativeNamespace = '\\' . $relativeNamespace;
 
             return $this->namespace($relativeNamespace);
         });
         Module::macro('appPath', function (string $relativePath = '') {
-            $appPath = $this->getExtraPath('app');
+            $appPath = $this->getExtraPath(config('modules.paths.app_folder', 'app'));
 
             return $appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : '');
         });
