@@ -2,6 +2,14 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.2.2 - 2025-09-03
+
+### What's Changed
+
+* Hotfix dynamic app folder by @coolsam726 in https://github.com/savannabits/filament-modules/pull/144
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v5.0.3...v4.2.2
+
 ## v5.0.3 - 2025-09-03
 
 ### What's Changed
