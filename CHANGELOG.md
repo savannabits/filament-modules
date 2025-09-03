@@ -2,6 +2,16 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v4.2.1 - 2025-09-03
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/128
+* Bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/132
+* Hotfix dynamic app folder by @coolsam726 in https://github.com/savannabits/filament-modules/pull/143
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v4.2.0...v4.2.1
+
 ## v5.0.2 - 2025-08-31
 
 ### What's Changed
