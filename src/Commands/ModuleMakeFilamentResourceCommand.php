@@ -71,15 +71,15 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
             } else {
                 $modelName = select('Please select the model within this module for the resource:', $this->possibleFqnModels());
             }
-            $modelNamespace = $this->rootNamespace() . '\\Models';
-            // Ask to select model namespace
+
+            $modelClass = class_basename($modelName);
+            $modelNamespace = str(trim($modelName, '\\'))->rtrim("\\{$modelClass}")->toString();
 
             if (! $modelName) {
                 $this->error('No model namespace selected. Aborting resource creation.');
                 exit(1);
             }
-
-            $modelName = class_basename($modelName);
+            $modelName = $modelClass;
 
             $this->input->setOption('model-namespace', $modelNamespace);
             $this->input->setArgument('model', $modelName);
@@ -96,6 +96,11 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
             $this->panel = $defaultPanel;
         } else {
             $modulePanels = FilamentModules::getModulePanels($this->getModule());
+            if (count($modulePanels) === 0) {
+                $this->panel = $defaultPanel;
+
+                return;
+            }
             $options = [
                 $defaultPanel->getId(),
                 ...collect($modulePanels)->map(fn ($panel) => $panel->getId())->values()->all(),
