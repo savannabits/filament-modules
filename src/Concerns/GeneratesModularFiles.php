@@ -39,19 +39,20 @@ trait GeneratesModularFiles
 
     protected function rootNamespace(): string
     {
-        return $this->getModule()->namespace('');
+        return $this->getModule()->namespace("");
     }
 
     protected function getPath($name): string
     {
-        $name = Str::replaceFirst($this->rootNamespace(), 'app', $name);
+        $appFolder = trim(config('modules.paths.app_folder', 'app/'), '/\\');
+        $name = Str::replaceFirst($this->rootNamespace(), $appFolder, $name);
 
         return $this->getModule()->getExtraPath(str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php');
     }
 
     protected function possibleModels()
     {
-        $modelPath = $this->getModule()->appPath('Models');
+        $modelPath = $this->getModule()->appPath(config('modules.paths.generator.model.path','Models'));
 
         return collect(Finder::create()->files()->depth(0)->in($modelPath))
             ->map(fn ($file) => $file->getBasename('.php'))
@@ -63,7 +64,7 @@ trait GeneratesModularFiles
     public function possibleFqnModels(): array
     {
         return collect($this->possibleModels())
-            ->map(fn ($model) => $this->getModule()->appNamespace("Models\\{$model}"))
+            ->map(fn ($model) => str($this->getModule()->appNamespace("Models"))->trim('\\')->append("\\{$model}")->toString())
             ->all();
     }
 

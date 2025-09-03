@@ -87,7 +87,7 @@ class ModulesPlugin implements Plugin
         $basePath = str(config('modules.paths.modules', 'Modules'));
         $appFolder = trim(config('modules.paths.app_folder', 'app'), '/\\');
         $appPath = $appFolder . DIRECTORY_SEPARATOR;
-        $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $appPath . 'Filament' . DIRECTORY_SEPARATOR . '*Plugin.php';
+        $pattern = str($basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $appPath. 'Filament' . DIRECTORY_SEPARATOR . '*Plugin.php')->replace("//", "/")->toString();
         $pluginPaths = glob($pattern);
 
         return collect($pluginPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->toArray();

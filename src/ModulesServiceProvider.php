@@ -212,7 +212,8 @@ class ModulesServiceProvider extends PackageServiceProvider
             $relativeNamespace = trim($relativeNamespace, '\\');
             $studlyName = $this->getStudlyName();
 
-            return trim("{$base}\\{$studlyName}\\{$relativeNamespace}", '\\');
+            return str($base)->append("\\")->append($studlyName)->append("\\")->append($relativeNamespace)->replace("\\\\", "\\")->toString();
+//            return trim("{$base}\\{$studlyName}\\{$relativeNamespace}", '\\');
         });
 
         Module::macro('getTitle', function () {
@@ -220,12 +221,12 @@ class ModulesServiceProvider extends PackageServiceProvider
         });
 
         Module::macro('appNamespace', function (string $relativeNamespace = '') {
-            $prefix = str(config('modules.paths.app_folder', 'app'))->ltrim(DIRECTORY_SEPARATOR, '\\')->studly();
+            $prefix = str(config('modules.paths.app_folder', 'app'))->ltrim(DIRECTORY_SEPARATOR, '\\')->studly()->toString();
             $relativeNamespace = trim($relativeNamespace, '\\');
-            $relativeNamespace = str_replace($prefix . '\\', '', $relativeNamespace);
-            $relativeNamespace = str_replace($prefix, '', $relativeNamespace);
-            $relativeNamespace = trim($relativeNamespace, '\\');
-            $relativeNamespace = '\\' . $relativeNamespace;
+            if (strlen($prefix) > 0) {
+                $relativeNamespace = str_replace($prefix . '\\', '', $relativeNamespace);
+                $relativeNamespace = str_replace($prefix, '', $relativeNamespace);
+            }
 
             return $this->namespace($relativeNamespace);
         });

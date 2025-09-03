@@ -144,7 +144,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
     protected function createDefaultFilamentPlugin(): void
     {
         $module = $this->getModule();
-        $this->call('module:make:filament-plugin', [
+        $this->call('module:filament:plugin', [
             'name' => $module->getStudlyName() . 'Plugin',
             'module' => $module->getStudlyName(),
         ]);
@@ -153,7 +153,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
     protected function createDefaultFilamentCluster(): void
     {
         $module = $this->getModule();
-        $this->call('module:make:filament-cluster', [
+        $this->call('module:filament:cluster', [
             'name' => $module->getStudlyName(),
             'module' => $module->getStudlyName(),
             '--panel' => filament()->getDefaultPanel()->getId(),
