@@ -73,7 +73,7 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
             }
 
             $modelClass = class_basename($modelName);
-            $modelNamespace = str(trim($modelName, '\\'))->rtrim("\\{$modelClass}")->toString();
+            $modelNamespace = str(trim($modelName, '\\'))->beforeLast("\\{$modelClass}")->toString();
 
             if (! $modelName) {
                 $this->error('No model namespace selected. Aborting resource creation.');
