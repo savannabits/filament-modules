@@ -2,6 +2,11 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v5.0.7 - 2025-09-08
+
+[Bug Fix: Wrong Path appFilament when generating resources with the default config](https://github.com/savannabits/filament-modules/commit/eabc1e6c2c1679191756a5d0ec26d19c13011a29)
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v5.0.6...v5.0.7
+
 ## v5.0.6 - 2025-09-03
 
 ### What's Changed
