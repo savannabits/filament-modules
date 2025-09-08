@@ -45,15 +45,17 @@ trait GeneratesModularFiles
     protected function getPath($name): string
     {
         $appFolder = trim(config('modules.paths.app_folder', 'app/'), '/\\');
-        $name = Str::replaceFirst($this->rootNamespace(), $appFolder, $name);
-
+        $rootNamespace = str($this->rootNamespace())->trim('\\')->toString();
+        $name = Str::replaceFirst($rootNamespace, $appFolder, $name);
         return $this->getModule()->getExtraPath(str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php');
     }
 
     protected function possibleModels()
     {
-        $modelPath = $this->getModule()->appPath(config('modules.paths.generator.model.path', 'Models'));
-
+        $appFolder =trim(config('modules.paths.app_folder', 'app/'), '/\\');
+        $modelPath = str(config('modules.paths.model_folder', 'app/Models'))
+            ->replaceFirst($appFolder, '')->replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->trim(DIRECTORY_SEPARATOR)->toString();
+        $modelPath = $this->getModule()->appPath($modelPath);
         return collect(Finder::create()->files()->depth(0)->in($modelPath))
             ->map(fn ($file) => $file->getBasename('.php'))
             ->sort()
