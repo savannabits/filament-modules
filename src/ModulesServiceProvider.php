@@ -211,6 +211,7 @@ class ModulesServiceProvider extends PackageServiceProvider
             $base = trim($this->app['config']->get('modules.namespace', 'Modules'), '\\');
             $relativeNamespace = trim($relativeNamespace, '\\');
             $studlyName = $this->getStudlyName();
+
             return str($base)->append('\\')->append($studlyName)->append('\\')->append($relativeNamespace)->replace('\\\\', '\\')->toString();
         });
 
@@ -231,39 +232,39 @@ class ModulesServiceProvider extends PackageServiceProvider
         Module::macro('appPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath(config('modules.paths.app_folder', 'app'));
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
         Module::macro('databasePath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('database');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
         Module::macro('resourcesPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('resources');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
-                ->replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
         Module::macro('migrationsPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('migrations');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
-                ->replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
         Module::macro('seedersPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('seeders');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
         Module::macro('factoriesPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('factories');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
     }
 }

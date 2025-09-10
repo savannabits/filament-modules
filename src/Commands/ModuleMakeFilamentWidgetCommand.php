@@ -17,12 +17,16 @@ use function Laravel\Prompts\select;
 class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
 {
     use GeneratesModularFiles;
+
     protected $name = 'module:make:filament-widget';
+
     protected $description = 'Create a new Filament Widget class in the module';
+
     protected $aliases = [
         'module:filament:widget',
         'module:filament:make-widget',
     ];
+
     public function handle(): int
     {
         $this->ensureModule();
@@ -33,9 +37,8 @@ class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
 
     protected function getRelativeNamespace(): string
     {
-        return "Filament\\Widgets";
+        return 'Filament\\Widgets';
     }
-
 
     public function ensureModule()
     {
