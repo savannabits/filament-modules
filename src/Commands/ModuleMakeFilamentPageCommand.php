@@ -159,7 +159,7 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
 
         $panelModules = FilamentModules::getModulePanels($this->argument('module'));
         if (empty($panelModules) || ! collect($panelModules)->contains(fn (
-            Panel | Cluster $panel
+            Panel $panel
         ) => $panel->getId() === $this->panel->getId())) {
             $this->pagesNamespace = $this->getModule()->appNamespace('Filament\\Pages');
             $this->pagesDirectory = $this->getModule()->appPath('Filament' . DIRECTORY_SEPARATOR . 'Pages' . DIRECTORY_SEPARATOR);
