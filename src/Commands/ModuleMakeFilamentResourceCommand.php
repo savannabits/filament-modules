@@ -62,31 +62,26 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
 
     public function ensureModelNamespace(): void
     {
-        $modelNamespace = $this->input->getOption('model-namespace');
-        if (! $modelNamespace) {
-            // try to get from name
-            $name = $this->input->getArgument('model');
-            if ($name) {
-                $modelName = str_replace('Resource', '', class_basename($name));
-            } else {
-                $modelName = select('Please select the model within this module for the resource:', $this->possibleFqnModels());
-            }
-
-            $modelClass = class_basename($modelName);
-            $modelNamespace = str(trim($modelName, '\\'))->beforeLast("\\{$modelClass}")->toString();
-
-            if (! $modelName) {
-                $this->error('No model namespace selected. Aborting resource creation.');
-                exit(1);
-            }
-            $modelName = $modelClass;
-
-            $this->input->setOption('model-namespace', $modelNamespace);
-            $this->input->setArgument('model', $modelName);
-
-            $this->output->info("Using model namespace: {$modelNamespace}");
-            $this->output->info("Using model name: {$modelName}");
+        if ($this->input->hasOption('model-namespace')) {
+            return;
         }
+        // try to get from name
+        $name = $this->input->getArgument('model')
+            ?: select('Please select the model within this module for the resource:', $this->possibleFqnModels());
+
+        $modelClass = class_basename($name);
+        $modelNamespace = str(trim($name, '\\'))->beforeLast("\\{$modelClass}")->toString();
+
+        if (! $modelNamespace) {
+            $this->error('No model namespace selected. Aborting resource creation.');
+            exit(1);
+        }
+
+        $this->input->setOption('model-namespace', $modelNamespace);
+        $this->input->setArgument('model', $modelClass);
+
+        $this->output->info("Using model namespace: {$modelNamespace}");
+        $this->output->info("Using model name: {$modelClass}");
     }
 
     public function ensurePanel()
@@ -94,28 +89,28 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
         $defaultPanel = filament()->getDefaultPanel();
         if (! FilamentModules::getMode()->shouldRegisterPanels()) {
             $this->panel = $defaultPanel;
-        } else {
-            $modulePanels = FilamentModules::getModulePanels($this->getModule());
-            if (count($modulePanels) === 0) {
-                $this->panel = $defaultPanel;
+            return;
+        }
+        $modulePanels = FilamentModules::getModulePanels($this->getModule());
+        if (count($modulePanels) === 0) {
+            $this->panel = $defaultPanel;
 
-                return;
-            }
-            $options = [
-                $defaultPanel->getId(),
-                ...collect($modulePanels)->map(fn ($panel) => $panel->getId())->values()->all(),
-            ];
-            $panelId = select(
-                label: 'Please select the Filament panel to create the resource in:',
-                options: $options,
-                default: $defaultPanel->getId(),
-            );
-            $this->input->setOption('panel', $panelId);
-            $this->panel = filament()->getPanel($panelId, isStrict: false);
-            if (! $this->panel) {
-                $this->error("Panel [{$panelId}] not found. Aborting resource creation.");
-                exit(1);
-            }
+            return;
+        }
+        $options = [
+            $defaultPanel->getId(),
+            ...collect($modulePanels)->map(fn ($panel) => $panel->getId())->values()->all(),
+        ];
+        $panelId = select(
+            label: 'Please select the Filament panel to create the resource in:',
+            options: $options,
+            default: $defaultPanel->getId(),
+        );
+        $this->input->setOption('panel', $panelId);
+        $this->panel = filament()->getPanel($panelId, isStrict: false);
+        if (! $this->panel) {
+            $this->error("Panel [{$panelId}] not found. Aborting resource creation.");
+            exit(1);
         }
     }
 
