@@ -2,6 +2,23 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v5.1.0 - 2026-01-26
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/161
+* Bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/156
+* Bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/savannabits/filament-modules/pull/158
+* fix resource generation command not parsing passed model class properly by @LinusTebbe in https://github.com/savannabits/filament-modules/pull/163
+* fix using laravel alias instead of fqdn by @LinusTebbe in https://github.com/savannabits/filament-modules/pull/164
+* Support for Filament 5 (Experimental) by @coolsam726 in https://github.com/savannabits/filament-modules/pull/165
+
+### New Contributors
+
+* @LinusTebbe made their first contribution in https://github.com/savannabits/filament-modules/pull/163
+
+**Full Changelog**: https://github.com/savannabits/filament-modules/compare/v5.0.9...v5.1.0
+
 ## v5.0.9 - 2025-12-16
 
 ### What's Changed
