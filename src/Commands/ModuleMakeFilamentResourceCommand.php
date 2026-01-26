@@ -89,6 +89,7 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
         $defaultPanel = filament()->getDefaultPanel();
         if (! FilamentModules::getMode()->shouldRegisterPanels()) {
             $this->panel = $defaultPanel;
+
             return;
         }
         $modulePanels = FilamentModules::getModulePanels($this->getModule());
