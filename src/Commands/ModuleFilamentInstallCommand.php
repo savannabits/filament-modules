@@ -6,6 +6,7 @@ use Coolsam\Modules\Enums\ConfigMode;
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Illuminate\Console\Command;
 use Illuminate\Console\Concerns\PromptsForMissingInput;
+use Illuminate\Support\Facades\Config;
 use Nwidart\Modules\Exceptions\ModuleNotFoundException;
 use Nwidart\Modules\Facades\Module;
 use Symfony\Component\Console\Input\InputArgument;
@@ -44,7 +45,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
     public function handle(): void
     {
         $this->moduleName = $this->argument('module');
-        $this->mode = ConfigMode::tryFrom(\Config::get('filament-modules.mode', ConfigMode::BOTH->value));
+        $this->mode = ConfigMode::tryFrom(Config::get('filament-modules.mode', ConfigMode::BOTH->value));
 
         if (! $this->option('cluster')) {
             $this->cluster = confirm('Do you want to organize your code into filament clusters?', true);
@@ -113,23 +114,21 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
         }
 
         if ($this->cluster) {
-            $dir = $this->getModule()->appPath('Filament/Clusters');
             if (! is_dir($dir = $this->getModule()->appPath('Filament/Clusters'))) {
                 $this->makeDirectory($dir);
             }
+            return;
+        }
+        if (! is_dir($dir = $this->getModule()->appPath('Filament/Pages'))) {
+            $this->makeDirectory($dir);
+        }
 
-        } else {
-            if (! is_dir($dir = $this->getModule()->appPath('Filament/Pages'))) {
-                $this->makeDirectory($dir);
-            }
+        if (! is_dir($dir = $this->getModule()->appPath('Filament/Resources'))) {
+            $this->makeDirectory($dir);
+        }
 
-            if (! is_dir($dir = $this->getModule()->appPath('Filament/Resources'))) {
-                $this->makeDirectory($dir);
-            }
-
-            if (! is_dir($dir = $this->getModule()->appPath('Filament/Widgets'))) {
-                $this->makeDirectory($dir);
-            }
+        if (! is_dir($dir = $this->getModule()->appPath('Filament/Widgets'))) {
+            $this->makeDirectory($dir);
         }
     }
 
