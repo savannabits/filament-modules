@@ -8,6 +8,7 @@ use Filament\Contracts\Plugin;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
+use Filament\Support\Icons\Heroicon;
 use Nwidart\Modules\Facades\Module as ModuleFacade;
 
 class ModulesPlugin implements Plugin
@@ -36,7 +37,7 @@ class ModulesPlugin implements Plugin
         $mode = ConfigMode::tryFrom(config('filament-modules.mode', ConfigMode::BOTH->value));
         if ($mode?->shouldRegisterPanels()) {
             $group = config('filament-modules.panels.group', 'Modules');
-            $groupIcon = config('filament-modules.panels.group-icon', \Filament\Support\Icons\Heroicon::OutlinedRectangleStack);
+            $groupIcon = config('filament-modules.panels.group-icon', Heroicon::OutlinedRectangleStack);
             $groupSort = config('filament-modules.panels.group-sort', 0);
             $openInNewTab = config('filament-modules.panels.open-in-new-tab', false);
 
@@ -54,7 +55,7 @@ class ModulesPlugin implements Plugin
                 }
                 //                $panelLabel = str($panel->getId())->after($moduleName)->trim('-')->snake()->title()->replace('_', ' ');
                 //                $label = str($module->getTitle())->append(" - ")->append($panelLabel);
-                $label = $panel->getBrandName() ?? str($panel->getId())->after($moduleName)->trim('-')->studly()->snake()->replace('_', ' ')->toString();
+                $label = $panel->getBrandName() ?: str($panel->getId())->after($moduleName)->trim('-')->studly()->snake()->replace('_', ' ')->toString();
 
                 return NavigationItem::make($label)
                     ->group($group)

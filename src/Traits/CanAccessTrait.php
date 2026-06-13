@@ -2,6 +2,8 @@
 
 namespace Coolsam\Modules\Traits;
 
+use Nwidart\Modules\Facades\Module;
+
 trait CanAccessTrait
 {
     public static function getCurrentModuleName(): string
@@ -15,10 +17,13 @@ trait CanAccessTrait
 
     public static function canAccess(): bool
     {
-        $isModuleEnabled = \Nwidart\Modules\Facades\Module::find(
+        $isModuleEnabled = Module::find(
             static::getCurrentModuleName()
-        )?->isEnabled();
-        $parentAccess = function_exists('canAccess') ? parent::canAccess() : true;
+        )->isEnabled();
+        $parentClass = get_parent_class(static::class);
+        $parentAccess = is_string($parentClass) && method_exists($parentClass, 'canAccess')
+            ? $parentClass::canAccess()
+            : true;
 
         if ($isModuleEnabled && $parentAccess) {
             return true;

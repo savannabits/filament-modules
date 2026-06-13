@@ -6,6 +6,7 @@ use Coolsam\Modules\Concerns\GeneratesModularFiles;
 use Coolsam\Modules\Facades\FilamentModules;
 use Filament\Commands\MakeClusterCommand;
 use Illuminate\Support\Arr;
+use Nwidart\Modules\Facades\Module;
 
 use function Laravel\Prompts\search;
 use function Laravel\Prompts\select;
@@ -39,7 +40,7 @@ class ModuleMakeFilamentClusterCommand extends MakeClusterCommand
     public function ensureModuleArgument(): void
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the cluster in:', \Nwidart\Modules\Facades\Module::allEnabled());
+            $module = select('Please select the module to create the cluster in:', Module::allEnabled());
             if (! $module) {
                 $this->error('No module selected. Aborting cluster creation.');
                 exit(1);

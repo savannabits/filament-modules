@@ -1,17 +1,16 @@
 # Filament Modules v5.x
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Afix-php-code-style+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/filament-modules/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/coolsam726/filament-modules/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
 
 > **NOTE:** This documentation is for **version 5.x** of the package, which supports **Laravel 11+**, **Filament 4.x**
 > and
 **nwidart/laravel-modules 11+**. If you are using Filament 3.x, please refer
-> to [4.x documentation](https://github.com/savannabits/filament-modules/tree/4.x)
-> or [3.x documentation](https://github.com/savannabits/filament-modules/tree/3.x) if you are using Laravel 10.
+> to [4.x documentation](https://github.com/coolsam726/filament-modules/tree/4.x)
+> or [3.x documentation](https://github.com/coolsam726/filament-modules/tree/3.x) if you are using Laravel 10.
 
-![image](https://github.com/savannabits/filament-modules/assets/5610289/ba191f1d-b5ee-4eb9-9db7-d42a19cc8d38)
+![image](https://github.com/coolsam726/filament-modules/assets/5610289/ba191f1d-b5ee-4eb9-9db7-d42a19cc8d38)
 
 This package brings the power of modules to Laravel Filament. It allows you to organize your filament code into fully
 autonomous modules that can be easily shared and reused across multiple projects.

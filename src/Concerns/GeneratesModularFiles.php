@@ -9,6 +9,12 @@ use Nwidart\Modules\Module;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * @property string|null $type
+ *
+ * @method string getStub()
+ * @method static replaceNamespace(string $stub, string $name)
+ */
 trait GeneratesModularFiles
 {
     use PromptsForMissingInput;
