@@ -39,7 +39,7 @@ class ModuleMakeFilamentClusterCommand extends MakeClusterCommand
     public function ensureModuleArgument(): void
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the cluster in:', \Module::allEnabled());
+            $module = select('Please select the module to create the cluster in:', \Nwidart\Modules\Facades\Module::allEnabled());
             if (! $module) {
                 $this->error('No module selected. Aborting cluster creation.');
                 exit(1);

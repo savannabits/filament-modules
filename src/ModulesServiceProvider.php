@@ -9,7 +9,8 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
-use Nwidart\Modules\Module;
+use Nwidart\Modules\Facades\Module as ModuleFacade;
+use Nwidart\Modules\Module as NwidartModule;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -81,7 +82,7 @@ class ModulesServiceProvider extends PackageServiceProvider
             $namespace = FilamentModules::convertPathToNamespace($provider);
             $module = str($namespace)->before('\Providers\\')->afterLast('\\')->toString();
             $className = str($namespace)->afterLast('\\')->toString();
-            if (str($className)->startsWith($module)) && \Module::isEnabled($module)){
+            if (str($className)->startsWith($module) && ModuleFacade::isEnabled($module)) {
                 // register the module service provider
                 $this->app->register($namespace);
             }
@@ -91,11 +92,11 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function autoDiscoverPanels(): void
     {
         $this->app->beforeResolving('filament', function () {
-            $modules = \Module::allEnabled();
+            $modules = ModuleFacade::allEnabled();
             $cacheKey = 'filament-modules-panel-providers';
             $ttl = 10;  // 24 hours
-            $modules = \Module::allEnabled();
-            $panels = collect($modules)->flatMap(function (Module $module) {
+            $modules = ModuleFacade::allEnabled();
+            $panels = collect($modules)->flatMap(function (NwidartModule $module) {
                 $panelProviders = glob($module->getExtraPath('app/Providers/Filament') . '/*.php');
 
                 return collect($panelProviders)->map(function ($path) {
@@ -206,7 +207,7 @@ class ModulesServiceProvider extends PackageServiceProvider
 
     protected function registerModuleMacros(): void
     {
-        Module::macro('namespace', function (?string $relativeNamespace = '') {
+        NwidartModule::macro('namespace', function (?string $relativeNamespace = '') {
             $relativeNamespace = $relativeNamespace ?? '';
             $base = trim(config('modules.namespace', 'Modules'), '\\');
             $relativeNamespace = trim($relativeNamespace, '\\');
@@ -215,11 +216,11 @@ class ModulesServiceProvider extends PackageServiceProvider
             return str($base)->append('\\')->append($studlyName)->append('\\')->append($relativeNamespace)->replace('\\\\', '\\')->toString();
         });
 
-        Module::macro('getTitle', function () {
+        NwidartModule::macro('getTitle', function () {
             return str($this->getStudlyName())->kebab()->title()->replace('-', ' ')->toString();
         });
 
-        Module::macro('appNamespace', function (string $relativeNamespace = '') {
+        NwidartModule::macro('appNamespace', function (string $relativeNamespace = '') {
             $prefix = str(config('modules.paths.app_folder', 'app'))->ltrim(DIRECTORY_SEPARATOR, '\\')->studly()->toString();
             $relativeNamespace = trim($relativeNamespace, '\\');
             if (filled($prefix)) {
@@ -229,39 +230,39 @@ class ModulesServiceProvider extends PackageServiceProvider
 
             return $this->namespace($relativeNamespace);
         });
-        Module::macro('appPath', function (string $relativePath = '') {
+        NwidartModule::macro('appPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath(config('modules.paths.app_folder', 'app'));
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
-        Module::macro('databasePath', function (string $relativePath = '') {
+        NwidartModule::macro('databasePath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('database');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
-        Module::macro('resourcesPath', function (string $relativePath = '') {
+        NwidartModule::macro('resourcesPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('resources');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
                 ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
-        Module::macro('migrationsPath', function (string $relativePath = '') {
+        NwidartModule::macro('migrationsPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('migrations');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
                 ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
-        Module::macro('seedersPath', function (string $relativePath = '') {
+        NwidartModule::macro('seedersPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('seeders');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
         });
 
-        Module::macro('factoriesPath', function (string $relativePath = '') {
+        NwidartModule::macro('factoriesPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('factories');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();

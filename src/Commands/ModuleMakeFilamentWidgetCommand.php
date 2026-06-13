@@ -43,7 +43,7 @@ class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
     public function ensureModule()
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the page in:', \Module::allEnabled());
+            $module = select('Please select the module to create the page in:', \Nwidart\Modules\Facades\Module::allEnabled());
             if (! $module) {
                 $this->error('No module selected. Aborting page creation.');
                 exit(1);

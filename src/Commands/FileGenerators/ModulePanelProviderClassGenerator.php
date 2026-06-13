@@ -36,7 +36,7 @@ class ModulePanelProviderClassGenerator extends ClassGenerator
         protected string $navigationLabel,
         protected bool $isDefault = false,
     ) {
-        $this->module = \Module::find($this->moduleName);
+        $this->module = \Nwidart\Modules\Facades\Module::find($this->moduleName);
         if (! $this->module) {
             throw new \InvalidArgumentException("Module '{$this->moduleName}' not found.");
         }
