@@ -14,5 +14,7 @@ test('resource base class extends filament resource without a conflicting import
 });
 
 test('resource class can be loaded without redeclaration errors', function () {
-    expect((new ReflectionClass(Resource::class))->isAbstract())->toBeTrue();
+    $reflection = new ReflectionClass(Resource::class);
+
+    expect($reflection->isAbstract())->toBeTrue();
 });
