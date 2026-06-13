@@ -50,7 +50,7 @@ class ModuleMakeFilamentPluginCommand extends GeneratorCommand
     public function ensureModule()
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the plugin in:', \Nwidart\Modules\Facades\Module::allEnabled());
+            $module = select('Please select the module to create the plugin in:', \Coolsam\Modules\Facades\ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
             $this->input->setArgument('module', $module);
         }
     }

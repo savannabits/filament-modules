@@ -8,6 +8,7 @@ use Filament\Contracts\Plugin;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
+use Nwidart\Modules\Facades\Module as ModuleFacade;
 
 class ModulesPlugin implements Plugin
 {
@@ -47,7 +48,7 @@ class ModulesPlugin implements Plugin
             ]);
             $navItems = collect($panels)->map(function (Panel $panel) use ($group, $groupSort, $openInNewTab) {
                 $moduleName = str($panel->getPath())->before('/');
-                $module = \Module::find($moduleName);
+                $module = ModuleFacade::find($moduleName);
                 if (! $module) {
                     return null;
                 }
@@ -112,7 +113,7 @@ class ModulesPlugin implements Plugin
             $id = str($class)->afterLast('\\')->before('PanelProvider')->kebab()->lower();
             // get module it belongs to as well
             $moduleName = str($class)->after('Modules\\')->before('\\Providers\\Filament');
-            $module = \Module::find($moduleName);
+            $module = ModuleFacade::find($moduleName);
             if (! $module) {
                 return null;
             }

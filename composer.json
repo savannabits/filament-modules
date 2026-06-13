@@ -83,7 +83,9 @@
         "Coolsam\\Modules\\ModulesServiceProvider"
       ],
       "aliases": {
-        "FilamentModules": "FilamentModules"
+        "FilamentModules": "FilamentModules",
+        "ModuleActivator": "Coolsam\\Modules\\Facades\\ModuleActivator",
+        "ModuleRegistry": "Coolsam\\Modules\\Facades\\ModuleRegistry"
       }
     }
   },
