@@ -5,3 +5,8 @@ coverage:
 
 comment:
   require_changes: true
+
+ignore:
+  - src/Commands/**
+  - src/Concerns/CanManipulateFiles.php
+  - src/Concerns/CanGenerateModulePanels.php

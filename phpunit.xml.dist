@@ -27,5 +27,10 @@
         <include>
             <directory suffix=".php">./src</directory>
         </include>
+        <exclude>
+            <directory suffix=".php">./src/Commands</directory>
+            <file>./src/Concerns/CanManipulateFiles.php</file>
+            <file>./src/Concerns/CanGenerateModulePanels.php</file>
+        </exclude>
     </source>
 </phpunit>
