@@ -6,11 +6,18 @@ This document defines the architecture and release plan for **coolsam/modules v6
 
 | Branch | Purpose |
 |--------|---------|
-| `5.x` | Maintenance line for v5 — bug fixes and compatibility patches only |
-| `main` | Protected default branch — merge via pull request only |
-| `feature/*` | v6 development (e.g. `feature/v6-module-runtime`) |
+| `main` | Default branch for v6 — **protected**, merge via pull request only |
+| `5.x` | Maintenance line for v5 — **protected**, merge via pull request only |
+| `feature/*` | All development work (v6 and v5 fixes) |
 
-All v6 work lands on feature branches and merges to `main` through pull requests. Do not push directly to `main`.
+**No direct pushes** to `main` or `5.x`. Every change goes through a feature branch and a pull request:
+
+| Target | Use for | Example branch |
+|--------|---------|----------------|
+| `main` | v6 features and breaking changes | `feature/v6-module-runtime` |
+| `5.x` | v5 bug fixes and compatibility patches | `fix/nwidart-facade-alias` |
+
+CI runs on pushes to `feature/**` and on pull requests into `main` or `5.x`.
 
 v5 continues to wrap [nwidart/laravel-modules](https://github.com/nWidart/laravel-modules) with disk-based enable/disable. v6 introduces a driver-agnostic module runtime with **tenant-scoped activation** and **dependency enforcement**, while keeping nwidart as the default discovery driver.
 
