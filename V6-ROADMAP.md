@@ -31,6 +31,7 @@ v5 continues to wrap [nwidart/laravel-modules](https://github.com/nWidart/larave
 | Laravel | 12.x and 13.x |
 | Filament | 4.x or 5.x |
 | nwidart/laravel-modules | 12.x or 13.x |
+| orchestra/testbench (dev) | ^10 (L12) / ^11 (L13) |
 
 v5 remains on Laravel 11+ and Filament 4.x on the `5.x` branch. v6 drops Laravel 11 support.
 
