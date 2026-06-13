@@ -30,8 +30,13 @@ class FileModuleActivator implements ModuleActivator
         }
 
         $name = $this->resolveName($module);
+        $nwidartModule = Module::find($name);
 
-        return Module::find($name)?->isEnabled() ?? false;
+        if ($nwidartModule === null) {
+            return false;
+        }
+
+        return $nwidartModule->isEnabled();
     }
 
     public function active(string | int | null $tenantId = null): Collection
@@ -55,7 +60,11 @@ class FileModuleActivator implements ModuleActivator
         $this->dependencyResolver->assertCanActivate($definition, $tenantId);
 
         foreach ($this->dependencyResolver->activationOrder($definition) as $moduleName) {
-            Module::find($moduleName)?->enable();
+            $nwidartModule = Module::find($moduleName);
+
+            if ($nwidartModule !== null) {
+                $nwidartModule->enable();
+            }
         }
     }
 
@@ -72,7 +81,11 @@ class FileModuleActivator implements ModuleActivator
 
         $this->dependencyResolver->assertCanDeactivate($definition, $tenantId);
 
-        Module::find($definition->name())?->disable();
+        $nwidartModule = Module::find($definition->name());
+
+        if ($nwidartModule !== null) {
+            $nwidartModule->disable();
+        }
     }
 
     protected function resolveDefinition(ModuleDefinition | string $module): ModuleDefinition

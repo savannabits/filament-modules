@@ -10,11 +10,18 @@ use Nwidart\Modules\Module as NwidartModule;
 
 class NwidartModuleRegistry implements ModuleRegistry
 {
+    /**
+     * @return Collection<int, ModuleDefinition>
+     */
     public function all(): Collection
     {
-        return collect(Module::all())
-            ->map(fn (NwidartModule $module) => new NwidartModuleDefinition($module))
-            ->values();
+        $definitions = [];
+
+        foreach (Module::all() as $module) {
+            $definitions[] = $this->makeDefinition($module);
+        }
+
+        return new Collection($definitions);
     }
 
     public function find(string $name): ?ModuleDefinition
@@ -25,11 +32,16 @@ class NwidartModuleRegistry implements ModuleRegistry
             return null;
         }
 
-        return new NwidartModuleDefinition($module);
+        return $this->makeDefinition($module);
     }
 
     public function exists(string $name): bool
     {
         return Module::find($name) !== null;
+    }
+
+    protected function makeDefinition(NwidartModule $module): ModuleDefinition
+    {
+        return new NwidartModuleDefinition($module);
     }
 }
