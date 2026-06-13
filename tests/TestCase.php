@@ -5,6 +5,7 @@ namespace Coolsam\Modules\Tests;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Coolsam\Modules\ModulesServiceProvider;
+use Coolsam\Modules\Tests\Support\CreatesTestModules;
 use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
@@ -22,10 +23,13 @@ use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 
 class TestCase extends Orchestra
 {
+    use CreatesTestModules;
     use WithWorkbench;
 
     protected function setUp(): void
     {
+        $this->resetModulesDirectory();
+
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
@@ -57,9 +61,15 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_modules_table.php.stub';
-        $migration->up();
-        */
+        $modulesPath = $app->basePath('Modules');
+
+        if (! is_dir($modulesPath)) {
+            mkdir($modulesPath, 0755, true);
+        }
+
+        config()->set('modules.paths.modules', $modulesPath);
+        config()->set('modules.namespace', 'Modules');
+        config()->set('modules.paths.app_folder', 'app');
+        config()->set('modules.activators.file.statuses-file', $app->basePath('modules_statuses.json'));
     }
 }
