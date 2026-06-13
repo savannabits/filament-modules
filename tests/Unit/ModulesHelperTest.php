@@ -71,3 +71,65 @@ test('get module panels matches registered filament panels', function () {
 
     expect(collect($panels)->map->getId()->all())->toContain('blog-admin');
 });
+
+test('returns empty module panels when filament provider directory is missing', function () {
+    $this->createTestModule('Blog');
+
+    expect(FilamentModules::getModulePanels('Blog'))->toBe([]);
+});
+
+test('find module name for path falls back to directory name for invalid module json', function () {
+    $modulePath = $this->modulesPath() . DIRECTORY_SEPARATOR . 'BrokenJson';
+
+    if (! is_dir($modulePath)) {
+        mkdir($modulePath, 0755, true);
+    }
+
+    file_put_contents($modulePath . DIRECTORY_SEPARATOR . 'module.json', '"not-an-array"');
+
+    expect(FilamentModules::findModuleNameForPath($modulePath . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Example.php'))
+        ->toBe('BrokenJson');
+});
+
+test('find module name for path stops when filesystem root is reached', function () {
+    $modulesPath = $this->modulesPath();
+    $rootFile = $modulesPath . DIRECTORY_SEPARATOR . 'root-level.php';
+
+    file_put_contents($rootFile, '<?php');
+
+    try {
+        expect(FilamentModules::findModuleNameForPath($rootFile))->toBeNull();
+    } finally {
+        unlink($rootFile);
+    }
+});
+
+test('resolve provider class falls back to converted namespace when file has no namespace', function () {
+    $module = $this->createTestModule('Blog');
+    $providerDir = $module->appPath('Providers');
+
+    if (! is_dir($providerDir)) {
+        mkdir($providerDir, 0755, true);
+    }
+
+    $providerPath = $providerDir . DIRECTORY_SEPARATOR . 'FallbackPanelProvider.php';
+
+    file_put_contents($providerPath, <<<'PHP'
+<?php
+
+class FallbackPanelProvider
+{
+}
+PHP);
+
+    expect(FilamentModules::resolveProviderClass($providerPath))
+        ->toBe('Modules\\Blog\\Providers\\FallbackPanelProvider');
+});
+
+test('get module filament page component location creates missing view directories', function () {
+    $module = $this->createTestModule('Blog');
+    $location = FilamentModules::getModuleFilamentPageComponentLocation('Blog');
+
+    expect(is_dir($location['path']))->toBeTrue();
+    expect($location['viewNamespace'])->toBe('blog');
+});
