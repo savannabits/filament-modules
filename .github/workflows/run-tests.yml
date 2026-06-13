@@ -21,37 +21,39 @@ jobs:
           - php: '8.3'
             laravel: ^12.0
             testbench: ^10.0
-            pest: ^3.8
-            pest-laravel: ^3.1
-            pest-livewire: ^3.0
             os: ubuntu-latest
           - php: '8.4'
             laravel: ^12.0
             testbench: ^10.0
-            pest: ^3.8
-            pest-laravel: ^3.1
-            pest-livewire: ^3.0
             os: ubuntu-latest
           - php: '8.3'
-            laravel: ^13.0
+            laravel: ^13.10
             testbench: ^11.0
             pest: ^4.4
-            pest-laravel: ^4.1
-            pest-livewire: ^4.1
+            pest-plugin-laravel: ^4.0
+            pest-plugin-livewire: ^4.0
             os: ubuntu-latest
           - php: '8.4'
-            laravel: ^13.0
+            laravel: ^13.10
             testbench: ^11.0
             pest: ^4.4
-            pest-laravel: ^4.1
-            pest-livewire: ^4.1
+            pest-plugin-laravel: ^4.0
+            pest-plugin-livewire: ^4.0
+            os: ubuntu-latest
+          - php: '8.5'
+            laravel: ^12.0
+            testbench: ^10.0
+            os: ubuntu-latest
+          - php: '8.5'
+            laravel: ^13.10
+            testbench: ^11.0
+            pest: ^4.4
+            pest-plugin-laravel: ^4.0
+            pest-plugin-livewire: ^4.0
             os: ubuntu-latest
           - php: '8.3'
             laravel: ^12.0
             testbench: ^10.0
-            pest: ^3.8
-            pest-laravel: ^3.1
-            pest-livewire: ^3.0
             os: windows-latest
 
     name: PHP ${{ matrix.php }} · Laravel ${{ matrix.laravel }} · ${{ matrix.os }}
@@ -69,20 +71,31 @@ jobs:
           tools: composer:v2
 
       - name: Install dependencies
+        shell: bash
         env:
           COMPOSER_PROCESS_TIMEOUT: 0
         run: |
-          composer require \
-            "laravel/framework:${{ matrix.laravel }}" \
-            "orchestra/testbench:${{ matrix.testbench }}" \
-            "pestphp/pest:${{ matrix.pest }}" \
-            "pestphp/pest-plugin-laravel:${{ matrix.pest-laravel }}" \
-            "pestphp/pest-plugin-livewire:${{ matrix.pest-livewire }}" \
-            --dev \
-            --no-interaction \
-            --no-update
+          PACKAGES=(
+            "laravel/framework:${{ matrix.laravel }}"
+            "orchestra/testbench:${{ matrix.testbench }}"
+          )
+
+          if [ -n "${{ matrix.pest }}" ]; then
+            PACKAGES+=("pestphp/pest:${{ matrix.pest }}")
+          fi
+
+          if [ -n "${{ matrix.pest-plugin-laravel }}" ]; then
+            PACKAGES+=("pestphp/pest-plugin-laravel:${{ matrix.pest-plugin-laravel }}")
+          fi
+
+          if [ -n "${{ matrix.pest-plugin-livewire }}" ]; then
+            PACKAGES+=("pestphp/pest-plugin-livewire:${{ matrix.pest-plugin-livewire }}")
+          fi
+
+          composer require "${PACKAGES[@]}" --dev --no-interaction --no-update
           composer update --prefer-stable --prefer-dist --no-interaction --no-scripts
           composer dump-autoload
 
       - name: Run tests
+        shell: bash
         run: vendor/bin/pest --ci

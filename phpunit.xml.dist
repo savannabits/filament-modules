@@ -20,13 +20,6 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-    <coverage>
-        <report>
-            <html outputDirectory="build/coverage"/>
-            <text outputFile="build/coverage.txt"/>
-            <clover outputFile="build/logs/clover.xml"/>
-        </report>
-    </coverage>
     <logging>
         <junit outputFile="build/report.junit.xml"/>
     </logging>
@@ -34,5 +27,10 @@
         <include>
             <directory suffix=".php">./src</directory>
         </include>
+        <exclude>
+            <directory suffix=".php">./src/Commands</directory>
+            <file>./src/Concerns/CanManipulateFiles.php</file>
+            <file>./src/Concerns/CanGenerateModulePanels.php</file>
+        </exclude>
     </source>
 </phpunit>

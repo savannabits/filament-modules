@@ -8,6 +8,7 @@ use Filament\Contracts\Plugin;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
+use Filament\Support\Icons\Heroicon;
 use Nwidart\Modules\Facades\Module as ModuleFacade;
 
 class ModulesPlugin implements Plugin
@@ -36,7 +37,7 @@ class ModulesPlugin implements Plugin
         $mode = ConfigMode::tryFrom(config('filament-modules.mode', ConfigMode::BOTH->value));
         if ($mode?->shouldRegisterPanels()) {
             $group = config('filament-modules.panels.group', 'Modules');
-            $groupIcon = config('filament-modules.panels.group-icon', \Filament\Support\Icons\Heroicon::OutlinedRectangleStack);
+            $groupIcon = config('filament-modules.panels.group-icon', Heroicon::OutlinedRectangleStack);
             $groupSort = config('filament-modules.panels.group-sort', 0);
             $openInNewTab = config('filament-modules.panels.open-in-new-tab', false);
 
@@ -54,7 +55,7 @@ class ModulesPlugin implements Plugin
                 }
                 //                $panelLabel = str($panel->getId())->after($moduleName)->trim('-')->snake()->title()->replace('_', ' ');
                 //                $label = str($module->getTitle())->append(" - ")->append($panelLabel);
-                $label = $panel->getBrandName() ?? str($panel->getId())->after($moduleName)->trim('-')->studly()->snake()->replace('_', ' ')->toString();
+                $label = $panel->getBrandName() ?: str($panel->getId())->after($moduleName)->trim('-')->studly()->snake()->replace('_', ' ')->toString();
 
                 return NavigationItem::make($label)
                     ->group($group)
@@ -108,15 +109,21 @@ class ModulesPlugin implements Plugin
         $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $appFolder . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*.php';
         $panelPaths = glob($pattern);
 
-        $panelIds = collect($panelPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->map(function ($class) {
-            // Get the panel ID and check if it is registered
-            $id = str($class)->afterLast('\\')->before('PanelProvider')->kebab()->lower();
-            // get module it belongs to as well
-            $moduleName = str($class)->after('Modules\\')->before('\\Providers\\Filament');
-            $module = ModuleFacade::find($moduleName);
+        $panelIds = collect($panelPaths)->map(function ($path) {
+            $class = FilamentModules::resolveProviderClass($path);
+
+            if (! class_exists($class)) {
+                return null;
+            }
+
+            $moduleName = FilamentModules::findModuleNameForPath($path);
+            $module = $moduleName ? ModuleFacade::find($moduleName) : null;
+
             if (! $module) {
                 return null;
             }
+
+            $id = str($class)->afterLast('\\')->before('PanelProvider')->kebab()->lower();
 
             return str($id)->prepend('-')->prepend($module->getKebabName());
         });

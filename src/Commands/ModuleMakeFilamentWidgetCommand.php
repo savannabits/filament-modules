@@ -4,12 +4,15 @@ namespace Coolsam\Modules\Commands;
 
 use Coolsam\Modules\Concerns\GeneratesModularFiles;
 use Coolsam\Modules\Facades\FilamentModules;
+use Coolsam\Modules\Facades\ModuleRegistry;
 use Filament\Panel;
 use Filament\Support\Facades\FilamentCli;
 use Filament\Widgets\Commands\MakeWidgetCommand;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
+use Nwidart\Modules\Facades\Module;
 
 use function Laravel\Prompts\search;
 use function Laravel\Prompts\select;
@@ -43,7 +46,7 @@ class ModuleMakeFilamentWidgetCommand extends MakeWidgetCommand
     public function ensureModule()
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the page in:', \Coolsam\Modules\Facades\ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
+            $module = select('Please select the module to create the page in:', ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
             if (! $module) {
                 $this->error('No module selected. Aborting page creation.');
                 exit(1);

@@ -2,9 +2,11 @@
 
 namespace Coolsam\Modules;
 
+use Coolsam\Modules\Traits\CanAccessTrait;
+
 abstract class StatsOverviewWidget extends \Filament\Widgets\StatsOverviewWidget
 {
-    use \Coolsam\Modules\Traits\CanAccessTrait;
+    use CanAccessTrait;
 
     public static function canView(): bool
     {

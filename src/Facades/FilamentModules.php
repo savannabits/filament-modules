@@ -2,15 +2,16 @@
 
 namespace Coolsam\Modules\Facades;
 
+use Coolsam\Modules\Modules;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Coolsam\Modules\Modules
+ * @see Modules
  */
 class FilamentModules extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Coolsam\Modules\Modules::class;
+        return Modules::class;
     }
 }

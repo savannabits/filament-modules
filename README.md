@@ -1,17 +1,17 @@
 # Filament Modules v5.x
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/savannabits/filament-modules/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/savannabits/filament-modules/actions?query=workflow%3Afix-php-code-style+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/coolsam/modules.svg?style=flat-square)](https://packagist.org/packages/coolsam/modules)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/modules.svg?style=for-the-badge)](https://packagist.org/packages/coolsam/modules)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/filament-modules/run-tests.yml?branch=5.x&label=tests&style=for-the-badge)](https://github.com/coolsam726/filament-modules/actions?query=workflow%3Arun-tests+branch%3A5.x)
+[![Codecov](https://img.shields.io/codecov/c/github/coolsam726/filament-modules/5.x?style=for-the-badge&logo=codecov)](https://app.codecov.io/gh/coolsam726/filament-modules/tree/5.x)
+[![Total Downloads](https://img.shields.io/packagist/dt/coolsam/modules.svg?style=for-the-badge)](https://packagist.org/packages/coolsam/modules)
 
-> **NOTE:** This documentation is for **version 5.x** of the package, which supports **Laravel 11+**, **Filament 4.x**
+> **NOTE:** This documentation is for **version 5.x** of the package, which supports **Laravel 11, 12, and 13**, **Filament 4.x and 5.x**
 > and
 **nwidart/laravel-modules 11+**. If you are using Filament 3.x, please refer
-> to [4.x documentation](https://github.com/savannabits/filament-modules/tree/4.x)
-> or [3.x documentation](https://github.com/savannabits/filament-modules/tree/3.x) if you are using Laravel 10.
+> to [4.x documentation](https://github.com/coolsam726/filament-modules/tree/4.x)
+> or [3.x documentation](https://github.com/coolsam726/filament-modules/tree/3.x) if you are using Laravel 10.
 
-![image](https://github.com/savannabits/filament-modules/assets/5610289/ba191f1d-b5ee-4eb9-9db7-d42a19cc8d38)
+![image](https://github.com/coolsam726/filament-modules/assets/5610289/ba191f1d-b5ee-4eb9-9db7-d42a19cc8d38)
 
 This package brings the power of modules to Laravel Filament. It allows you to organize your filament code into fully
 autonomous modules that can be easily shared and reused across multiple projects.
@@ -39,16 +39,16 @@ The following is a table showing a matrix of supported filament and laravel vers
 
 | Package Version | Laravel Version | Filament Version | nwidart/laravel-modules Version |
 |-----------------|-----------------|------------------|---------------------------------|
-| 5.x             | 11.x and 12.x   | 4.x              | 11.x or 12.x                    |
+| 5.x             | 11.x, 12.x, and 13.x | 4.x and 5.x | 11.x, 12.x, or 13.x             |
 | 4.x             | 11.x and 12.x   | 3.x              | 11.x or 12.x                    |
 | 3.x             | 10.x            | 3.x              | 11.x                            |
 
 v5.x of this package requires the following dependencies:
 
-- Laravel 11.x or 12.x
-- Filament 4.x or higher
-- PHP 8.2 or higher
-- nwidart/laravel-modules 11.x or 12.x
+- Laravel 11.x, 12.x, or 13.x
+- Filament 4.x or 5.x
+- PHP 8.3 or higher
+- nwidart/laravel-modules 11.x, 12.x, or 13.x
 
 ## Installation
 
@@ -58,10 +58,9 @@ You can install the package via composer:
 composer require coolsam/modules
 ```
 
-This will automatically install `nwidart/laravel-modules: ^11` (for Laravel 11) or `nwidart/laravel-modules: ^12` (for
-Laravel 12) as well. Make sure you go through
-the [documentation](https://laravelmodules.com/docs/12) to understand how to use the package and to configure it
-properly before proceeding.
+This will automatically install a compatible `nwidart/laravel-modules` release (`^11` on Laravel 11, `^12` on Laravel 12,
+or `^13` on Laravel 13). Make sure you go through the [documentation](https://laravelmodules.com/docs/v13) to
+understand how to use the package and to configure it properly before proceeding.
 
 **Task: Configure your Laravel Modules first before continuing.**
 
@@ -277,6 +276,18 @@ php artisan module:filament:panel
 php artisan module:filament:make-panel
 ```
 Follow the interactive prompts to create a new panel in your module.
+
+### Scoping resources, clusters, and pages to a panel
+
+Each module can register one or more Filament panels through `module:make:filament-panel`. Resources, pages, widgets, and clusters belong to a panel through that panel's `PanelProvider` — typically via `discoverResources()`, `discoverPages()`, and `discoverWidgets()` inside the provider's `panel()` method.
+
+To keep a resource or cluster in a single panel:
+
+1. Generate the resource/cluster inside the target module (and panel subdirectory, if you use per-panel folders).
+2. Ensure only the intended module `*PanelProvider` discovers that directory/namespace.
+3. Register `ModulesPlugin` on the main/admin panel so module panel links appear in navigation when `filament-modules.mode` supports panels.
+
+Filament's own panel discovery rules apply; this package wires modules and panels together but does not override Filament's per-panel registration model.
 
 
 ### Protecting your resources, pages and widgets (Access Control) - WIP

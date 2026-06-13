@@ -7,10 +7,10 @@
     "FilamentModules",
     "filament"
   ],
-  "homepage": "https://github.com/savannabits/filament-modules",
+  "homepage": "https://github.com/coolsam726/filament-modules",
   "support": {
-    "issues": "https://github.com/savannabits/filament-modules/issues",
-    "source": "https://github.com/savannabits/filament-modules"
+    "issues": "https://github.com/coolsam726/filament-modules/issues",
+    "source": "https://github.com/coolsam726/filament-modules"
   },
   "license": "MIT",
   "authors": [
@@ -29,12 +29,13 @@
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^3.5",
+    "larastan/larastan": "^3.1.0",
+    "laravel/framework": "^12.0",
     "laravel/pint": "^1.0",
-    "nunomaduro/larastan": "^3.1.0",
-    "orchestra/testbench": "^10.0|^11.0",
+    "orchestra/testbench": "^10.0",
     "pestphp/pest": "^3.8|^4.4",
-    "pestphp/pest-plugin-laravel": "^3.1|^4.1",
-    "pestphp/pest-plugin-livewire": "^3.0|^4.1",
+    "pestphp/pest-plugin-laravel": "^3.1|^4.0",
+    "pestphp/pest-plugin-livewire": "^3.0|^4.0",
     "phpstan/extension-installer": "^1.4.3",
     "spatie/laravel-ray": "^1.39"
   },
@@ -56,7 +57,7 @@
     ],
     "analyse": "vendor/bin/phpstan analyse",
     "test": "vendor/bin/pest",
-    "test-coverage": "vendor/bin/pest --coverage",
+    "test-coverage": "vendor/bin/pest --ci --coverage --min=98 --coverage-html=build/coverage --coverage-text=build/coverage.txt --coverage-clover=build/logs/clover.xml",
     "format": "vendor/bin/pint",
     "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
     "prepare": "@php vendor/bin/testbench package:discover --ansi",

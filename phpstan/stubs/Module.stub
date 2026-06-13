@@ -1,0 +1,18 @@
+<?php
+
+namespace Nwidart\Modules;
+
+/**
+ * Macros registered by Coolsam\Modules\ModulesServiceProvider.
+ *
+ * @method string namespace(?string $relativeNamespace = '')
+ * @method string getTitle()
+ * @method string appNamespace(string $relativeNamespace = '')
+ * @method string appPath(string $relativePath = '')
+ * @method string databasePath(string $relativePath = '')
+ * @method string resourcesPath(string $relativePath = '')
+ * @method string migrationsPath(string $relativePath = '')
+ * @method string seedersPath(string $relativePath = '')
+ * @method string factoriesPath(string $relativePath = '')
+ */
+abstract class Module {}

@@ -1,0 +1,18 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 98%
+        threshold: 0%
+    patch:
+      default:
+        target: 98%
+        threshold: 0%
+
+comment:
+  require_changes: true
+
+ignore:
+  - src/Commands/**
+  - src/Concerns/CanManipulateFiles.php
+  - src/Concerns/CanGenerateModulePanels.php

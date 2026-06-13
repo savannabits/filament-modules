@@ -1,0 +1,56 @@
+name: run-coverage
+
+on:
+  push:
+    branches: [ main, 5.x ]
+  pull_request:
+    branches: [ main, 5.x ]
+
+concurrency:
+  group: coverage-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    name: Code coverage · PHP 8.4 · Laravel 13
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, intl, gd, exif, iconv, fileinfo
+          coverage: pcov
+          tools: composer:v2
+
+      - name: Install dependencies
+        env:
+          COMPOSER_PROCESS_TIMEOUT: 0
+        run: |
+          composer require \
+            "laravel/framework:^13.10" \
+            "orchestra/testbench:^11.0" \
+            "pestphp/pest-plugin-laravel:^4.0" \
+            "pestphp/pest-plugin-livewire:^4.0" \
+            --dev \
+            --no-interaction \
+            --no-update
+          composer update --prefer-stable --prefer-dist --no-interaction --no-scripts
+          composer dump-autoload
+
+      - name: Run tests with coverage
+        run: |
+          mkdir -p build/logs
+          vendor/bin/pest --ci --coverage --min=98 --coverage-clover=build/logs/clover.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: build/logs/clover.xml
+          fail_ci_if_error: false

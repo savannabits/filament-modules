@@ -6,13 +6,14 @@ use Coolsam\Modules\Contracts\ModuleDefinition;
 use Coolsam\Modules\Contracts\ModuleRegistry;
 use Illuminate\Support\Collection;
 use Nwidart\Modules\Facades\Module;
+use Nwidart\Modules\Module as NwidartModule;
 
 class NwidartModuleRegistry implements ModuleRegistry
 {
     public function all(): Collection
     {
         return collect(Module::all())
-            ->map(fn (Module $module) => new NwidartModuleDefinition($module))
+            ->map(fn (NwidartModule $module) => new NwidartModuleDefinition($module))
             ->values();
     }
 

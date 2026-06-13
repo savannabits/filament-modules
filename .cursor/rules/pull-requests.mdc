@@ -1,0 +1,11 @@
+---
+description: Do not add Cursor branding to pull requests
+alwaysApply: true
+---
+
+# Pull requests
+
+When creating or editing GitHub pull request descriptions (`gh pr create`, `gh pr edit`):
+
+- Do **not** append "Made with Cursor", "Made with [Cursor](https://cursor.com)", or any similar agent/IDE attribution footer.
+- PR bodies should contain only the summary, notes, and test plan relevant to the change.
