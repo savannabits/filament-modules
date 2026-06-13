@@ -79,11 +79,17 @@ class ModulesServiceProvider extends PackageServiceProvider
         $providers = array_merge($serviceProviders, $panelProviders);
 
         foreach ($providers as $provider) {
-            $namespace = FilamentModules::convertPathToNamespace($provider);
-            $module = str($namespace)->before('\Providers\\')->afterLast('\\')->toString();
+            $namespace = FilamentModules::resolveProviderClass($provider);
+            $moduleName = FilamentModules::findModuleNameForPath($provider);
+
+            if (! $moduleName || ! ModuleFacade::isEnabled($moduleName)) {
+                continue;
+            }
+
             $className = str($namespace)->afterLast('\\')->toString();
-            if (str($className)->startsWith($module) && ModuleFacade::isEnabled($module)) {
-                // register the module service provider
+            $moduleStudlyName = str($moduleName)->studly()->toString();
+
+            if (str($className)->startsWith($moduleStudlyName) && class_exists($namespace)) {
                 $this->app->register($namespace);
             }
         }

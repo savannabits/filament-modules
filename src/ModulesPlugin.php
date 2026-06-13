@@ -109,15 +109,21 @@ class ModulesPlugin implements Plugin
         $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $appFolder . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*.php';
         $panelPaths = glob($pattern);
 
-        $panelIds = collect($panelPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->map(function ($class) {
-            // Get the panel ID and check if it is registered
-            $id = str($class)->afterLast('\\')->before('PanelProvider')->kebab()->lower();
-            // get module it belongs to as well
-            $moduleName = str($class)->after('Modules\\')->before('\\Providers\\Filament');
-            $module = ModuleFacade::find($moduleName);
+        $panelIds = collect($panelPaths)->map(function ($path) {
+            $class = FilamentModules::resolveProviderClass($path);
+
+            if (! class_exists($class)) {
+                return null;
+            }
+
+            $moduleName = FilamentModules::findModuleNameForPath($path);
+            $module = $moduleName ? ModuleFacade::find($moduleName) : null;
+
             if (! $module) {
                 return null;
             }
+
+            $id = str($class)->afterLast('\\')->before('PanelProvider')->kebab()->lower();
 
             return str($id)->prepend('-')->prepend($module->getKebabName());
         });
