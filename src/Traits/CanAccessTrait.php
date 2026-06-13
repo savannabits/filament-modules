@@ -2,6 +2,8 @@
 
 namespace Coolsam\Modules\Traits;
 
+use Coolsam\Modules\Contracts\ModuleActivator;
+
 trait CanAccessTrait
 {
     public static function getCurrentModuleName(): string
@@ -15,10 +17,19 @@ trait CanAccessTrait
 
     public static function canAccess(): bool
     {
-        $isModuleEnabled = app(\Coolsam\Modules\Contracts\ModuleActivator::class)->isActive(
+        $isModuleEnabled = app(ModuleActivator::class)->isActive(
             static::getCurrentModuleName()
         );
-        $parentAccess = function_exists('canAccess') ? parent::canAccess() : true;
+        $parentClass = get_parent_class(static::class);
+        $parentAccess = true;
+
+        if (
+            is_string($parentClass)
+            && str_starts_with($parentClass, 'Filament\\')
+            && method_exists($parentClass, 'canAccess')
+        ) {
+            $parentAccess = $parentClass::canAccess();
+        }
 
         if ($isModuleEnabled && $parentAccess) {
             return true;

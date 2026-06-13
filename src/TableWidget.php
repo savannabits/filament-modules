@@ -2,9 +2,11 @@
 
 namespace Coolsam\Modules;
 
+use Coolsam\Modules\Traits\CanAccessTrait;
+
 abstract class TableWidget extends \Filament\Widgets\TableWidget
 {
-    use \Coolsam\Modules\Traits\CanAccessTrait;
+    use CanAccessTrait;
 
     public static function canView(): bool
     {

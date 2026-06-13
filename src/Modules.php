@@ -67,14 +67,20 @@ class Modules
 
     public function convertPathToNamespace(string $fullPath): string
     {
+        $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $fullPath);
         $appFolder = trim(config('modules.paths.app_folder', 'app'), '/\\');
-        $appPath = $appFolder . DIRECTORY_SEPARATOR;
-        $base = str(trim(config('modules.paths.modules', base_path('Modules')), '/\\'));
-        $replacementPath = str_replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, '/', DIRECTORY_SEPARATOR . $appPath);
-        $relative = str($fullPath)->afterLast($base)->replaceFirst($replacementPath, DIRECTORY_SEPARATOR);
+        $base = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, trim(config('modules.paths.modules', base_path('Modules')), '/\\'));
+        $appSegment = $appFolder . DIRECTORY_SEPARATOR;
+
+        $relative = str($normalizedPath)->afterLast($base)->ltrim(DIRECTORY_SEPARATOR);
+
+        if (str($relative)->startsWith($appSegment)) {
+            $relative = str($relative)->after($appSegment);
+        } else {
+            $relative = str($relative)->replace(DIRECTORY_SEPARATOR . $appSegment, DIRECTORY_SEPARATOR);
+        }
 
         return str($relative)
-            ->ltrim('/\\')
             ->prepend(DIRECTORY_SEPARATOR)
             ->prepend(config('modules.namespace', 'Modules'))
             ->replace(DIRECTORY_SEPARATOR, '\\')
@@ -83,6 +89,54 @@ class Modules
             ->explode(DIRECTORY_SEPARATOR)
             ->map(fn ($piece) => str($piece)->studly()->toString())
             ->implode('\\');
+    }
+
+    public function findModuleNameForPath(string $path): ?string
+    {
+        $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+        $modulesPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, config('modules.paths.modules', base_path('Modules')));
+
+        $directory = is_file($normalizedPath) ? dirname($normalizedPath) : $normalizedPath;
+
+        while (str($directory)->startsWith($modulesPath) && $directory !== $modulesPath) {
+            $moduleJsonPath = $directory . DIRECTORY_SEPARATOR . 'module.json';
+
+            if (is_file($moduleJsonPath)) {
+                $moduleJson = json_decode((string) file_get_contents($moduleJsonPath), true);
+
+                return is_array($moduleJson) ? ($moduleJson['name'] ?? basename($directory)) : basename($directory);
+            }
+
+            $parentDirectory = dirname($directory);
+
+            if ($parentDirectory === $directory) {
+                break;
+            }
+
+            $directory = $parentDirectory;
+        }
+
+        return null;
+    }
+
+    public function resolveClassFromProviderFile(string $providerPath): ?string
+    {
+        if (! is_file($providerPath)) {
+            return null;
+        }
+
+        $content = file_get_contents($providerPath);
+
+        if ($content === false || ! preg_match('/^namespace\s+([^;]+);/m', $content, $matches)) {
+            return null;
+        }
+
+        return trim($matches[1]) . '\\' . basename($providerPath, '.php');
+    }
+
+    public function resolveProviderClass(string $providerPath): string
+    {
+        return $this->resolveClassFromProviderFile($providerPath) ?? $this->convertPathToNamespace($providerPath);
     }
 
     public function execCommand(string $command, ?Command $artisan = null): void
@@ -101,7 +155,7 @@ class Modules
     public function packagePath(string $path = ''): string
     {
         // return the base path of this package
-        return dirname(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR) . ($path ? DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR) : '');
+        return dirname(__DIR__) . ($path ? DIRECTORY_SEPARATOR . trim($path, DIRECTORY_SEPARATOR) : '');
     }
 
     public function getMode(): ?ConfigMode

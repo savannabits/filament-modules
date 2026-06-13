@@ -2,7 +2,16 @@
 
 namespace Coolsam\Modules;
 
+use Coolsam\Modules\Activation\FileModuleActivator;
+use Coolsam\Modules\Contracts\DependencyResolver;
+use Coolsam\Modules\Contracts\ModuleActivator;
+use Coolsam\Modules\Contracts\ModuleDefinition;
+use Coolsam\Modules\Contracts\ModuleRegistry;
+use Coolsam\Modules\Contracts\TenantContext;
+use Coolsam\Modules\Dependencies\ModuleDependencyResolver;
+use Coolsam\Modules\Drivers\Nwidart\NwidartModuleRegistry;
 use Coolsam\Modules\Facades\FilamentModules;
+use Coolsam\Modules\Support\DefaultTenantContext;
 use Coolsam\Modules\Testing\TestsModules;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Facades\FilamentAsset;
@@ -34,7 +43,7 @@ class ModulesServiceProvider extends PackageServiceProvider
                 $command
                     ->publishConfigFile()
                     ->endWith(function (InstallCommand $command) {
-                        $command->askToStarRepoOnGitHub('savannabits/filament-modules');
+                        $command->askToStarRepoOnGitHub('coolsam726/filament-modules');
                     });
             });
 
@@ -66,23 +75,23 @@ class ModulesServiceProvider extends PackageServiceProvider
 
     protected function registerModuleRuntime(): void
     {
-        $this->app->singleton(\Coolsam\Modules\Contracts\ModuleRegistry::class, \Coolsam\Modules\Drivers\Nwidart\NwidartModuleRegistry::class);
+        $this->app->singleton(ModuleRegistry::class, NwidartModuleRegistry::class);
 
-        $this->app->singleton(\Coolsam\Modules\Contracts\TenantContext::class, function ($app) {
+        $this->app->singleton(TenantContext::class, function ($app) {
             $class = config('filament-modules.tenancy.context');
 
             if (is_string($class) && class_exists($class)) {
                 return $app->make($class);
             }
 
-            return $app->make(\Coolsam\Modules\Support\DefaultTenantContext::class);
+            return $app->make(DefaultTenantContext::class);
         });
 
-        $this->app->singleton(\Coolsam\Modules\Contracts\DependencyResolver::class, \Coolsam\Modules\Dependencies\ModuleDependencyResolver::class);
+        $this->app->singleton(DependencyResolver::class, ModuleDependencyResolver::class);
 
-        $this->app->singleton(\Coolsam\Modules\Contracts\ModuleActivator::class, function ($app) {
+        $this->app->singleton(ModuleActivator::class, function ($app) {
             return match (config('filament-modules.activation.driver', 'file')) {
-                'file' => $app->make(\Coolsam\Modules\Activation\FileModuleActivator::class),
+                'file' => $app->make(FileModuleActivator::class),
                 default => throw new \InvalidArgumentException(
                     'Unsupported module activation driver [' . config('filament-modules.activation.driver') . '].'
                 ),
@@ -106,11 +115,17 @@ class ModulesServiceProvider extends PackageServiceProvider
         $providers = array_merge($serviceProviders, $panelProviders);
 
         foreach ($providers as $provider) {
-            $namespace = FilamentModules::convertPathToNamespace($provider);
-            $module = str($namespace)->before('\Providers\\')->afterLast('\\')->toString();
+            $namespace = FilamentModules::resolveProviderClass($provider);
+            $moduleName = FilamentModules::findModuleNameForPath($provider);
+
+            if (! $moduleName || ! app(ModuleActivator::class)->isActive($moduleName)) {
+                continue;
+            }
+
             $className = str($namespace)->afterLast('\\')->toString();
-            if (str($className)->startsWith($module) && app(\Coolsam\Modules\Contracts\ModuleActivator::class)->isActive($module)) {
-                // register the module service provider
+            $moduleStudlyName = str($moduleName)->studly()->toString();
+
+            if (str($className)->startsWith($moduleStudlyName) && class_exists($namespace)) {
                 $this->app->register($namespace);
             }
         }
@@ -119,11 +134,11 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function autoDiscoverPanels(): void
     {
         $this->app->beforeResolving('filament', function () {
-            $activator = app(\Coolsam\Modules\Contracts\ModuleActivator::class);
-            $panels = app(\Coolsam\Modules\Contracts\ModuleRegistry::class)
+            $activator = app(ModuleActivator::class);
+            $panels = app(ModuleRegistry::class)
                 ->all()
-                ->filter(fn (\Coolsam\Modules\Contracts\ModuleDefinition $module) => $activator->isActive($module))
-                ->flatMap(function (\Coolsam\Modules\Contracts\ModuleDefinition $moduleDefinition) {
+                ->filter(fn (ModuleDefinition $module) => $activator->isActive($module))
+                ->flatMap(function (ModuleDefinition $moduleDefinition) {
                     $module = ModuleFacade::find($moduleDefinition->name());
 
                     if (! $module) {
@@ -266,39 +281,55 @@ class ModulesServiceProvider extends PackageServiceProvider
         NwidartModule::macro('appPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath(config('modules.paths.app_folder', 'app'));
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('databasePath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('database');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('resourcesPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('resources');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
-                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('migrationsPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('migrations');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
-                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('seedersPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('seeders');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('factoriesPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('factories');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
     }
 }

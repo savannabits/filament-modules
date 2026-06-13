@@ -3,6 +3,7 @@
 namespace Coolsam\Modules\Commands;
 
 use Coolsam\Modules\Concerns\GeneratesModularFiles;
+use Coolsam\Modules\Facades\ModuleRegistry;
 use Illuminate\Console\GeneratorCommand;
 
 use function Laravel\Prompts\select;
@@ -50,7 +51,7 @@ class ModuleMakeFilamentPluginCommand extends GeneratorCommand
     public function ensureModule()
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the plugin in:', \Coolsam\Modules\Facades\ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
+            $module = select('Please select the module to create the plugin in:', ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
             $this->input->setArgument('module', $module);
         }
     }

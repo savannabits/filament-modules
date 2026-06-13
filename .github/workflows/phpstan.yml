@@ -7,14 +7,12 @@ on:
       - '**.php'
       - 'phpstan.neon.dist'
       - 'composer.json'
-      - 'composer.lock'
   pull_request:
     branches: [ main, 5.x ]
     paths:
       - '**.php'
       - 'phpstan.neon.dist'
       - 'composer.json'
-      - 'composer.lock'
 
 jobs:
   phpstan:
@@ -35,7 +33,7 @@ jobs:
       - name: Install dependencies
         uses: ramsey/composer-install@v3
         with:
-          composer-options: '--prefer-dist --no-scripts'
+          composer-options: '--prefer-dist'
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan --error-format=github

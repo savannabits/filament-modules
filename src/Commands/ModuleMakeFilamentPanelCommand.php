@@ -4,6 +4,7 @@ namespace Coolsam\Modules\Commands;
 
 use Coolsam\Modules\Commands\FileGenerators\ModulePanelProviderClassGenerator;
 use Coolsam\Modules\Concerns\GeneratesModularFiles;
+use Coolsam\Modules\Facades\ModuleRegistry;
 use Filament\Commands\MakePanelCommand;
 use Filament\Support\Commands\Concerns\CanGeneratePanels;
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
@@ -110,7 +111,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
     protected function ensureModuleArgument(): void
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the panel in:', \Coolsam\Modules\Facades\ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
+            $module = select('Please select the module to create the panel in:', ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
             if (! $module) {
                 $this->components->error('No module selected. Aborting panel creation.');
                 exit(1);
