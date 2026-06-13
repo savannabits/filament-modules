@@ -208,7 +208,7 @@ class ModulesServiceProvider extends PackageServiceProvider
     {
         Module::macro('namespace', function (?string $relativeNamespace = '') {
             $relativeNamespace = $relativeNamespace ?? '';
-            $base = trim($this->app['config']->get('modules.namespace', 'Modules'), '\\');
+            $base = trim(config('modules.namespace', 'Modules'), '\\');
             $relativeNamespace = trim($relativeNamespace, '\\');
             $studlyName = $this->getStudlyName();
 
