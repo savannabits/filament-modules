@@ -30,7 +30,7 @@
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^3.5",
     "laravel/pint": "^1.0",
-    "nunomaduro/larastan": "^3.1.0",
+    "larastan/larastan": "^3.1.0",
     "orchestra/testbench": "^9.12|^10.0|^11.0",
     "pestphp/pest-plugin-laravel": "^3.1|^4.0",
     "pestphp/pest-plugin-livewire": "^3.0|^4.0",
