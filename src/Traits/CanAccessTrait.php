@@ -21,9 +21,15 @@ trait CanAccessTrait
             static::getCurrentModuleName()
         )->isEnabled();
         $parentClass = get_parent_class(static::class);
-        $parentAccess = is_string($parentClass) && method_exists($parentClass, 'canAccess')
-            ? $parentClass::canAccess()
-            : true;
+        $parentAccess = true;
+
+        if (
+            is_string($parentClass)
+            && str_starts_with($parentClass, 'Filament\\')
+            && method_exists($parentClass, 'canAccess')
+        ) {
+            $parentAccess = $parentClass::canAccess();
+        }
 
         if ($isModuleEnabled && $parentAccess) {
             return true;
