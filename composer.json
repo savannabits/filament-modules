@@ -23,16 +23,17 @@
   "require": {
     "php": "^8.3",
     "filament/filament": "^4.0|^5.0",
+    "illuminate/contracts": "^11.28|^12.0|^13.0",
     "nwidart/laravel-modules": "^11.0|^12.0|^13.0",
     "spatie/laravel-package-tools": "^1.15.0"
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^3.5",
     "laravel/pint": "^1.0",
-    "nunomaduro/larastan": "^3.1.0",
-    "orchestra/testbench": "^9.12",
-    "pestphp/pest-plugin-laravel": "^3.1",
-    "pestphp/pest-plugin-livewire": "^3.0",
+    "larastan/larastan": "^3.1.0",
+    "orchestra/testbench": "^9.12|^10.0|^11.0",
+    "pestphp/pest-plugin-laravel": "^3.1|^4.0",
+    "pestphp/pest-plugin-livewire": "^3.0|^4.0",
     "phpstan/extension-installer": "^1.4.3",
     "spatie/laravel-ray": "^1.39"
   },
@@ -54,7 +55,7 @@
     ],
     "analyse": "vendor/bin/phpstan analyse",
     "test": "vendor/bin/pest",
-    "test-coverage": "vendor/bin/pest --coverage",
+    "test-coverage": "vendor/bin/pest --coverage --coverage-html=build/coverage --coverage-text=build/coverage.txt --coverage-clover=build/logs/clover.xml",
     "format": "vendor/bin/pint",
     "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
     "prepare": "@php vendor/bin/testbench package:discover --ansi",
