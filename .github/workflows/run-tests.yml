@@ -19,13 +19,42 @@ jobs:
       matrix:
         include:
           - php: '8.3'
+            laravel: ^12.0
+            testbench: ^10.0
+            pest: ^3.8
+            pest-laravel: ^3.1
+            pest-livewire: ^3.0
             os: ubuntu-latest
           - php: '8.4'
+            laravel: ^12.0
+            testbench: ^10.0
+            pest: ^3.8
+            pest-laravel: ^3.1
+            pest-livewire: ^3.0
             os: ubuntu-latest
           - php: '8.3'
+            laravel: ^13.0
+            testbench: ^11.0
+            pest: ^4.4
+            pest-laravel: ^4.1
+            pest-livewire: ^4.1
+            os: ubuntu-latest
+          - php: '8.4'
+            laravel: ^13.0
+            testbench: ^11.0
+            pest: ^4.4
+            pest-laravel: ^4.1
+            pest-livewire: ^4.1
+            os: ubuntu-latest
+          - php: '8.3'
+            laravel: ^12.0
+            testbench: ^10.0
+            pest: ^3.8
+            pest-laravel: ^3.1
+            pest-livewire: ^3.0
             os: windows-latest
 
-    name: PHP ${{ matrix.php }} · Laravel 12 · ${{ matrix.os }}
+    name: PHP ${{ matrix.php }} · Laravel ${{ matrix.laravel }} · ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -44,8 +73,11 @@ jobs:
           COMPOSER_PROCESS_TIMEOUT: 0
         run: |
           composer require \
-            "laravel/framework:^12.0" \
-            "orchestra/testbench:^10.0" \
+            "laravel/framework:${{ matrix.laravel }}" \
+            "orchestra/testbench:${{ matrix.testbench }}" \
+            "pestphp/pest:${{ matrix.pest }}" \
+            "pestphp/pest-plugin-laravel:${{ matrix.pest-laravel }}" \
+            "pestphp/pest-plugin-livewire:${{ matrix.pest-livewire }}" \
             --dev \
             --no-interaction \
             --no-update

@@ -28,7 +28,7 @@ v5 continues to wrap [nwidart/laravel-modules](https://github.com/nWidart/larave
 | Dependency | Version |
 |------------|---------|
 | PHP | 8.3+ |
-| Laravel | 12.x+ |
+| Laravel | 12.x and 13.x |
 | Filament | 4.x or 5.x |
 | nwidart/laravel-modules | 12.x or 13.x |
 
@@ -338,4 +338,4 @@ ModuleRegistry::find('Blog')?->dependencies();
 
 ## v6 release tagline
 
-> **Filament Modules v6 — modular Filament for Laravel 12+ with tenant-aware activation and safe dependency boundaries, driver-agnostic by design.**
+> **Filament Modules v6 — modular Filament for Laravel 12 and 13 with tenant-aware activation and safe dependency boundaries, driver-agnostic by design.**
