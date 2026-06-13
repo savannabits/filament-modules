@@ -233,39 +233,55 @@ class ModulesServiceProvider extends PackageServiceProvider
         NwidartModule::macro('appPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath(config('modules.paths.app_folder', 'app'));
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('databasePath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('database');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('resourcesPath', function (string $relativePath = '') {
             $appPath = $this->getExtraPath('resources');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
-                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('migrationsPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('migrations');
 
             return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
-                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('seedersPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('seeders');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
 
         NwidartModule::macro('factoriesPath', function (string $relativePath = '') {
             $appPath = $this->databasePath('factories');
 
-            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)->toString();
+            return str($appPath . ($relativePath ? DIRECTORY_SEPARATOR . $relativePath : ''))
+                ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+                ->toString();
         });
     }
 }
