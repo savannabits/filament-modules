@@ -66,8 +66,14 @@ jobs:
             Triggered by: ${{ github.event.release.html_url }}
           delete-branch: true
 
-      - name: Enable auto-merge
+      - name: Merge pull request
         if: steps.create-pull-request.outputs.pull-request-operation == 'created' || steps.create-pull-request.outputs.pull-request-operation == 'updated'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge "${{ steps.create-pull-request.outputs.pull-request-number }}" --auto --squash
+        run: |
+          PR="${{ steps.create-pull-request.outputs.pull-request-number }}"
+
+          # Auto-merge only works when required checks are still pending. Changelog PRs
+          # target branches without required status checks, so GitHub rejects --auto with
+          # "Pull request is in clean status" and the PR must be merged directly instead.
+          gh pr merge "$PR" --auto --squash || gh pr merge "$PR" --squash --delete-branch
