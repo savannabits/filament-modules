@@ -20,19 +20,19 @@ test('modules service provider can register enabled module providers discovered 
     }
 
     file_put_contents($providerPath, <<<'PHP'
-        <?php
+<?php
 
-        namespace Modules\Blog\Providers;
+namespace Modules\Blog\Providers;
 
-        use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-        class BlogServiceProvider extends ServiceProvider
-        {
-            public function register(): void
-            {
-            }
-        }
-        PHP);
+class BlogServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+    }
+}
+PHP);
 
     require_once $providerPath;
 

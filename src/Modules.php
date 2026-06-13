@@ -91,6 +91,54 @@ class Modules
             ->implode('\\');
     }
 
+    public function findModuleNameForPath(string $path): ?string
+    {
+        $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+        $modulesPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, config('modules.paths.modules', base_path('Modules')));
+
+        $directory = is_file($normalizedPath) ? dirname($normalizedPath) : $normalizedPath;
+
+        while (str($directory)->startsWith($modulesPath) && $directory !== $modulesPath) {
+            $moduleJsonPath = $directory . DIRECTORY_SEPARATOR . 'module.json';
+
+            if (is_file($moduleJsonPath)) {
+                $moduleJson = json_decode((string) file_get_contents($moduleJsonPath), true);
+
+                return is_array($moduleJson) ? ($moduleJson['name'] ?? basename($directory)) : basename($directory);
+            }
+
+            $parentDirectory = dirname($directory);
+
+            if ($parentDirectory === $directory) {
+                break;
+            }
+
+            $directory = $parentDirectory;
+        }
+
+        return null;
+    }
+
+    public function resolveClassFromProviderFile(string $providerPath): ?string
+    {
+        if (! is_file($providerPath)) {
+            return null;
+        }
+
+        $content = file_get_contents($providerPath);
+
+        if ($content === false || ! preg_match('/^namespace\s+([^;]+);/m', $content, $matches)) {
+            return null;
+        }
+
+        return trim($matches[1]) . '\\' . basename($providerPath, '.php');
+    }
+
+    public function resolveProviderClass(string $providerPath): string
+    {
+        return $this->resolveClassFromProviderFile($providerPath) ?? $this->convertPathToNamespace($providerPath);
+    }
+
     public function execCommand(string $command, ?Command $artisan = null): void
     {
         $process = Process::fromShellCommandline($command);

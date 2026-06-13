@@ -277,6 +277,18 @@ php artisan module:filament:make-panel
 ```
 Follow the interactive prompts to create a new panel in your module.
 
+### Scoping resources, clusters, and pages to a panel
+
+Each module can register one or more Filament panels through `module:make:filament-panel`. Resources, pages, widgets, and clusters belong to a panel through that panel's `PanelProvider` — typically via `discoverResources()`, `discoverPages()`, and `discoverWidgets()` inside the provider's `panel()` method.
+
+To keep a resource or cluster in a single panel:
+
+1. Generate the resource/cluster inside the target module (and panel subdirectory, if you use per-panel folders).
+2. Ensure only the intended module `*PanelProvider` discovers that directory/namespace.
+3. Register `ModulesPlugin` on the main/admin panel so module panel links appear in navigation when `filament-modules.mode` supports panels.
+
+Filament's own panel discovery rules apply; this package wires modules and panels together but does not override Filament's per-panel registration model.
+
 
 ### Protecting your resources, pages and widgets (Access Control) - WIP
 

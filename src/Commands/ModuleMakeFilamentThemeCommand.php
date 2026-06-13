@@ -18,6 +18,8 @@ class ModuleMakeFilamentThemeCommand extends MakeThemeCommand
 
     public function handle(Filesystem $filesystem): int
     {
+        $this->filesystem = $filesystem;
+
         $module = $this->getModule();
 
         $this->call('vendor:publish', [
