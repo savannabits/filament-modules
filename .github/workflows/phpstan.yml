@@ -2,25 +2,40 @@ name: PHPStan
 
 on:
   push:
+    branches: [ main, 5.x, 'feature/**' ]
     paths:
       - '**.php'
       - 'phpstan.neon.dist'
+      - 'composer.json'
+      - 'composer.lock'
+  pull_request:
+    branches: [ main, 5.x ]
+    paths:
+      - '**.php'
+      - 'phpstan.neon.dist'
+      - 'composer.json'
+      - 'composer.lock'
 
 jobs:
   phpstan:
-    name: phpstan
+    name: PHPStan · PHP 8.3
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           coverage: none
+          tools: composer:v2
 
-      - name: Install composer dependencies
+      - name: Install dependencies
         uses: ramsey/composer-install@v3
+        with:
+          composer-options: '--prefer-dist --no-scripts'
 
       - name: Run PHPStan
         run: ./vendor/bin/phpstan --error-format=github
