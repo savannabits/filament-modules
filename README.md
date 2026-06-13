@@ -4,7 +4,7 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/filament-modules/run-tests.yml?branch=5.x&label=tests&style=for-the-badge)](https://github.com/coolsam726/filament-modules/actions?query=workflow%3Arun-tests+branch%3A5.x)
 [![Total Downloads](https://img.shields.io/packagist/dt/coolsam/modules.svg?style=for-the-badge)](https://packagist.org/packages/coolsam/modules)
 
-> **NOTE:** This documentation is for **version 5.x** of the package, which supports **Laravel 11+**, **Filament 4.x**
+> **NOTE:** This documentation is for **version 5.x** of the package, which supports **Laravel 11, 12, and 13**, **Filament 4.x and 5.x**
 > and
 **nwidart/laravel-modules 11+**. If you are using Filament 3.x, please refer
 > to [4.x documentation](https://github.com/coolsam726/filament-modules/tree/4.x)
@@ -38,16 +38,16 @@ The following is a table showing a matrix of supported filament and laravel vers
 
 | Package Version | Laravel Version | Filament Version | nwidart/laravel-modules Version |
 |-----------------|-----------------|------------------|---------------------------------|
-| 5.x             | 11.x and 12.x   | 4.x              | 11.x or 12.x                    |
+| 5.x             | 11.x, 12.x, and 13.x | 4.x and 5.x | 11.x, 12.x, or 13.x             |
 | 4.x             | 11.x and 12.x   | 3.x              | 11.x or 12.x                    |
 | 3.x             | 10.x            | 3.x              | 11.x                            |
 
 v5.x of this package requires the following dependencies:
 
-- Laravel 11.x or 12.x
-- Filament 4.x or higher
-- PHP 8.2 or higher
-- nwidart/laravel-modules 11.x or 12.x
+- Laravel 11.x, 12.x, or 13.x
+- Filament 4.x or 5.x
+- PHP 8.3 or higher
+- nwidart/laravel-modules 11.x, 12.x, or 13.x
 
 ## Installation
 
@@ -57,10 +57,9 @@ You can install the package via composer:
 composer require coolsam/modules
 ```
 
-This will automatically install `nwidart/laravel-modules: ^11` (for Laravel 11) or `nwidart/laravel-modules: ^12` (for
-Laravel 12) as well. Make sure you go through
-the [documentation](https://laravelmodules.com/docs/12) to understand how to use the package and to configure it
-properly before proceeding.
+This will automatically install a compatible `nwidart/laravel-modules` release (`^11` on Laravel 11, `^12` on Laravel 12,
+or `^13` on Laravel 13). Make sure you go through the [documentation](https://laravelmodules.com/docs/v13) to
+understand how to use the package and to configure it properly before proceeding.
 
 **Task: Configure your Laravel Modules first before continuing.**
 

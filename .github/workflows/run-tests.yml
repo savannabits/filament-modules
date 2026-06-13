@@ -35,6 +35,18 @@ jobs:
             testbench: ^10.0
             os: ubuntu-latest
           - php: '8.3'
+            laravel: ^13.10
+            testbench: ^11.0
+            pest-plugin-laravel: ^4.0
+            pest-plugin-livewire: ^4.0
+            os: ubuntu-latest
+          - php: '8.4'
+            laravel: ^13.10
+            testbench: ^11.0
+            pest-plugin-laravel: ^4.0
+            pest-plugin-livewire: ^4.0
+            os: ubuntu-latest
+          - php: '8.3'
             laravel: ^11.0
             testbench: ^9.12
             os: windows-latest
@@ -58,12 +70,20 @@ jobs:
         env:
           COMPOSER_PROCESS_TIMEOUT: 0
         run: |
-          composer require \
-            "laravel/framework:${{ matrix.laravel }}" \
-            "orchestra/testbench:${{ matrix.testbench }}" \
-            --dev \
-            --no-interaction \
-            --no-update
+          PACKAGES=(
+            "laravel/framework:${{ matrix.laravel }}"
+            "orchestra/testbench:${{ matrix.testbench }}"
+          )
+
+          if [ -n "${{ matrix.pest-plugin-laravel }}" ]; then
+            PACKAGES+=("pestphp/pest-plugin-laravel:${{ matrix.pest-plugin-laravel }}")
+          fi
+
+          if [ -n "${{ matrix.pest-plugin-livewire }}" ]; then
+            PACKAGES+=("pestphp/pest-plugin-livewire:${{ matrix.pest-plugin-livewire }}")
+          fi
+
+          composer require "${PACKAGES[@]}" --dev --no-interaction --no-update
           composer update --prefer-stable --prefer-dist --no-interaction --no-scripts
           composer dump-autoload
 

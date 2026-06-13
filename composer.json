@@ -23,6 +23,7 @@
   "require": {
     "php": "^8.3",
     "filament/filament": "^4.0|^5.0",
+    "illuminate/contracts": "^11.28|^12.0|^13.0",
     "nwidart/laravel-modules": "^11.0|^12.0|^13.0",
     "spatie/laravel-package-tools": "^1.15.0"
   },
@@ -30,9 +31,9 @@
     "barryvdh/laravel-ide-helper": "^3.5",
     "laravel/pint": "^1.0",
     "nunomaduro/larastan": "^3.1.0",
-    "orchestra/testbench": "^9.12",
-    "pestphp/pest-plugin-laravel": "^3.1",
-    "pestphp/pest-plugin-livewire": "^3.0",
+    "orchestra/testbench": "^9.12|^10.0|^11.0",
+    "pestphp/pest-plugin-laravel": "^3.1|^4.0",
+    "pestphp/pest-plugin-livewire": "^3.0|^4.0",
     "phpstan/extension-installer": "^1.4.3",
     "spatie/laravel-ray": "^1.39"
   },
