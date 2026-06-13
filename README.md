@@ -2,6 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/modules.svg?style=for-the-badge)](https://packagist.org/packages/coolsam/modules)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/filament-modules/run-tests.yml?branch=5.x&label=tests&style=for-the-badge)](https://github.com/coolsam726/filament-modules/actions?query=workflow%3Arun-tests+branch%3A5.x)
+[![Codecov](https://img.shields.io/codecov/c/github/coolsam726/filament-modules/5.x?style=for-the-badge&logo=codecov)](https://app.codecov.io/gh/coolsam726/filament-modules/tree/5.x)
 [![Total Downloads](https://img.shields.io/packagist/dt/coolsam/modules.svg?style=for-the-badge)](https://packagist.org/packages/coolsam/modules)
 
 > **NOTE:** This documentation is for **version 5.x** of the package, which supports **Laravel 11, 12, and 13**, **Filament 4.x and 5.x**
