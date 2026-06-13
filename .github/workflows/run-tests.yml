@@ -47,10 +47,6 @@ jobs:
             pest-plugin-livewire: ^4.0
             os: ubuntu-latest
           - php: '8.5'
-            laravel: ^11.0
-            testbench: ^9.12
-            os: ubuntu-latest
-          - php: '8.5'
             laravel: ^12.0
             testbench: ^10.0
             os: ubuntu-latest
