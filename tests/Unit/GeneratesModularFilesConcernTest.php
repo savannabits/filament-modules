@@ -89,10 +89,9 @@ beforeEach(function () {
 });
 
 test('can generate the correct stubs path', function () {
-    $d = DIRECTORY_SEPARATOR;
+    $expected = realpath(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . 'filament-plugin.stub');
 
-    expect($this->command->exposeGetStub())
-        ->toEqual(realpath(__DIR__ . "{$d}..{$d}..{$d}src{$d}Commands{$d}stubs{$d}filament-plugin.stub"));
+    expect(realpath($this->command->exposeGetStub()))->toEqual($expected);
 });
 
 test('modular generator resolves module namespace and paths', function () {
@@ -103,7 +102,7 @@ test('modular generator resolves module namespace and paths', function () {
     expect($this->command->exposeDefaultNamespace('Modules\\Blog\\'))
         ->toBe('Modules\\Blog\\Filament\\Resources');
     expect($this->command->exposeViewPath('pages'))->toEndWith('resources' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'pages');
-    expect($this->command->exposePath('Modules\\Blog\\Filament\\Resources\\PostResource'))
+    expect(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $this->command->exposePath('Modules\\Blog\\Filament\\Resources\\PostResource')))
         ->toEndWith('Blog' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'PostResource.php');
 });
 
