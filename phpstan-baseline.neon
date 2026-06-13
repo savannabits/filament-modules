@@ -1,0 +1,73 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property Coolsam\\Modules\\Commands\\ModuleMakeFilamentClusterCommand\:\:\$files\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentClusterCommand.php
+
+		-
+			message: '#^Access to an undefined property Coolsam\\Modules\\Commands\\ModuleMakeFilamentClusterCommand\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentClusterCommand.php
+
+		-
+			message: '#^Call to an undefined method Coolsam\\Modules\\Commands\\ModuleMakeFilamentClusterCommand\:\:replaceClass\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentClusterCommand.php
+
+		-
+			message: '#^Access to an undefined property Coolsam\\Modules\\Commands\\ModuleMakeFilamentPageCommand\:\:\$files\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentPageCommand.php
+
+		-
+			message: '#^Call to an undefined method Coolsam\\Modules\\Commands\\ModuleMakeFilamentPageCommand\:\:replaceClass\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentPageCommand.php
+
+		-
+			message: '#^Access to an undefined property Coolsam\\Modules\\Commands\\ModuleMakeFilamentPanelCommand\:\:\$files\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentPanelCommand.php
+
+		-
+			message: '#^Access to an undefined property Coolsam\\Modules\\Commands\\ModuleMakeFilamentPanelCommand\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentPanelCommand.php
+
+		-
+			message: '#^Call to an undefined method Coolsam\\Modules\\Commands\\ModuleMakeFilamentPanelCommand\:\:replaceClass\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentPanelCommand.php
+
+		-
+			message: '#^Access to an undefined property Coolsam\\Modules\\Commands\\ModuleMakeFilamentResourceCommand\:\:\$files\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Commands/ModuleMakeFilamentResourceCommand.php
+
+		-
+			message: '#^Call to an undefined method Coolsam\\Modules\\Commands\\ModuleMakeFilamentResourceCommand\:\:replaceClass\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Commands/ModuleMakeFilamentResourceCommand.php
+
+		-
+			message: '#^Access to an undefined property Coolsam\\Modules\\Commands\\ModuleMakeFilamentWidgetCommand\:\:\$files\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentWidgetCommand.php
+
+		-
+			message: '#^Call to an undefined method Coolsam\\Modules\\Commands\\ModuleMakeFilamentWidgetCommand\:\:replaceClass\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Commands/ModuleMakeFilamentWidgetCommand.php

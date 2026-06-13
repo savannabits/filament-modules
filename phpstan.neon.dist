@@ -3,13 +3,18 @@ includes:
 
 parameters:
     level: 4
+    stubFiles:
+        - phpstan/stubs/Module.stub
     paths:
         - src
     tmpDir: build/phpstan
+    treatPhpDocTypesAsCertain: false
     checkOctaneCompatibility: true
     checkModelProperties: false
     reportUnmatchedIgnoredErrors: false
     reportMaybes: false
+    ignoreErrors:
+        - identifier: trait.unused
     fileExtensions:
         - php
         - php.stub

@@ -55,7 +55,7 @@ class ModulesPlugin implements Plugin
                 }
                 //                $panelLabel = str($panel->getId())->after($moduleName)->trim('-')->snake()->title()->replace('_', ' ');
                 //                $label = str($module->getTitle())->append(" - ")->append($panelLabel);
-                $label = $panel->getBrandName() ?? str($panel->getId())->after($moduleName)->trim('-')->studly()->snake()->replace('_', ' ')->toString();
+                $label = $panel->getBrandName() ?: str($panel->getId())->after($moduleName)->trim('-')->studly()->snake()->replace('_', ' ')->toString();
 
                 return NavigationItem::make($label)
                     ->group($group)

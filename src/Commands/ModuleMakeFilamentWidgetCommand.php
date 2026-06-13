@@ -10,6 +10,7 @@ use Filament\Widgets\Commands\MakeWidgetCommand;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
 use Nwidart\Modules\Facades\Module;
 
 use function Laravel\Prompts\search;

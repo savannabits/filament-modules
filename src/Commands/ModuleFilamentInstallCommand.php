@@ -7,7 +7,6 @@ use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Illuminate\Console\Command;
 use Illuminate\Console\Concerns\PromptsForMissingInput;
 use Illuminate\Support\Facades\Config;
-use Nwidart\Modules\Exceptions\ModuleNotFoundException;
 use Nwidart\Modules\Facades\Module;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -92,7 +91,7 @@ class ModuleFilamentInstallCommand extends Command implements \Illuminate\Contra
     {
         try {
             return Module::findOrFail($this->moduleName);
-        } catch (ModuleNotFoundException | \Throwable $exception) {
+        } catch (\Throwable $exception) {
             if (confirm("Module $this->moduleName does not exist. Would you like to generate it?", true)) {
                 $this->call('module:make', ['name' => [$this->moduleName]]);
 
