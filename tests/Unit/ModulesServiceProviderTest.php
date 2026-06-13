@@ -169,6 +169,19 @@ test('modules service provider publishes module stubs when running in console', 
     }
 });
 
+test('modules install command publishes config and completes successfully', function () {
+    $configPath = config_path('filament-modules.php');
+
+    if (file_exists($configPath)) {
+        unlink($configPath);
+    }
+
+    $this->artisan('modules:install')
+        ->assertSuccessful();
+
+    expect(file_exists($configPath))->toBeTrue();
+});
+
 test('modules service provider configurePackage registers optional package directories when present', function () {
     $packageRoot = dirname(__DIR__, 2);
     $migrationsPath = $packageRoot . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
