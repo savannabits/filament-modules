@@ -1,31 +1,295 @@
 <?php
 
 use Coolsam\Modules\Concerns\GeneratesModularFiles;
-use Illuminate\Console\Command;
+use Illuminate\Console\GeneratorCommand;
+use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\Console\Input\InputInterface;
 
-// Setup for all tests
 beforeEach(function () {
-    $this->trait = new class extends Command
+    $this->command = new class(app(Filesystem::class)) extends GeneratorCommand
     {
         use GeneratesModularFiles;
 
+        protected $name = 'test:make-modular';
+
+        protected $description = 'Test modular generator';
+
+        protected $type = 'Filament Plugin';
+
         public function getRelativeNamespace(): string
         {
-            return 'Commands';
+            return 'Filament\\Resources';
         }
 
-        public function getStub()
+        protected function getStub(): string
         {
-            $d = DIRECTORY_SEPARATOR;
+            return $this->resolveStubPath('stubs/filament-plugin.stub');
+        }
 
-            return $this->resolveStubPath("stubs{$d}filament-plugin.stub");
+        public function exposeGetStub(): string
+        {
+            return $this->getStub();
+        }
+
+        protected function stubReplacements(): array
+        {
+            return [
+                'moduleStudlyName' => $this->getModule()->getStudlyName(),
+                'pluginId' => 'blog',
+            ];
+        }
+
+        public function exposeRootNamespace(): string
+        {
+            return $this->rootNamespace();
+        }
+
+        public function exposeDefaultNamespace(string $rootNamespace): string
+        {
+            return $this->getDefaultNamespace($rootNamespace);
+        }
+
+        public function exposeViewPath(string $path = ''): string
+        {
+            return $this->viewPath($path);
+        }
+
+        public function exposePath(string $name): string
+        {
+            return $this->getPath($name);
+        }
+
+        public function exposePossibleModels(): array
+        {
+            return $this->possibleModels();
+        }
+
+        public function exposeBuildClass(string $name): string
+        {
+            return $this->buildClass($name);
+        }
+
+        public function exposePrompts(): array
+        {
+            return $this->promptForMissingArgumentsUsing();
+        }
+
+        public function exposeArguments(): array
+        {
+            return $this->getArguments();
         }
     };
+
+    $this->command->setLaravel($this->app);
+
+    $input = Mockery::mock(InputInterface::class);
+    $input->shouldReceive('getArgument')->with('module')->andReturn('Blog');
+    $input->shouldReceive('getArgument')->with('name')->andReturn('PostResource');
+    $this->command->setInput($input);
 });
 
 test('can generate the correct stubs path', function () {
-    // include the GeneratesModularFiles trait
-    $d = DIRECTORY_SEPARATOR;
-    expect($this->trait->getStub())
-        ->toEqual(realpath(__DIR__ . "{$d}..{$d}..{$d}src{$d}Commands{$d}stubs{$d}filament-plugin.stub"));
+    $expected = realpath(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . 'filament-plugin.stub');
+
+    expect(realpath($this->command->exposeGetStub()))->toEqual($expected);
+});
+
+test('modular generator resolves module namespace and paths', function () {
+    $this->createTestModule('Blog');
+
+    expect($this->command->getModule()->getName())->toBe('Blog');
+    expect($this->command->exposeRootNamespace())->toBe('Modules\\Blog\\');
+    expect($this->command->exposeDefaultNamespace('Modules\\Blog\\'))
+        ->toBe('Modules\\Blog\\Filament\\Resources');
+    expect($this->command->exposeViewPath('pages'))->toEndWith('resources' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'pages');
+    expect(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $this->command->exposePath('Modules\\Blog\\Filament\\Resources\\PostResource')))
+        ->toEndWith('Blog' . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR . 'PostResource.php');
+});
+
+test('modular generator can list possible models', function () {
+    $this->createModuleModel('Blog', 'Post');
+
+    expect($this->command->exposePossibleModels())->toBe(['Post']);
+    expect($this->command->possibleFqnModels())->toBe(['Modules\\Blog\\Models\\Post']);
+});
+
+test('modular generator builds class content from stub replacements', function () {
+    $this->createTestModule('Blog');
+
+    $input = Mockery::mock(InputInterface::class);
+    $input->shouldReceive('getArgument')->with('module')->andReturn('Blog');
+    $input->shouldReceive('getArgument')->with('name')->andReturn('AccessPlugin');
+    $this->command->setInput($input);
+
+    $class = $this->command->exposeBuildClass('Modules\\Blog\\Filament\\AccessPlugin');
+
+    expect($class)->toContain('AccessPlugin');
+    expect($class)->toContain('Blog');
+});
+
+test('modular generator exposes prompt metadata for missing arguments', function () {
+    $prompts = $this->command->exposePrompts();
+
+    expect($prompts)->toHaveKeys(['name', 'module']);
+    expect($prompts['name'][0])->toContain('filament plugin');
+});
+
+test('modular generator merges module argument into command definition', function () {
+    $arguments = $this->command->exposeArguments();
+
+    expect(collect($arguments)->pluck(0))->toContain('module');
+});
+
+test('modular generator exposes default stub replacements', function () {
+    $command = new class(app(Filesystem::class)) extends GeneratorCommand
+    {
+        use GeneratesModularFiles;
+
+        protected $name = 'test:default-replacements';
+
+        protected $description = 'Test default stub replacements';
+
+        protected $type = 'Filament Plugin';
+
+        protected function getRelativeNamespace(): string
+        {
+            return 'Filament';
+        }
+
+        protected function getStub(): string
+        {
+            return '';
+        }
+
+        public function exposeStubReplacements(): array
+        {
+            return $this->stubReplacements();
+        }
+
+        public function exposePromptForType(?string $type): array
+        {
+            $this->type = $type;
+
+            return $this->promptForMissingArgumentsUsing()['name'];
+        }
+    };
+
+    expect($command->exposeStubReplacements())->toBe([]);
+    expect($command->exposePromptForType('Model')[1])->toBe('E.g. Flight');
+    expect($command->exposePromptForType('Unknown')[1])->toBe('');
+    expect($command->exposePromptForType(null)[0])->toContain('class');
+});
+
+test('modular generator exposes type-specific prompt hints', function (string $type, string $expectedHint) {
+    $command = new class(app(Filesystem::class)) extends GeneratorCommand
+    {
+        use GeneratesModularFiles;
+
+        protected $name = 'test:prompt-hints';
+
+        protected $description = 'Test prompt hints';
+
+        protected $type = '';
+
+        protected function getRelativeNamespace(): string
+        {
+            return 'Filament';
+        }
+
+        protected function getStub(): string
+        {
+            return '';
+        }
+
+        public function exposePromptHintForType(string $type): string
+        {
+            $this->type = $type;
+
+            return $this->promptForMissingArgumentsUsing()['name'][1];
+        }
+    };
+
+    expect($command->exposePromptHintForType($type))->toBe($expectedHint);
+})->with([
+    ['Cast', 'E.g. Json'],
+    ['Channel', 'E.g. OrderChannel'],
+    ['Console command', 'E.g. SendEmails'],
+    ['Component', 'E.g. Alert'],
+    ['Controller', 'E.g. UserController'],
+    ['Event', 'E.g. PodcastProcessed'],
+    ['Exception', 'E.g. InvalidOrderException'],
+    ['Factory', 'E.g. PostFactory'],
+    ['Job', 'E.g. ProcessPodcast'],
+    ['Listener', 'E.g. SendPodcastNotification'],
+    ['Mailable', 'E.g. OrderShipped'],
+    ['Middleware', 'E.g. EnsureTokenIsValid'],
+    ['Notification', 'E.g. InvoicePaid'],
+    ['Observer', 'E.g. UserObserver'],
+    ['Policy', 'E.g. PostPolicy'],
+    ['Provider', 'E.g. ElasticServiceProvider'],
+    ['Request', 'E.g. StorePodcastRequest'],
+    ['Resource', 'E.g. UserResource'],
+    ['Rule', 'E.g. Uppercase'],
+    ['Scope', 'E.g. TrendingScope'],
+    ['Seeder', 'E.g. UserSeeder'],
+    ['Test', 'E.g. UserTest'],
+    ['Filament Cluster', 'E.g Settings'],
+    ['Filament Plugin', 'e.g AccessControlPlugin'],
+]);
+
+test('modular generator applies stub replacements in both placeholder formats', function () {
+    $command = new class(app(Filesystem::class)) extends GeneratorCommand
+    {
+        use GeneratesModularFiles;
+
+        protected $name = 'test:stub-replacements';
+
+        protected $description = 'Test stub replacements';
+
+        protected $type = 'Filament Plugin';
+
+        protected function getRelativeNamespace(): string
+        {
+            return 'Filament';
+        }
+
+        protected function getStub(): string
+        {
+            return '';
+        }
+
+        protected function stubReplacements(): array
+        {
+            return [
+                'token' => 'replaced',
+            ];
+        }
+
+        public function exposeApplyStubReplacements(string $stub): string
+        {
+            $this->applyStubReplacements($stub);
+
+            return $stub;
+        }
+    };
+
+    expect($command->exposeApplyStubReplacements('{{ token }} and {{token}}'))
+        ->toBe('replaced and replaced');
+});
+
+test('modular generator resolves view path without a subpath', function () {
+    $this->createTestModule('Blog');
+
+    expect($this->command->exposeViewPath())
+        ->toEndWith('resources' . DIRECTORY_SEPARATOR . 'views');
+    expect($this->command->exposeViewPath())
+        ->not->toContain('views' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR);
+});
+
+test('modular generator includes module prompt metadata', function () {
+    $prompts = $this->command->exposePrompts();
+
+    expect($prompts['module'][0])->toBe('In which Module should we create this?');
+    expect($prompts['module'][1])->toBe('e.g Blog');
+    expect($prompts['module'][2])->toBeTrue();
 });

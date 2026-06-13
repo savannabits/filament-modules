@@ -28,7 +28,9 @@ trait GeneratesModularFiles
 
     protected function resolveStubPath($stub): string
     {
-        return FilamentModules::packagePath('Commands' . DIRECTORY_SEPARATOR . trim($stub, DIRECTORY_SEPARATOR));
+        $stub = str($stub)->trim('/\\')->replace(['/', '\\'], DIRECTORY_SEPARATOR)->toString();
+
+        return FilamentModules::packagePath('src' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR . $stub);
     }
 
     public function getModule(): Module
@@ -54,7 +56,12 @@ trait GeneratesModularFiles
         $rootNamespace = str($this->rootNamespace())->trim('\\')->toString();
         $name = Str::replaceFirst($rootNamespace, $appFolder, $name);
 
-        return $this->getModule()->getExtraPath(str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php');
+        $path = $this->getModule()->getExtraPath(str_replace('\\', DIRECTORY_SEPARATOR, $name) . '.php');
+
+        return str($path)
+            ->replace(['/', '\\'], DIRECTORY_SEPARATOR)
+            ->replace(DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR)
+            ->toString();
     }
 
     protected function possibleModels()

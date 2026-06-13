@@ -55,7 +55,7 @@
     ],
     "analyse": "vendor/bin/phpstan analyse",
     "test": "vendor/bin/pest",
-    "test-coverage": "vendor/bin/pest --coverage --coverage-html=build/coverage --coverage-text=build/coverage.txt --coverage-clover=build/logs/clover.xml",
+    "test-coverage": "vendor/bin/pest --ci --coverage --min=98 --coverage-html=build/coverage --coverage-text=build/coverage.txt --coverage-clover=build/logs/clover.xml",
     "format": "vendor/bin/pint",
     "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
     "prepare": "@php vendor/bin/testbench package:discover --ansi",

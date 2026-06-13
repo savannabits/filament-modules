@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   update:
@@ -15,7 +16,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
-          ref: main
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+
+      - name: Resolve changelog branch
+        id: changelog-branch
+        run: |
+          target="${{ github.event.release.target_commitish }}"
+
+          if git show-ref --verify --quiet "refs/remotes/origin/${target}"; then
+            echo "name=${target}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          branch="$(git branch -r --contains "${{ github.event.release.tag_name }}" \
+            | sed 's|^[[:space:]]*origin/||' \
+            | grep -Ev 'HEAD|pull' \
+            | head -1)"
+
+          if [ -z "${branch}" ]; then
+            echo "Could not resolve branch for tag ${{ github.event.release.tag_name }}" >&2
+            exit 1
+          fi
+
+          echo "name=${branch}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout changelog branch
+        run: git checkout -B "${{ steps.changelog-branch.outputs.name }}" "origin/${{ steps.changelog-branch.outputs.name }}"
 
       - name: Update Changelog
         uses: stefanzweifel/changelog-updater-action@v1
@@ -23,9 +50,24 @@ jobs:
           latest-version: ${{ github.event.release.name }}
           release-notes: ${{ github.event.release.body }}
 
-      - name: Commit updated CHANGELOG
-        uses: stefanzweifel/git-auto-commit-action@v7
+      - name: Create pull request
+        id: create-pull-request
+        uses: peter-evans/create-pull-request@v7
         with:
-          branch: main
-          commit_message: Update CHANGELOG
-          file_pattern: CHANGELOG.md
+          base: ${{ steps.changelog-branch.outputs.name }}
+          branch: changelog/${{ github.event.release.tag_name }}
+          commit-message: Update CHANGELOG
+          title: "docs: update CHANGELOG for ${{ github.event.release.name }}"
+          body: |
+            Automated changelog update for release ${{ github.event.release.name }}.
+
+            Tag: ${{ github.event.release.tag_name }}
+            Branch: ${{ steps.changelog-branch.outputs.name }}
+            Triggered by: ${{ github.event.release.html_url }}
+          delete-branch: true
+
+      - name: Enable auto-merge
+        if: steps.create-pull-request.outputs.pull-request-operation == 'created' || steps.create-pull-request.outputs.pull-request-operation == 'updated'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge "${{ steps.create-pull-request.outputs.pull-request-number }}" --auto --squash
