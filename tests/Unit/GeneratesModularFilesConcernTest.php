@@ -1,10 +1,13 @@
 <?php
 
+use Coolsam\Modules\Concerns\GeneratesModularFiles;
+use Illuminate\Console\Command;
+
 // Setup for all tests
 beforeEach(function () {
-    $this->trait = new class extends \Illuminate\Console\Command
+    $this->trait = new class extends Command
     {
-        use Coolsam\Modules\Concerns\GeneratesModularFiles;
+        use GeneratesModularFiles;
 
         public function getRelativeNamespace(): string
         {

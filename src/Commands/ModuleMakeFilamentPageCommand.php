@@ -13,6 +13,7 @@ use Filament\Support\Facades\FilamentCli;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
+use Nwidart\Modules\Facades\Module;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\search;
@@ -52,7 +53,7 @@ class ModuleMakeFilamentPageCommand extends MakePageCommand
     public function ensureModuleArgument(): void
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the page in:', \Nwidart\Modules\Facades\Module::allEnabled());
+            $module = select('Please select the module to create the page in:', Module::allEnabled());
             if (! $module) {
                 $this->error('No module selected. Aborting page creation.');
                 exit(1);

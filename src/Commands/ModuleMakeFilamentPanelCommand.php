@@ -9,6 +9,7 @@ use Filament\Support\Commands\Concerns\CanGeneratePanels;
 use Filament\Support\Commands\Concerns\CanManipulateFiles;
 use Filament\Support\Commands\Exceptions\FailureCommandOutput;
 use Illuminate\Support\Str;
+use Nwidart\Modules\Facades\Module;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -110,7 +111,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
     protected function ensureModuleArgument(): void
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the panel in:', \Nwidart\Modules\Facades\Module::allEnabled());
+            $module = select('Please select the module to create the panel in:', Module::allEnabled());
             if (! $module) {
                 $this->components->error('No module selected. Aborting panel creation.');
                 exit(1);
