@@ -34,7 +34,7 @@ class ModulesServiceProvider extends PackageServiceProvider
                 $command
                     ->publishConfigFile()
                     ->endWith(function (InstallCommand $command) {
-                        $command->askToStarRepoOnGitHub('savannabits/filament-modules');
+                        $command->askToStarRepoOnGitHub('coolsam726/filament-modules');
                     });
             });
 
