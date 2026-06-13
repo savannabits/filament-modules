@@ -16,6 +16,19 @@ v5 continues to wrap [nwidart/laravel-modules](https://github.com/nWidart/larave
 
 ---
 
+## Requirements (v6)
+
+| Dependency | Version |
+|------------|---------|
+| PHP | 8.3+ |
+| Laravel | 12.x+ |
+| Filament | 4.x or 5.x |
+| nwidart/laravel-modules | 12.x or 13.x |
+
+v5 remains on Laravel 11+ and Filament 4.x on the `5.x` branch. v6 drops Laravel 11 support.
+
+---
+
 ## Goals
 
 1. **Organize Filament code into modules** — resources, pages, widgets, clusters, and optional sub-panels per module.
@@ -318,4 +331,4 @@ ModuleRegistry::find('Blog')?->dependencies();
 
 ## v6 release tagline
 
-> **Filament Modules v6 — modular Filament with tenant-aware activation and safe dependency boundaries, driver-agnostic by design.**
+> **Filament Modules v6 — modular Filament for Laravel 12+ with tenant-aware activation and safe dependency boundaries, driver-agnostic by design.**

@@ -19,27 +19,13 @@ jobs:
       matrix:
         include:
           - php: '8.3'
-            laravel: ^11.0
-            testbench: ^9.12
             os: ubuntu-latest
           - php: '8.4'
-            laravel: ^11.0
-            testbench: ^9.12
             os: ubuntu-latest
           - php: '8.3'
-            laravel: ^12.0
-            testbench: ^10.0
-            os: ubuntu-latest
-          - php: '8.4'
-            laravel: ^12.0
-            testbench: ^10.0
-            os: ubuntu-latest
-          - php: '8.3'
-            laravel: ^11.0
-            testbench: ^9.12
             os: windows-latest
 
-    name: PHP ${{ matrix.php }} · Laravel ${{ matrix.laravel }} · ${{ matrix.os }}
+    name: PHP ${{ matrix.php }} · Laravel 12 · ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -58,8 +44,8 @@ jobs:
           COMPOSER_PROCESS_TIMEOUT: 0
         run: |
           composer require \
-            "laravel/framework:${{ matrix.laravel }}" \
-            "orchestra/testbench:${{ matrix.testbench }}" \
+            "laravel/framework:^12.0" \
+            "orchestra/testbench:^10.0" \
             --dev \
             --no-interaction \
             --no-update
