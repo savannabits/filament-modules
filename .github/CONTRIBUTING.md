@@ -24,6 +24,16 @@ whether or not your feature is likely to be used by other users of the project.
 
 ## Procedure
 
+### Branching
+
+`main` and `5.x` are protected — **do not push to them directly**.
+
+1. Branch from the target you intend to merge into:
+   - v6 work: `git checkout main && git pull && git checkout -b feature/my-change`
+   - v5 fixes: `git checkout 5.x && git pull && git checkout -b fix/my-change`
+2. Open a pull request into `main` or `5.x` as appropriate.
+3. Wait for CI to pass before requesting review.
+
 Before filing an issue:
 
 - Attempt to replicate the problem, to ensure that it wasn't a coincidental incident.

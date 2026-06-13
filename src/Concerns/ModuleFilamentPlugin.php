@@ -18,7 +18,7 @@ trait ModuleFilamentPlugin
     {
         $module = $this->getModule();
 
-        if (! $module->isEnabled()) {
+        if (! app(\Coolsam\Modules\Contracts\ModuleActivator::class)->isActive($this->getModuleName())) {
             return;
         }
 

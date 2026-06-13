@@ -2,6 +2,14 @@
 
 // config for Coolsam/Modules
 return [
+    'driver' => 'nwidart', // module discovery driver (nwidart, future drivers)
+    'activation' => [
+        'driver' => 'file', // file (modules_statuses.json) or database (per-tenant, v6 Milestone 2)
+    ],
+    'tenancy' => [
+        'enabled' => false,
+        'context' => null, // e.g. App\Support\FilamentTenantContext::class
+    ],
     'mode' => \Coolsam\Modules\Enums\ConfigMode::BOTH->value, // 'plugins' or 'panels', determines how the Filament Modules are registered
     'auto-register-plugins' => true, // whether to auto-register plugins from various modules in the Panel. Only relevant if 'mode' is set to 'plugins'.
     'clusters' => [

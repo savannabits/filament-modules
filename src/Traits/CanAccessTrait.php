@@ -15,9 +15,9 @@ trait CanAccessTrait
 
     public static function canAccess(): bool
     {
-        $isModuleEnabled = \Nwidart\Modules\Facades\Module::find(
+        $isModuleEnabled = app(\Coolsam\Modules\Contracts\ModuleActivator::class)->isActive(
             static::getCurrentModuleName()
-        )?->isEnabled();
+        );
         $parentAccess = function_exists('canAccess') ? parent::canAccess() : true;
 
         if ($isModuleEnabled && $parentAccess) {

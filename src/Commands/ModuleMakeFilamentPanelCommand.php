@@ -110,7 +110,7 @@ class ModuleMakeFilamentPanelCommand extends MakePanelCommand
     protected function ensureModuleArgument(): void
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the panel in:', \Module::allEnabled());
+            $module = select('Please select the module to create the panel in:', \Coolsam\Modules\Facades\ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
             if (! $module) {
                 $this->components->error('No module selected. Aborting panel creation.');
                 exit(1);

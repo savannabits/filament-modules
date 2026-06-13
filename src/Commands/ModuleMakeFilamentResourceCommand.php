@@ -51,7 +51,7 @@ class ModuleMakeFilamentResourceCommand extends MakeResourceCommand
     public function ensureModuleArgument(): void
     {
         if (! $this->argument('module')) {
-            $module = select('Please select the module to create the resource in:', Module::allEnabled());
+            $module = select('Please select the module to create the resource in:', \Coolsam\Modules\Facades\ModuleRegistry::all()->map(fn ($m) => $m->name())->all());
             if (! $module) {
                 $this->error('No module selected. Aborting resource creation.');
                 exit(1);
