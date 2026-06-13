@@ -2,6 +2,19 @@
 
 All notable changes to `modules` will be documented in this file.
 
+## v5.3.2 - 2026-06-13
+
+### What's Changed
+
+* docs: update CHANGELOG for v5.3.1 by @github-actions[bot] in https://github.com/coolsam726/filament-modules/pull/183
+* fix: merge changelog PR when auto-merge is unavailable by @coolsam726 in https://github.com/coolsam726/filament-modules/pull/184
+
+### New Contributors
+
+* @github-actions[bot] made their first contribution in https://github.com/coolsam726/filament-modules/pull/183
+
+**Full Changelog**: https://github.com/coolsam726/filament-modules/compare/v5.3.1...v5.3.2
+
 ## v5.3.1 - 2026-06-13
 
 ### What's Changed
