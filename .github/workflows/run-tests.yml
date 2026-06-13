@@ -54,6 +54,7 @@ jobs:
           tools: composer:v2
 
       - name: Install dependencies
+        shell: bash
         env:
           COMPOSER_PROCESS_TIMEOUT: 0
         run: |
@@ -67,4 +68,5 @@ jobs:
           composer dump-autoload
 
       - name: Run tests
+        shell: bash
         run: vendor/bin/pest --ci
