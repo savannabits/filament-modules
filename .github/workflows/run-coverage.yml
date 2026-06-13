@@ -44,7 +44,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           mkdir -p build/logs
-          vendor/bin/pest --ci --coverage --coverage-clover=build/logs/clover.xml
+          vendor/bin/pest --ci --coverage --min=98 --coverage-clover=build/logs/clover.xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
