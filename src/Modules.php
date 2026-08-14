@@ -3,19 +3,56 @@
 namespace Coolsam\Modules;
 
 use Coolsam\Modules\Enums\ConfigMode;
+use Coolsam\Modules\Support\NamespaceResolver;
 use Filament\Panel;
 use Illuminate\Console\Command;
 use Illuminate\Support\Traits\Macroable;
 use Nwidart\Modules\Facades\Module;
+use Nwidart\Modules\Module as NwidartModule;
 use Symfony\Component\Process\Process;
 
 class Modules
 {
     use Macroable;
 
-    public function getModule(string $name): \Nwidart\Modules\Module
+    protected ?NamespaceResolver $namespaceResolver = null;
+
+    public function getModule(string $name): NwidartModule
     {
         return Module::findOrFail($name);
+    }
+
+    /**
+     * Get the NamespaceResolver instance (lazy loading).
+     */
+    public function getNamespaceResolver(): NamespaceResolver
+    {
+        if (! $this->namespaceResolver instanceof NamespaceResolver) {
+            $this->namespaceResolver = app()->make(NamespaceResolver::class);
+        }
+
+        return $this->namespaceResolver;
+    }
+
+    /**
+     * The base namespace of a module, optionally suffixed with a relative one.
+     *
+     * Reads the namespace the module actually declares instead of assuming
+     * `config('modules.namespace')` applies to every module.
+     */
+    public function getModuleNamespace(NwidartModule | string $module, string $relativeNamespace = ''): string
+    {
+        $module = is_string($module) ? $this->getModule($module) : $module;
+
+        return $this->getNamespaceResolver()->moduleNamespace($module, $relativeNamespace);
+    }
+
+    /**
+     * Resolve the class a path maps to, or null when it cannot be determined.
+     */
+    public function resolveClass(string $path): ?string
+    {
+        return $this->getNamespaceResolver()->resolveClass($path);
     }
 
     /**
@@ -31,8 +68,7 @@ class Modules
         if (! $module || ! is_dir($panelPath)) {
             return [];
         }
-        $pattern = $panelPath . DIRECTORY_SEPARATOR . '*PanelProvider.php';
-        $panelPaths = glob($pattern);
+        $panelPaths = $this->globFiles($panelPath, '*PanelProvider.php');
         $panels_ids = collect($panelPaths)->map(function ($path) use ($moduleName) {
             // Convert the path to a namespace
             $namespace = $this->convertPathToNamespace($path);
@@ -56,50 +92,38 @@ class Modules
         if (! is_dir($clusterPath)) {
             return [];
         }
-        $pattern = $clusterPath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . '*Cluster.php';
-        $clusterPaths = glob($pattern);
+        $clusterPaths = $this->globFiles($clusterPath, '*', '*Cluster.php');
 
         return collect($clusterPaths)->map(function ($path) {
             // Convert the path to a namespace
             return $this->convertPathToNamespace($path);
-        })->all();
+        })->filter()->values()->all();
     }
 
+    /**
+     * Convert a path to the class it maps to.
+     *
+     * Delegates to the NamespaceResolver so that modules living outside
+     * `config('modules.namespace')` resolve to the namespace they declare.
+     */
     public function convertPathToNamespace(string $fullPath): string
     {
-        $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $fullPath);
-        $appFolder = trim(config('modules.paths.app_folder', 'app'), '/\\');
-        $base = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, trim(config('modules.paths.modules', base_path('Modules')), '/\\'));
-        $appSegment = $appFolder . DIRECTORY_SEPARATOR;
-
-        $relative = str($normalizedPath)->afterLast($base)->ltrim(DIRECTORY_SEPARATOR);
-
-        if (str($relative)->startsWith($appSegment)) {
-            $relative = str($relative)->after($appSegment);
-        } else {
-            $relative = str($relative)->replace(DIRECTORY_SEPARATOR . $appSegment, DIRECTORY_SEPARATOR);
-        }
-
-        return str($relative)
-            ->prepend(DIRECTORY_SEPARATOR)
-            ->prepend(config('modules.namespace', 'Modules'))
-            ->replace(DIRECTORY_SEPARATOR, '\\')
-            ->replace('\\\\', '\\')
-            ->rtrim('.php')
-            ->explode(DIRECTORY_SEPARATOR)
-            ->map(fn ($piece) => str($piece)->studly()->toString())
-            ->implode('\\');
+        return $this->resolveClass($fullPath) ?? '';
     }
 
     public function findModuleNameForPath(string $path): ?string
     {
-        $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-        $modulesPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, config('modules.paths.modules', base_path('Modules')));
+        $resolver = $this->getNamespaceResolver();
+        $modulesPath = $resolver->normalizePath((string) config('modules.paths.modules', base_path('Modules')));
+        $normalizedPath = $resolver->normalizePath($path);
 
-        $directory = is_file($normalizedPath) ? dirname($normalizedPath) : $normalizedPath;
+        $directory = is_file($path) ? dirname($normalizedPath) : $normalizedPath;
 
-        while (str($directory)->startsWith($modulesPath) && $directory !== $modulesPath) {
-            $moduleJsonPath = $directory . DIRECTORY_SEPARATOR . 'module.json';
+        while ($modulesPath !== '' && $directory !== $modulesPath && str_starts_with(
+            DIRECTORY_SEPARATOR === '\\' ? mb_strtolower($directory) : $directory,
+            DIRECTORY_SEPARATOR === '\\' ? mb_strtolower($modulesPath) : $modulesPath,
+        )) {
+            $moduleJsonPath = $directory . '/module.json';
 
             if (is_file($moduleJsonPath)) {
                 $moduleJson = json_decode((string) file_get_contents($moduleJsonPath), true);
@@ -125,18 +149,41 @@ class Modules
             return null;
         }
 
-        $content = file_get_contents($providerPath);
-
-        if ($content === false || ! preg_match('/^namespace\s+([^;]+);/m', $content, $matches)) {
-            return null;
-        }
-
-        return trim($matches[1]) . '\\' . basename($providerPath, '.php');
+        return $this->resolveClass($providerPath);
     }
 
     public function resolveProviderClass(string $providerPath): string
     {
         return $this->resolveClassFromProviderFile($providerPath) ?? $this->convertPathToNamespace($providerPath);
+    }
+
+    /**
+     * Build a glob pattern from path segments, tolerating the mixed separators
+     * and trailing slashes that `modules.paths.*` config values may carry.
+     */
+    public function globPattern(string ...$segments): string
+    {
+        $normalized = [];
+
+        foreach (array_values($segments) as $index => $segment) {
+            $segment = str_replace('\\', '/', $segment);
+            // Keep a leading slash on the first segment: it may be an absolute path.
+            $segment = $index === 0 ? rtrim($segment, '/') : trim($segment, '/');
+
+            if ($segment !== '') {
+                $normalized[] = $segment;
+            }
+        }
+
+        return implode('/', $normalized);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function globFiles(string ...$segments): array
+    {
+        return array_filter((array) glob($this->globPattern(...$segments)));
     }
 
     public function execCommand(string $command, ?Command $artisan = null): void
