@@ -1,4 +1,19 @@
 <?php
+/*
+ *          M""""""""`M            dP
+ *          Mmmmmm   .M            88
+ *          MMMMP  .MMM  dP    dP  88  .dP   .d8888b.
+ *          MMP  .MMMMM  88    88  88888"    88'  `88
+ *          M' .MMMMMMM  88.  .88  88  `8b.  88.  .88
+ *          M         M  `88888P'  dP   `YP  `88888P'
+ *          MMMMMMMMMMM    -*-  Created by Zuko  -*-
+ *
+ *          * * * * * * * * * * * * * * * * * * * * *
+ *          * -    - -   F.R.E.E.M.I.N.D   - -    - *
+ *          * -  Copyright © 2026 (Z) Programing  - *
+ *          *    -  -  All Rights Reserved  -  -    *
+ *          * * * * * * * * * * * * * * * * * * * * *
+ */
 
 namespace Coolsam\Modules;
 
@@ -24,9 +39,15 @@ class ModulesPlugin implements Plugin
             ->topNavigation(config('filament-modules.clusters.enabled', false) && config('filament-modules.clusters.use-top-navigation', false));
         $mode = ConfigMode::tryFrom(config('filament-modules.mode', ConfigMode::BOTH->value));
         if ($mode?->shouldRegisterPlugins()) {
-            $plugins = $this->getModulePlugins();
-            foreach ($plugins as $modulePlugin) {
-                $panel->plugin($modulePlugin::make());
+            foreach ($this->getModulePlugins() as $modulePlugin) {
+                $plugin = method_exists($modulePlugin, 'make') ? $modulePlugin::make() : app($modulePlugin);
+
+                // A module plugin registered explicitly by the panel wins.
+                if ($panel->hasPlugin($plugin->getId())) {
+                    continue;
+                }
+
+                $panel->plugin($plugin);
             }
         }
     }
@@ -80,20 +101,53 @@ class ModulesPlugin implements Plugin
         return $plugin;
     }
 
+    /**
+     * @return array<int, class-string<Plugin>>
+     */
     protected function getModulePlugins(): array
     {
         if (! config('filament-modules.auto-register-plugins', false)) {
             return [];
         }
-        // get a glob of all Filament plugins
-        $basePath = str(config('modules.paths.modules', 'Modules'));
-        $appFolder = trim(config('modules.paths.app_folder', 'app'), '/\\');
-        $appPath = $appFolder . DIRECTORY_SEPARATOR;
-        $pattern = str($basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $appPath . 'Filament' . DIRECTORY_SEPARATOR . '*Plugin.php')->replace('//', '/')->toString();
-        $pluginPaths = glob($pattern);
 
-        return collect($pluginPaths)->map(fn ($path) => FilamentModules::convertPathToNamespace($path))->toArray();
+        return collect($this->globModuleFiles('Filament', '*Plugin.php'))
+            ->map(fn (string $path) => [
+                'class' => FilamentModules::resolveClass($path),
+                'module' => FilamentModules::findModuleNameForPath($path),
+            ])
+            ->filter(function (array $plugin) {
+                $module = $plugin['module'] ? ModuleFacade::find($plugin['module']) : null;
 
+                // A plugin whose class cannot be resolved (or whose module is
+                // disabled) is skipped instead of crashing the panel.
+                return $module?->isEnabled()
+                    && filled($plugin['class'])
+                    && class_exists($plugin['class'])
+                    && is_subclass_of($plugin['class'], Plugin::class);
+            })
+            ->pluck('class')
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Glob inside every module, covering both the app-folder layout
+     * (`modules/Blog/app/…`) and the flat one (`modules/Blog/…`).
+     *
+     * @return array<int, string>
+     */
+    protected function globModuleFiles(string ...$segments): array
+    {
+        $modulesPath = (string) config('modules.paths.modules', 'Modules');
+        $appFolder = (string) config('modules.paths.app_folder', 'app');
+
+        $paths = array_merge(
+            FilamentModules::globFiles(...array_merge([$modulesPath, '*', $appFolder], $segments)),
+            FilamentModules::globFiles(...array_merge([$modulesPath, '*'], $segments)),
+        );
+
+        return array_values(array_unique($paths));
     }
 
     /**
@@ -104,15 +158,12 @@ class ModulesPlugin implements Plugin
     protected function getModulePanels(): array
     {
         // get a glob of all Filament panels
-        $basePath = str(config('modules.paths.modules', 'Modules'));
-        $appFolder = str(config('modules.paths.app_folder', 'app'));
-        $pattern = $basePath . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $appFolder . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*.php';
-        $panelPaths = glob($pattern);
+        $panelPaths = $this->globModuleFiles('Providers', 'Filament', '*.php');
 
         $panelIds = collect($panelPaths)->map(function ($path) {
             $class = FilamentModules::resolveProviderClass($path);
 
-            if (! class_exists($class)) {
+            if (blank($class) || ! class_exists($class)) {
                 return null;
             }
 

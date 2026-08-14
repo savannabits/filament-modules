@@ -1,13 +1,30 @@
 <?php
+/*
+ *          M""""""""`M            dP
+ *          Mmmmmm   .M            88
+ *          MMMMP  .MMM  dP    dP  88  .dP   .d8888b.
+ *          MMP  .MMMMM  88    88  88888"    88'  `88
+ *          M' .MMMMMMM  88.  .88  88  `8b.  88.  .88
+ *          M         M  `88888P'  dP   `YP  `88888P'
+ *          MMMMMMMMMMM    -*-  Created by Zuko  -*-
+ *
+ *          * * * * * * * * * * * * * * * * * * * * *
+ *          * -    - -   F.R.E.E.M.I.N.D   - -    - *
+ *          * -  Copyright © 2026 (Z) Programing  - *
+ *          *    -  -  All Rights Reserved  -  -    *
+ *          * * * * * * * * * * * * * * * * * * * * *
+ */
 
 namespace Coolsam\Modules;
 
 use Coolsam\Modules\Facades\FilamentModules;
+use Coolsam\Modules\Support\NamespaceResolver;
 use Coolsam\Modules\Testing\TestsModules;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\ServiceProvider;
 use Livewire\Features\SupportTesting\Testable;
 use Nwidart\Modules\Facades\Module as ModuleFacade;
 use Nwidart\Modules\Module as NwidartModule;
@@ -59,6 +76,8 @@ class ModulesServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        $this->app->singleton(NamespaceResolver::class);
+        $this->app->singleton(Modules::class);
         $this->registerModuleMacros();
         $this->autoDiscoverPanels();
     }
@@ -66,30 +85,36 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function attemptToRegisterModuleProviders(): void
     {
         // It is necessary to register them here to avoid late registration (after Panels have already been booted)
-        $pattern1 = config(
-            'modules.paths.modules',
-            'Modules'
-        ) . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . '*Provider.php';
-        $pattern2 = config(
-            'modules.paths.modules',
-            'Modules'
-        ) . '/*' . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . 'Providers' . DIRECTORY_SEPARATOR . 'Filament' . DIRECTORY_SEPARATOR . '*Provider.php';
-        $serviceProviders = glob($pattern1);
-        $panelProviders = glob($pattern2);
-        $providers = array_merge($serviceProviders, $panelProviders);
+        $modulesPath = (string) config('modules.paths.modules', 'Modules');
+        $appFolder = (string) config('modules.paths.app_folder', 'app');
 
-        foreach ($providers as $provider) {
-            $namespace = FilamentModules::resolveProviderClass($provider);
+        $providers = [];
+
+        // Both layouts are supported: with an app folder (`modules/Blog/app/Providers`)
+        // and without one (`modules/Blog/Providers`).
+        foreach ([[$appFolder], []] as $appSegment) {
+            foreach ([[], ['Filament']] as $filamentSegment) {
+                $segments = array_merge([$modulesPath, '*'], $appSegment, ['Providers'], $filamentSegment, ['*Provider.php']);
+                $providers = array_merge($providers, FilamentModules::globFiles(...$segments));
+            }
+        }
+
+        foreach (array_unique($providers) as $provider) {
             $moduleName = FilamentModules::findModuleNameForPath($provider);
+            $module = $moduleName ? ModuleFacade::find($moduleName) : null;
 
-            if (! $moduleName || ! ModuleFacade::isEnabled($moduleName)) {
+            if (! $module || ! $module->isEnabled()) {
                 continue;
             }
 
+            $namespace = FilamentModules::resolveProviderClass($provider);
             $className = str($namespace)->afterLast('\\')->toString();
-            $moduleStudlyName = str($moduleName)->studly()->toString();
 
-            if (str($className)->startsWith($moduleStudlyName) && class_exists($namespace)) {
+            if (! str($className)->startsWith($module->getStudlyName())) {
+                continue;
+            }
+
+            if (class_exists($namespace) && is_subclass_of($namespace, ServiceProvider::class)) {
                 $this->app->register($namespace);
             }
         }
@@ -98,19 +123,16 @@ class ModulesServiceProvider extends PackageServiceProvider
     public function autoDiscoverPanels(): void
     {
         $this->app->beforeResolving('filament', function () {
-            $modules = ModuleFacade::allEnabled();
-            $cacheKey = 'filament-modules-panel-providers';
-            $ttl = 10;  // 24 hours
-            $modules = ModuleFacade::allEnabled();
-            $panels = collect($modules)->flatMap(function (NwidartModule $module) {
-                $panelProviders = glob($module->getExtraPath('app/Providers/Filament') . '/*.php');
+            $panels = collect(ModuleFacade::allEnabled())->flatMap(function (NwidartModule $module) {
+                $panelProviders = FilamentModules::globFiles($module->appPath('Providers/Filament'), '*.php');
 
-                return collect($panelProviders)->map(function ($path) {
-                    return $this->app[Modules::class]->convertPathToNamespace($path);
-                })->toArray();
-            })->toArray();
+                return collect($panelProviders)
+                    ->map(fn ($path) => FilamentModules::resolveProviderClass($path))
+                    ->all();
+            })->filter()->unique();
+
             foreach ($panels as $panel) {
-                if (class_exists($panel)) {
+                if (class_exists($panel) && is_subclass_of($panel, ServiceProvider::class)) {
                     $this->app->register($panel);
                 }
             }
@@ -213,13 +235,12 @@ class ModulesServiceProvider extends PackageServiceProvider
 
     protected function registerModuleMacros(): void
     {
+        // The base namespace is read from what the module actually declares
+        // (Composer PSR-4 map, then its composer.json, then its sources), so
+        // modules that do not live under `config('modules.namespace')` resolve
+        // correctly. See https://github.com/coolsam726/filament-modules/issues/154
         NwidartModule::macro('namespace', function (?string $relativeNamespace = '') {
-            $relativeNamespace = $relativeNamespace ?? '';
-            $base = trim(config('modules.namespace', 'Modules'), '\\');
-            $relativeNamespace = trim($relativeNamespace, '\\');
-            $studlyName = $this->getStudlyName();
-
-            return str($base)->append('\\')->append($studlyName)->append('\\')->append($relativeNamespace)->replace('\\\\', '\\')->toString();
+            return FilamentModules::getModuleNamespace($this, $relativeNamespace ?? '');
         });
 
         NwidartModule::macro('getTitle', function () {
